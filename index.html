@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Free Internet</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="loader" class="loader-overlay">
+        <div class="md-spinner"></div>
+    </div>
+
+    <header>
+        <nav class="nav-container">
+            <div class="nav-item active" data-target="home">Главная</div>
+            <div class="nav-item" data-target="vpn">ВПН</div>
+            <div class="nav-item" data-target="bypass">Обход</div>
+            <div class="nav-item" data-target="whitelist">Белые списки</div>
+            <div class="nav-item" data-target="speed">Скорость</div>
+        </nav>
+        <button class="theme-toggle-btn" id="theme-btn" aria-label="Переключить тему">🌙</button>
+    </header>
+
+    <main>
+        <section id="home" class="page-section active">
+            <div class="hero">
+                <h1>Интернет без границ</h1>
+                <p>Бесплатные решения для обхода любых блокировок</p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h2>Поддержка ОС</h2>
+                    <div class="tool-info"><b>Android:</b> Большинство версий</div>
+                    <div class="tool-info"><b>Windows:</b> Основные сборки</div>
+                    <p style="font-size: 14px; color: var(--md-sys-color-outline);">Все утилиты подбираются для максимальной совместимости.</p>
+                </div>
+                <div class="card">
+                    <h2>О проекте</h2>
+                    <p style="font-size: 14px;">Я собираю лучшие рабочие методы и делюсь ими с вами. Все сервисы проверены лично.</p>
+                    <a href="https://t.me/AntiZapret2" target="_blank" class="btn">Мой Telegram Канал</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Ваше местоположение</h2>
+                <div class="tool-info"><b>IP адрес:</b> <span id="user-ip">Загрузка...</span></div>
+                <div class="tool-info"><b>Провайдер:</b> <span id="user-isp">Загрузка...</span></div>
+                <div class="tool-info"><b>Локация:</b> <span id="user-country">Загрузка...</span></div>
+                <div id="map"></div>
+            </div>
+        </section>
+
+        <section id="vpn" class="page-section">
+            <h1 class="page-title">Надежные ВПН</h1>
+
+            <div class="card">
+                <h2>Tor Bridges (Мосты)</h2>
+                <p>Если стандартный internet сильно заглушен, Tor с мостами поможет восстановить доступ к сети. Доступен на любые платформы.</p>
+                
+                <div class="tool-info"><b>Android</b></div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+                    <button class="btn btn-guide" onclick="toggleTorGuide()">Гайд</button>
+                    <a href="https://www.youtube.com/watch?v=2MDuuydMWbY" target="_blank" class="btn">Видео гайд</a>
+                    <a href="https://torproject.org" target="_blank" class="btn btn-outline">Официальный сайт</a>
+                    <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/TOR-BRIDGES/TOR_BRIDGES_TOP100.txt" target="_blank" class="btn btn-outline">Конфиги</a>
+                </div>
+
+                <div id="tor-android-links" class="extra-links">
+                    <a href="https://play.google.com/store/apps/details?id=org.torproject.torbrowser" target="_blank" class="btn btn-outline" style="border-color: #4caf50; color: #4caf50;">Google Play</a>
+                    <a href="https://f-droid.org/packages/org.torproject.torbrowser/" target="_blank" class="btn btn-outline" style="border-color: #ff9800; color: #ff9800;">F-Droid</a>
+                </div>
+
+                <div id="guide-tor-android" class="guide-content">
+                    1. Скопируйте список мостов (конфигов) с官方 сайта.<br>
+                    2. Установите приложение и выберите опцию «Подключиться напрямую к Tor».<br>
+                    3. Зайдите в раздел настройки мостов, выберите «Добавить новые мосты» и вставьте скопированные данные.<br>
+                    4. Если кнопка сохранения не нажимается, поищите мосты с восклицательным знаком.<br>
+                    5. Активируйте использование мостов. В настройках приложений рекомендуем временно отключить российские сервисы. Нажмите «Подключить» и дождитесь завершения.
+                </div>
+
+                <div class="tool-info"><b>Windows</b></div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn" onclick="toggleGuide('guide-tor-win')">Гайд</button>
+                    <a href="https://youtu.be/k-Y8NniEvP4" target="_blank" class="btn">Video гайд</a>
+                    <a href="https://dragonfruit.network/onionfruit" target="_blank" class="btn btn-outline">Официальный сайт</a>
+                    <a href="https://github.com/igareck/vpn-configs-for-russia" target="_blank" class="btn btn-outline">GitHub</a>
+                    <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/TOR-BRIDGES/TOR_BRIDGES_TOP100.txt" target="_blank" class="btn btn-outline">Конфиги</a>
+                </div>
+                <div id="guide-tor-win" class="guide-content">
+                    1. Скачайте onionFruit через релизы в гитхаб или через офиц. сайт.<br>
+                    2. Копируйте конфиг для onionFruit.<br>
+                    3. Нажмите настройки.<br>
+                    4. Нажмите мосты.<br>
+                    5. Измените disabled на plain, ну или которая вам нужна.<br>
+                    6. Вставьте мосты и нажмите кнопку добавить.<br>
+                    7. Закройте вкладку.<br>
+                    8. Нажмите на переключатель и ждите.
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Amnezia VPN / WG</h2>
+                <p>Отличный вариант для обхода DPI. Использует модифицированый протокол WireGuard.</p>
+
+                <div class="tool-info"><b>Android</b></div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+                     <button class="btn" onclick="toggleGuide('guide-amn-android')">Гайд</button>
+                    <a href="https://www.youtube.com/watch?v=3ueG-ChggqE" target="_blank" class="btn">Видео гайд</a>
+                    <a href="https://amnezia.org/ru/downloads" target="_blank" class="btn btn-outline">Официальный сайт</a>
+                    <a href="https://warp-mirrors.vercel.app/" target="_blank" class="btn btn-outline">Сайт для конфига</a>
+                </div>
+                <div id="guide-amn-android" class="guide-content">
+                    1. Скачайте APK-файл из релизов на GitHub (выбирайте версию, подходящую под ваше устройство).<br>
+                    2. Перейдите на сайт генерации конфигов, выберите рабочее зеркало и нажмите «Сгенерировать конфиг».<br>
+                    3. Пройдите капчу и скачайте файл в формате .conf.<br>
+                    4. В приложении Amnezia VPN нажмите «Приступим» -> «Файл с настройками подключения».<br>
+                    5. Выберите скачанный файл (warp...conf) и нажмите «Подключить». Разрешите VPN-запрос в системе.
+                </div>
+
+                <div class="tool-info"><b>Windows</b></div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn" onclick="toggleGuide('guide-amn-win')">Гайд</button>
+                    <a href="https://www.youtube.com/watch?v=OJZnxPN7_PQ" target="_blank" class="btn">Видео гайд</a>
+                    <a href="https://amnezia.org/ru/downloads" target="_blank" class="btn btn-outline">Официальный сайт</a>
+                    <a href="https://warp-mirrors.vercel.app/" target="_blank" class="btn btn-outline">Сайт для конфига</a>
+                </div>
+                <div id="guide-amn-win" class="guide-content">
+                    1. Перейдите в релизы на GitHub разработчиков и скачайте файл с расширением .exe.<br>
+                    2. Откройте сайт для создания конфигов, выберите рабочее зеркало (например, основное) и нажмите «Сгенерировать зеркало».<br>
+                    3. Пройдите капчу и нажмите кнопку «Скачать конфиг».<br>
+                    4. В приложении Amnezia VPN нажмите «Приступим» -> «Файл с настройками подключения».<br>
+                    5. Через открывшийся проводник найдите и выберите скачанный файл (warp...conf), чтобы автоматически импортировать настройки , всё заработало.
+                </div>
+            </div>
+        </section>
+
+        <section id="bypass" class="page-section">
+            <h1 class="page-title">Утилиты для обхода</h1>
+
+            <div class="card">
+                <h2>Zapret Discord YouTube</h2>
+                <p>Утилита для модификации трафика на лету на Windows. Отлично подходит для восстановления работы голосовых чатов Discord и быстрой загрузки видео на YouTube.</p>
+                <div class="tool-info"><b>Windows</b></div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn" onclick="toggleGuide('guide-zapret')">Гайд</button>
+                    <a href="https://youtu.be/zJ0iayCzIhY" target="_blank" class="btn">Видео гайд</a>
+                    <a href="https://github.com/flowseal/zapret-discord-youtube" target="_blank" class="btn btn-outline">GitHub</a>
+                </div>
+                <div id="guide-zapret" class="guide-content">
+                    1. Скачайте архив (.rar) из релизов разработчика и распакуйте его.<br>
+                    2. Найдите в папке файл «general (ALT11).bat» and запустите его (желательно от имени администратора).<br>
+                    3. Окно консоли должно оставаться открытым. Теперь Discord и YouTube будут работать стабильно.
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>TG WS Proxy (Telegram)</h2>
+                <p>Если Telegram долго грузит медиа или не подключается, используй WebSocket прокси.</p>
+
+                <div class="tool-info"><b>Android</b></div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+                    <button class="btn" onclick="toggleGuide('guide-tg-android')">Гайд</button>
+                    <a href="https://www.youtube.com/watch?v=RhZ330eeCTc" target="_blank" class="btn">Видео гайд</a>
+                    <a href="https://github.com/amurcanov/tg-ws-proxy-android" target="_blank" class="btn btn-outline">GitHub</a>
+                </div>
+                <div id="guide-tg-android" class="guide-content">
+                    1. Установите версию 1.3.0 (.apk) с GitHub. Обязательно разрешите приложению работу в фоне.<br>
+                    2. В настройках оставьте стандартный порт, установите «Пул WS» на значение 4 и включите автозапуск.<br>
+                    3. Нажмите на значок Telegram в приложении и выберите «Применить в Telegram».<br>
+                    4. В открывшемся мессенджере нажмите «Подключить прокси».<br><br>
+                    <i>Примечание: иногда через этот метод может не работать отправка тяжелых файлов.</i>
+                </div>
+
+                <div class="tool-info"><b>Windows</b></div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn" onclick="toggleGuide('guide-tg-win')">Гайд</button>
+                    <a href="https://www.youtube.com/watch?v=eWr-mK9wiNY" target="_blank" class="btn">Видео гайд</a>
+                    <a href="https://github.com/Flowseal/tg-ws-proxy" target="_blank" class="btn btn-outline">GitHub</a>
+                </div>
+                <div id="guide-tg-win" class="guide-content">
+                    1. Скачайте TG WS Proxy через релизы на GitHub, скачивайте с окончанием .exe.<br>
+                    2. Заходите в трее ищите TG WS Proxy, нажимайте по нему правой кнопкой мыши, настройки, листайте в низ, нажимайте на автозапуск, сохранить.<br>
+                    3. Заходите опять в трее, нажимайте правой кнопкой мыши по TG WS Proxy и выберайте "Открыть в Telegram" или "Скопировать ссылку".<br>
+                    4. Вас перекидывает в Telegram, нажимайте "Подключить прокси" и все хорошо работает.
+                </div>
+            </div>
+        </section>
+
+        <section id="whitelist" class="page-section">
+            <h1 class="page-title">Умные маршруты</h1>
+
+            <div class="card">
+                <h2>Что такое белые списки?</h2>
+                <p>Вместо того чтобы пускать ВЕСЬ ваш трафик через зарубежный сервер, вы можете использовать белые списки. ВПН будет включаться автоматически <strong>только для заблокированных сайтов</strong>.</p>
+            </div>
+
+            <div class="card">
+                <h2>Как установить?</h2>
+                <ol>
+                    <li>Скачайте и установите совместимый клиент.</li>
+                    <li>Загрузите файл конфигурации правил маршрутизации.</li>
+                    <li>В настройках выберите режим <b>"Обход LAN и России"</b>.</li>
+                </ol>
+                <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/Vless-Reality-White-Lists-Rus-Mobile.txt" target="_blank" class="btn">Скачать файл белого списка</a>
+            </div>
+        </section>
+
+        <section id="speed" class="page-section">
+            <h1 class="page-title">Измерение скорости</h1>
+            <div class="card">
+                <p style="margin-top: 0; color: var(--md-sys-color-on-surface-variant);">Проверьте скорость вашего интернета или текущего ВПН-подключения.</p>
+                <div class="speedtest-container">
+                    <iframe src="https://librespeed.org/" scrolling="yes"></iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
