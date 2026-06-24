@@ -85,9 +85,13 @@ body.dark-theme {
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    
     background-color: var(--md-sys-color-background);
     color: var(--md-sys-color-on-background);
-    margin: 0; padding: 0; line-height: 1.5;
+    margin: 0; 
+    padding: 0; 
+    line-height: 1.5;
     transition: background-color 0.3s, color 0.3s;
 }
 
