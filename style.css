@@ -102,7 +102,7 @@ body.dark-theme {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis; /* Добавляет троеточие, если ключ слишком длинный */
-    max-width: 60%;
+    max-width: 100%;
 }
 
 .copy-btn {
