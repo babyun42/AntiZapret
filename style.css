@@ -111,10 +111,12 @@ body.dark-theme .secret-text {
     color: #E3E3E3; /* Светло-серый или белый текст, чтобы было видно на черном фоне */
 }
 
-.copy-btn {
-    min-width: 130px;
-    transition: all 0.3s ease;
-    margin-right: 20px; /* Сдвигает кнопку на 20 пикселей влево от правого края */
+.copy-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Прижимает всё к левому краю */
+    gap: 10px; /* Расстояние между ключом и кнопкой */
+    /* ... остальные стили (background, padding, border-radius) остаются как были ... */
 }
 
 body {
