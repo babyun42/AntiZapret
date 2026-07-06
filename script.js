@@ -139,26 +139,32 @@ ipSpan.addEventListener('click', () => {
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveIp(); });
 });
 
+// Функция для копирования ключа Vless с анимацией
 function copyKey(elementId, btn) {
-    // Получаем текст ключа из элемента
     const textToCopy = document.getElementById(elementId).innerText;
     
-    // Используем современный API буфера обмена
     navigator.clipboard.writeText(textToCopy).then(() => {
-        // Запоминаем старый текст кнопки
+        // Запоминаем изначальный текст
         const originalText = btn.innerText;
         
-        // Меняем внешний вид на успешный
-        btn.innerText = "Скопировано!";
-        btn.style.backgroundColor = "#146C2E"; // Темно-зеленый цвет успеха
-        btn.style.color = "white";
+        // 1. Добавляем класс, чтобы запустить анимацию вращения
+        btn.classList.add("spinning");
         
-        // Возвращаем как было через 2 секунды (2000 миллисекунд)
+        // 2. Меняем текст и цвет на "успешный"
+        btn.innerText = "Готово!";
+        btn.style.backgroundColor = "#D0BCFF"; // Светло-фиолетовый (можешь поменять на зеленый #146C2E)
+        btn.style.color = "#381E72";
+
+        // 3. Ждем 2 секунды и возвращаем всё как было
         setTimeout(() => {
             btn.innerText = originalText;
             btn.style.backgroundColor = ""; 
             btn.style.color = "";
+            
+            // ВАЖНО: Убираем класс анимации, чтобы при следующем клике она сработала снова
+            btn.classList.remove("spinning"); 
         }, 2000);
+        
     }).catch(err => {
         console.error("Ошибка при копировании: ", err);
         alert("Не удалось скопировать текст.");
