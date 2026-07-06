@@ -82,7 +82,7 @@
                 </div>
 
                 <div id="guide-tor-android" class="guide-content">
-                    1. Скопируйте список мостов (конфигов) с官方 сайта.<br>
+                    1. Скопируйте список мостов (конфигов) с сайта.<br>
                     2. Установите приложение и выберите опцию «Подключиться напрямую к Tor».<br>
                     3. Зайдите в раздел настройки мостов, выберите «Добавить новые мосты» и вставьте скопированные данные.<br>
                     4. Если кнопка сохранения не нажимается, поищите мосты с восклицательным знаком.<br>
@@ -146,11 +146,21 @@
             <div class="card">
     <h2>Vless</h2>
     <p>Отличный вариант для обхода блокировок. Хорошо маскирует ваш трафик. Использует протокол Vless.</p>
-
-    <div class="copy-container">
-        <span id="vless-key" class="secret-text">ключ: https://connect.stealthsurf.net/to/c65e78e39e9d796da25a3ced4339231a</span>
-        <button class="btn copy-btn" onclick="copyKey('vless-key', this)">Скопировать</button>
+<div class="keys-group">
+    <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Основной ключ:</p>
+    
+    <div class="copy-container" style="margin-bottom: 16px;">
+        <span id="vless-key-1" class="secret-text">https://shrimp.fish/sub/KT-vzBZAsUkz3PXj</span>
+        <button class="btn copy-btn" onclick="copyKey('vless-key-1', this)">Скопировать</button>
     </div>
+
+    <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Второй ключ:</p>
+    
+    <div class="copy-container">
+        <span id="vless-key-2" class="secret-text">https://connect.stealthsurf.net/to/c65e78e39e9d796da25a3ced4339231a</span>
+        <button class="btn copy-btn" onclick="copyKey('vless-key-2', this)">Скопировать</button>
+    </div>
+</div>
 
     <div class="tool-info"><b>Android</b></div>
     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
