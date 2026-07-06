@@ -122,6 +122,20 @@ body {
     transition: all 0.3s ease;
 }
 
+/* Стили для верхней панели */
+.top-bar {
+    background-color: #1E1F22; /* Немного светлее, чем основной черный фон */
+    padding: 12px 24px;
+    border-bottom: 1px solid #33363D; /* Тонкая линия снизу для красоты */
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    
+    /* Делаем панель липкой, чтобы она оставалась сверху при прокрутке (по желанию) */
+    position: sticky; 
+    top: 0;
+    z-index: 100;
+}
 
 
 /* --- ШАПКА И НАВИГАЦИЯ --- */
@@ -137,21 +151,6 @@ header {
     justify-content: space-between;
     gap: 12px;
     transition: background-color 0.3s;
-}
-
-/* Стили для верхней панели */
-.top-bar {
-    background-color: #1E1F22; /* Немного светлее, чем основной черный фон */
-    padding: 12px 24px;
-    border-bottom: 1px solid #33363D; /* Тонкая линия снизу для красоты */
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    
-    /* Делаем панель липкой, чтобы она оставалась сверху при прокрутке (по желанию) */
-    position: sticky; 
-    top: 0;
-    z-index: 100;
 }
 
 .nav-container {
