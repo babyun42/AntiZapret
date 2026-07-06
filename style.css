@@ -95,61 +95,6 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* --- ШАПКА И НАВИГАЦИЯ --- */
-header {
-    padding: 12px 16px; 
-    position: sticky; top: 0;
-    background-color: var(--header-bg);
-    backdrop-filter: blur(12px); 
-    -webkit-backdrop-filter: blur(12px);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    transition: background-color 0.3s;
-}
-
-.nav-container {
-    display: flex; gap: 8px; 
-    overflow-x: auto; 
-    scrollbar-width: none; 
-    -webkit-overflow-scrolling: touch; 
-    flex-grow: 1;
-    min-width: 0;
-}
-.nav-container::-webkit-scrollbar { display: none; }
-
-.nav-item {
-    background-color: var(--md-sys-color-surface-variant);
-    color: var(--md-sys-color-on-surface-variant);
-    padding: 10px 20px; 
-    border-radius: 100px;
-    cursor: pointer; 
-    font-size: 14px; font-weight: 500; 
-    white-space: nowrap; 
-    flex-shrink: 0; 
-    transition: all 0.2s ease;
-    user-select: none;
-}
-.nav-item.active {
-    background-color: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-on-primary-container);
-}
-
-.theme-toggle-btn {
-    background-color: var(--md-sys-color-surface-variant);
-    color: var(--md-sys-color-on-surface-variant);
-    border: none;
-    border-radius: 50%;
-    width: 40px; height: 40px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: transform 0.2s, background-color 0.3s;
-}
-.theme-toggle-btn:active { transform: scale(0.9); }
 
 /* --- Стили для блока копирования --- */
 .copy-container {
@@ -316,4 +261,75 @@ ul, ol { padding-left: 20px; color: var(--md-sys-color-on-surface-variant); }
     margin-top: 12px;
     padding: 16px; 
     transform: translateY(0); 
+}
+
+/* --- ШАПКА И НАВИГАЦИЯ --- */
+header {
+    padding: 12px 16px; 
+    position: sticky; top: 0;
+    background-color: var(--header-bg);
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: background-color 0.3s;
+}
+
+.nav-container {
+    display: flex; gap: 8px; 
+    overflow-x: auto; 
+    scrollbar-width: none; 
+    -webkit-overflow-scrolling: touch; 
+    flex-grow: 1;
+    min-width: 0;
+}
+.nav-container::-webkit-scrollbar { display: none; }
+
+.nav-item {
+    background-color: var(--md-sys-color-surface-variant);
+    color: var(--md-sys-color-on-surface-variant);
+    padding: 10px 20px; 
+    border-radius: 100px;
+    cursor: pointer; 
+    font-size: 14px; font-weight: 500; 
+    white-space: nowrap; 
+    flex-shrink: 0; 
+    transition: all 0.2s ease;
+    user-select: none;
+}
+.nav-item.active {
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+}
+
+.theme-toggle-btn {
+    background-color: var(--md-sys-color-surface-variant);
+    color: var(--md-sys-color-on-surface-variant);
+    border: none;
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.2s, background-color 0.3s;
+}
+.theme-toggle-btn:active { transform: scale(0.9); }
+
+/* Стили для верхней панели */
+.top-bar {
+    background-color: #1E1F22; /* Немного светлее, чем основной черный фон */
+    padding: 12px 24px;
+    border-bottom: 1px solid #33363D; /* Тонкая линия снизу для красоты */
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    
+    /* Делаем панель липкой, чтобы она оставалась сверху при прокрутке (по желанию) */
+    position: sticky; 
+    top: 0;
+    z-index: 100;
 }
