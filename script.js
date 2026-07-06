@@ -139,31 +139,26 @@ ipSpan.addEventListener('click', () => {
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveIp(); });
 });
 
-// Функция для копирования ключа Vless с анимацией
 function copyKey(elementId, btn) {
     const textToCopy = document.getElementById(elementId).innerText;
     
     navigator.clipboard.writeText(textToCopy).then(() => {
-        // Запоминаем изначальный текст
-        const originalText = btn.innerText;
-        
-        // 1. Добавляем класс, чтобы запустить анимацию вращения
+        // 1. Запускаем анимацию вращения кнопки
         btn.classList.add("spinning");
         
-        // 2. Меняем текст и цвет на "успешный"
-        btn.innerText = "Готово!";
-        btn.style.backgroundColor = "#D0BCFF"; // Светло-фиолетовый (можешь поменять на зеленый #146C2E)
-        btn.style.color = "#381E72";
-
-        // 3. Ждем 2 секунды и возвращаем всё как было
+        // Убираем класс вращения через полсекунды, чтобы можно было покрутить снова
         setTimeout(() => {
-            btn.innerText = originalText;
-            btn.style.backgroundColor = ""; 
-            btn.style.color = "";
-            
-            // ВАЖНО: Убираем класс анимации, чтобы при следующем клике она сработала снова
-            btn.classList.remove("spinning"); 
-        }, 2000);
+            btn.classList.remove("spinning");
+        }, 500);
+
+        // 2. Показываем уведомление внизу экрана
+        const toast = document.getElementById("toast");
+        toast.classList.add("show");
+        
+        // 3. Прячем уведомление через 3 секунды
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3000);
         
     }).catch(err => {
         console.error("Ошибка при копировании: ", err);
