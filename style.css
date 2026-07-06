@@ -96,18 +96,25 @@ body.dark-theme {
     gap: 12px;
 }
 
+/* Это базовый цвет для светлой темы (он у тебя уже есть) */
 .secret-text {
-    font-family: monospace; /* Моноширинный шрифт для кода/ключей */
-    color: #2d2d2e;
+    font-family: monospace;
+    color: #44474E; /* Темно-серый текст */
     overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis; /* Добавляет троеточие, если ключ слишком длинный */
-    max-width: 80%;
+    text-overflow: ellipsis;
+    max-width: 60%;
+}
+
+/* А это новый код: Цвет для ТЕМНОЙ темы */
+body.dark-theme .secret-text {
+    color: #E3E3E3; /* Светло-серый или белый текст, чтобы было видно на черном фоне */
 }
 
 .copy-btn {
-    min-width: 100px; /* Чтобы кнопка не дергалась при смене текста */
+    min-width: 130px;
     transition: all 0.3s ease;
+    margin-right: 20px; /* Сдвигает кнопку на 20 пикселей влево от правого края */
 }
 
 body {
