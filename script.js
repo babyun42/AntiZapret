@@ -17,6 +17,32 @@ function toggleTorGuide() {
     document.getElementById('guide-tor-android').classList.toggle('visible');
 }
 
+function copyKey(elementId, btn) {
+    // Получаем текст ключа из элемента
+    const textToCopy = document.getElementById(elementId).innerText;
+    
+    // Используем современный API буфера обмена
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        // Запоминаем старый текст кнопки
+        const originalText = btn.innerText;
+        
+        // Меняем внешний вид на успешный
+        btn.innerText = "Скопировано!";
+        btn.style.backgroundColor = "#146C2E"; // Темно-зеленый цвет успеха
+        btn.style.color = "white";
+        
+        // Возвращаем как было через 2 секунды (2000 миллисекунд)
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.backgroundColor = ""; 
+            btn.style.color = "";
+        }, 2000);
+    }).catch(err => {
+        console.error("Ошибка при копировании: ", err);
+        alert("Не удалось скопировать текст.");
+    });
+}
+
 /* ЛОГИКА ТЕМНОЙ ТЕМЫ С ОБНОВЛЕНИЕМ КАРТЫ */
 const themeBtn = document.getElementById('theme-btn');
 themeBtn.addEventListener('click', () => {
