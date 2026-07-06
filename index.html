@@ -139,36 +139,43 @@
                     5. Через открывшийся проводник найдите и выберите скачанный файл (warp...conf), чтобы автоматически импортировать настройки , всё заработало.
                 </div>
             </div>
-            
             <div class="card">
-                <h2>Vless</h2>
-                <p>Отличный вариант для обхода блолкировок , Хорошо маскирует ваш трафик. Использует протокол Vless.</p>
+    <h2>Vless</h2>
+    <p>Отличный вариант для обхода блокировок. Хорошо маскирует ваш трафик. Использует протокол Vless.</p>
 
-                <div class="tool-info"><b>Android</b></div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-                     <button class="btn" onclick="toggleGuide('guide-Vless-android')">Гайд</button>
-                    <a href="" target="_blank" class="btn">Видео гайд</a>
-                    <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
-                </div>
-                <div id="guide-Vless-android" class="guide-content">
-                    1. Скачайте Incy с оф. сайта , Google Play или Github(.apk).<br>
-                    2. Скопируйте с моего сайта URL вставте в приложение.<br>
-                    3. Включите и все работает .
-                </div>
+    <div class="copy-container">
+        <span id="vless-key" class="secret-text">vless://твой_длинный_ключ_здесь...</span>
+        <button class="btn copy-btn" onclick="copyKey('vless-key', this)">Скопировать</button>
+    </div>
 
-                <div class="tool-info"><b>Windows</b></div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-Vless-win')">Гайд</button>
-                    <a href="" target="_blank" class="btn">Видео гайд</a>
-                    <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
-                </div>
-                <div id="guide-Vless-win" class="guide-content">
-                    1. Скачайте Incy.exe с релизов в Github.<br>
-                    2. Скопируйте с моего сайта URL вставте в приложение.<br>
-                    3. Включите впн , вам предложат запустить от имени администратора.<br>
-                    4. Нажмите перезапустить , когда incy снова включиться , включите впн снова и все.
-                </div>
-            </div>
+    <div class="tool-info"><b>Android</b></div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+        <button class="btn" onclick="toggleGuide('guide-Vless-android')">Гайд</button>
+        <a href="#" target="_blank" class="btn">Видео гайд</a>
+        <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
+    </div>
+    <div id="guide-Vless-android" class="guide-content" style="display: none;">
+        1. Скачайте Incy с оф. сайта, Google Play или Github (.apk).<br>
+        2. Скопируйте ключ с моего сайта и вставьте в приложение.<br>
+        3. Включите, и всё работает.
+    </div>
+
+    <div class="tool-info"><b>Windows</b></div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="btn" onclick="toggleGuide('guide-Vless-win')">Гайд</button>
+        <a href="#" target="_blank" class="btn">Видео гайд</a>
+        <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
+    </div>
+    <div id="guide-Vless-win" class="guide-content" style="display: none;">
+        1. Скачайте Incy.exe из релизов в Github.<br>
+        2. Скопируйте ключ с моего сайта и вставьте в приложение.<br>
+        3. Включите VPN, вам предложат запустить от имени администратора.<br>
+        4. Нажмите "перезапустить". Когда Incy снова включится, включите VPN снова, и всё.
+    </div>
+</div>
+
+<div class="m3-bg-shape shape-1"></div>
+<div class="m3-bg-shape shape-2"></div>
         </section>
 
         <section id="bypass" class="page-section">
