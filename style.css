@@ -110,90 +110,49 @@ body.dark-theme {
 body.dark-theme .secret-text {
     color: #E3E3E3; /* Светло-серый или белый текст, чтобы было видно на черном фоне */
 }
-
-/* --- 1. САМА КНОПКА (Форма как на картинке) --- */
+/* --- 1. САМА КНОПКА (Форма и цвет с картинки) --- */
 .copy-btn {
-    background-color: #FFA9F9; /* Нежно-розовый цвет */
-    color: #3B0033; /* Цвет иконки */
-    border: none;
-    border-radius: 16px; /* Делает мягкий квадрат (сквиркл) */
-    width: 48px;  /* Задаем строгую ширину */
-    height: 48px; /* Задаем строгую высоту */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: #FFA9F9 !important; /* Принудительно делаем розовым */
+    border: none !important;
+    
+    /* Делаем ту самую форму (мягкий сквиркл) */
+    border-radius: 16px !important; 
+    
+    width: 48px !important;
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     cursor: pointer;
-    position: relative; /* Важно для работы подсказки */
-    transition: all 0.3s ease;
-    flex-shrink: 0; /* Чтобы кнопка не сплющивалась, если ключ длинный */
+    position: relative;
+    transition: all 0.3s ease !important;
+    flex-shrink: 0;
+    padding: 0 !important; /* Сбрасываем отступы от старой синей кнопки */
+    box-shadow: none !important; /* Убираем тени, если они были */
 }
 
+/* При наведении мышки */
 .copy-btn:hover {
-    background-color: #FFB5FA; 
+    background-color: #FFB5FA !important; 
 }
 
-/* Анимация вращения (оставляем, она круто смотрится на квадрате) */
+/* Чтобы сама иконка копирования внутри была правильного размера и цвета */
+.copy-btn svg {
+    width: 22px !important;
+    height: 22px !important;
+    stroke: #3B0033 !important; /* Темно-фиолетовый цвет линий иконки */
+    fill: none !important;
+}
+
+/* Анимация вращения (остается без изменений) */
 .copy-btn.spinning {
-    animation: spin-action 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: spin-action 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 @keyframes spin-action {
     0% { transform: scale(1) rotate(0deg); }
     50% { transform: scale(0.85) rotate(180deg); }
     100% { transform: scale(1) rotate(360deg); }
-}
-
-/* --- 2. ПОДСКАЗКА ПРИ НАВЕДЕНИИ (TOOLTIP) --- */
-.tooltip-text {
-    visibility: hidden;
-    background-color: #313033; /* Темно-серый фон Material 3 */
-    color: #F4EFF4;
-    text-align: center;
-    padding: 6px 12px;
-    border-radius: 8px;
-    position: absolute;
-    bottom: 120%; /* Появляется ровно над кнопкой */
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    font-size: 12px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none; /* Чтобы мышка не цеплялась за подсказку */
-}
-
-/* Показываем подсказку при наведении мыши на кнопку */
-.copy-btn:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* --- 3. УВЕДОМЛЕНИЕ ВНИЗУ ЭКРАНА (TOAST / SNACKBAR) --- */
-.toast-notification {
-    visibility: hidden;
-    min-width: 250px;
-    background-color: #313033; 
-    color: #F4EFF4;
-    text-align: center;
-    border-radius: 12px;
-    padding: 16px;
-    position: fixed; /* Приклеиваем к экрану */
-    z-index: 1000; /* Поверх всех элементов */
-    left: 50%;
-    bottom: 30px; /* Отступ от нижнего края экрана */
-    
-    /* Сдвигаем вниз и делаем прозрачным по умолчанию */
-    transform: translateX(-50%) translateY(20px);
-    opacity: 0;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Этот класс будет добавлять скрипт для плавного появления */
-.toast-notification.show {
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(-50%) translateY(0); /* Всплывает наверх */
 }
 
 body {
