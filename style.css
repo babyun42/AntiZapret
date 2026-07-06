@@ -144,7 +144,7 @@ body.dark-theme .m3-shape {
     height: 350px;
     background-color: #FFB4AB; 
     top: -50px; 
-    left: -70px;
+    left: -50px;
     border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
     animation: morph-blob 8s ease-in-out infinite alternate;
 }
@@ -155,7 +155,7 @@ body.dark-theme .m3-shape {
     height: 380px;
     background-color: #D0BCFF; 
     top: 30%; 
-    right: -40px;
+    right: -80px;
     border-radius: 35%; /* Делает квадрат округлым, как иконки на Android */
     transform: rotate(15deg);
     animation: float-shape 10s ease-in-out infinite alternate;
@@ -211,8 +211,8 @@ header {
     justify-content: space-between;
     gap: 12px;
     transition: background-color 0.3s;
-    border-radius: 0 0 17px 17px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    border-radius: 0 0 5px 5px; 
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0); 
 }
 
 .nav-container {
