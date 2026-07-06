@@ -121,146 +121,80 @@ body {
     min-width: 130px; /* Чтобы кнопка не дергалась при смене текста */
     transition: all 0.3s ease;
 }
+/* --- ЭЛЕМЕНТЫ ЗАДНЕГО ФОНА MATERIAL 3 --- */
 
-/* --- Элементы заднего фона Material 3 --- */
-body {
-    position: relative;
-    overflow-x: hidden; /* Чтобы размытые фигуры не создавали горизонтальную прокрутку */
-    z-index: 0;
+/* Общие настройки для всех фигур */
+.m3-shape {
+    position: fixed; /* Приклеиваем к экрану, чтобы не двигались при скролле */
+    z-index: -1; /* Отправляем на самый задний план */
+    pointer-events: none; /* ВАЖНО: позволяет кликать "сквозь" фигуры */
+    opacity: 0.9; /* Яркость для светлой темы */
+    transition: opacity 0.4s ease; /* Плавное затухание при смене темы */
 }
 
-/* Общий класс для фигур */
-.m3-bg-shape {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(120px); /* Сильное размытие для мягкости */
-    z-index: -1; /* Отправляем на задний план */
-    opacity: 0.5; /* Полупрозрачность */
-    animation: float 10s infinite ease-in-out alternate; /* Плавная анимация движения */
+/* В темной теме приглушаем фигуры, чтобы текст оставался читаемым */
+body.dark-theme .m3-shape {
+    opacity: 0.12; 
 }
 
-/* Синее пятно слева сверху */
-.shape-1 {
-    width: 400px;
-    height: 400px;
-    background-color: #A8C7FA; /* Фирменный синий Material 3 */
-    top: -100px;
-    left: -100px;
-}
-
-/* Фиолетовое пятно справа снизу */
-.shape-2 {
-    width: 350px;
+/* 1. Розово-коралловая клякса (Слева сверху) */
+.shape-blob {
+    width: 350px; 
     height: 350px;
-    background-color: #EADDFF; /* Фирменный фиолетовый Material 3 */
-    bottom: 5%;
-    right: -50px;
-    animation-delay: -5s; /* Чтобы двигалось не синхронно с первым */
+    background-color: #FFB4AB; 
+    top: -50px; 
+    left: -100px;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    animation: morph-blob 8s ease-in-out infinite alternate;
 }
 
-/* Анимация "дыхания" и легкого полета */
-@keyframes float {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(40px) scale(1.1); }
+/* 2. Светло-фиолетовый мягкий квадрат (Справа по центру) */
+.shape-squircle {
+    width: 280px; 
+    height: 280px;
+    background-color: #D0BCFF; 
+    top: 30%; 
+    right: -80px;
+    border-radius: 35%; /* Делает квадрат округлым, как иконки на Android */
+    transform: rotate(15deg);
+    animation: float-shape 10s ease-in-out infinite alternate;
 }
 
-/* --- ОСНОВНОЙ КОНТЕНТ --- */
-main { max-width: 900px; margin: 0 auto; padding: 16px; }
-
-.page-section {
-    display: none; 
-    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.page-section.active { display: block; }
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
+/* 3. Темно-фиолетовый многоугольник (Слева снизу) */
+.shape-poly {
+    width: 220px; 
+    height: 220px;
+    background-color: #4F378B; 
+    bottom: 10%; 
+    left: 2%;
+    /* Создаем форму цветка/многоугольника */
+    clip-path: polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%);
+    animation: float-shape 12s ease-in-out infinite alternate-reverse;
 }
 
-.hero { background-color: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); padding: 40px 24px; border-radius: 28px; margin-bottom: 24px; text-align: center; transition: all 0.3s;}
-.hero h1 { font-size: 32px; margin: 0 0 12px 0; font-weight: 400; }
-.hero p { font-size: 18px; margin: 0; opacity: 0.8; }
-.card { background-color: var(--md-sys-color-surface); border-radius: 24px; padding: 24px; margin-bottom: 16px; transition: background-color 0.3s; }
-.card h2 { font-size: 22px; font-weight: 400; margin-top: 0; color: var(--md-sys-color-primary); }
-.page-title { font-size: 32px; margin-bottom: 24px; font-weight: 400; color: var(--md-sys-color-primary); }
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
-
-.btn { 
-    font-family: 'Roboto', sans-serif; 
-    display: inline-block; 
-    background-color: var(--md-sys-color-primary); 
-    color: var(--md-sys-color-on-primary); 
-    padding: 12px 24px; 
-            border-radius: 100px; 
-            text-decoration: none; 
-            margin-top: 12px; 
-            font-weight: 500; 
-            text-align: center; 
-            border: none; 
-            cursor: pointer; 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-}
-.btn:hover { transform: scale(1.03); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-.btn:active { transform: scale(0.95); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
-.btn-outline { 
-    background-color: transparent; 
-    color: var(--md-sys-color-primary); 
-    border: 1px solid var(--md-sys-color-outline); 
+/* 4. Голубой круг (Справа снизу) */
+.shape-circle {
+    width: 180px; 
+    height: 180px;
+    background-color: #D8E2FF; 
+    bottom: -30px; 
+    right: 15%;
+    border-radius: 50%;
+    animation: morph-blob 9s ease-in-out infinite alternate-reverse;
 }
 
-.tool-info { margin-bottom: 8px; font-size: 15px; }
-.tool-info b { color: var(--md-sys-color-outline); text-transform: uppercase; font-size: 12px; }
+/* --- АНИМАЦИИ --- */
 
-.speedtest-container { width: 100%; height: 500px; border-radius: 16px; overflow: hidden; background: #fff; margin-top: 16px;}
-iframe { width: 100%; height: 100%; border: none; }
-ul, ol { padding-left: 20px; color: var(--md-sys-color-on-surface-variant); }
-
-.extra-links {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    max-height: 0; 
-    opacity: 0;
-    overflow: hidden;
-    margin-top: 0;
-    padding-bottom: 0;
-    border-bottom: 1px solid transparent;
-    transition: all 0.4s ease-in-out;
-    transform: translateY(-5px);
-}
-.extra-links.visible { 
-    max-height: 150px; 
-    opacity: 1;
-    margin-top: 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--md-sys-color-surface-variant);
-    transform: translateY(0);
+/* Анимация перетекания кляксы */
+@keyframes morph-blob {
+    0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+    100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
 }
 
-.guide-content {
-    max-height: 0; 
-    opacity: 0;
-    overflow: hidden;
-    margin-top: 0;
-    padding: 0 16px; 
-    background-color: var(--md-sys-color-surface-variant);
-    border-radius: 16px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--md-sys-color-on-surface-variant);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateY(-10px); 
-}
-.guide-content.visible { 
-    max-height: 1000px; 
-    opacity: 1;
-    margin-top: 12px;
-    padding: 16px; 
-    transform: translateY(0); 
+/* Анимация плавного парения вверх-вниз */
+@keyframes float-shape {
+    0% { transform: translateY(0) rotate(15deg); }
+    100% { transform: translateY(30px) rotate(25deg); }
 }
 
 /* Стили для верхней панели */
