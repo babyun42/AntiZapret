@@ -5,11 +5,15 @@ window.addEventListener('load', () => {
     }, 400); 
 });
 
-// Переключение обычных гайдов
-function toggleGuide(id) {
-    const guide = document.getElementById(id);
-    guide.classList.toggle('visible');
-}
+// Функция для открытия/закрытия гайдов (если она сломалась, замени на эту)
+        function toggleGuide(guideId) {
+            var guide = document.getElementById(guideId);
+            if (guide.style.display === "none" || guide.style.display === "") {
+                guide.style.display = "block";
+            } else {
+                guide.style.display = "none";
+            }
+        }
 
 // Специальное переключение для Tor Android (ссылки + текст)
 function toggleTorGuide() {
