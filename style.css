@@ -98,11 +98,11 @@ body.dark-theme {
 
 .secret-text {
     font-family: monospace; /* Моноширинный шрифт для кода/ключей */
-    color: #44474E;
+    color: #3e3f40;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis; /* Добавляет троеточие, если ключ слишком длинный */
-    max-width: 100%;
+    max-width: 10%;
 }
 
 .copy-btn {
