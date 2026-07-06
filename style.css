@@ -211,8 +211,8 @@ header {
     justify-content: space-between;
     gap: 12px;
     transition: background-color 0.3s;
-    border-radius: 0 0 5px 5px; 
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0); 
+    border-radius: 0 0 10px 10px; 
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); 
 }
 
 .nav-container {
