@@ -112,13 +112,12 @@ body.dark-theme .secret-text {
 }
 
 .copy-btn {
-    width: 50px;
-    height: 50px;
-    /* Этот сложный код создает асимметричную форму кляксы */
-    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
+    width: 48px;
+    height: 48px;
+    border-radius: 35%; /* Делает форму похожей на лепесток */
     
-    background-color: #FFA9F9; /* Розовый цвет */
-    color: #3B0033; /* Темная иконка */
+    background-color: #FFA9F9;
+    color: #3B0033;
     border: none;
     display: flex;
     align-items: center;
@@ -135,7 +134,7 @@ body.dark-theme .secret-text {
 
 /* Анимация вращения (оставляем, она круто смотрится на квадрате) */
 .copy-btn.spinning {
-    animation: spin-action 1.5s cubic-bezier(0.5, 0, 0.5, 0.5);
+    animation: spin-action 1.0s cubic-bezier(0.5, 0, 0.5, 0.5);
 }
 
 @keyframes spin-action {
