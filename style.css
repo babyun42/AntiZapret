@@ -147,7 +147,7 @@ body.dark-theme .secret-text {
 
 /* Анимация вращения, которую мы настраивали до этого (оставляем ее) */
 .copy-btn.spinning {
-    animation: spin-action 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: spin-action 0.5s cubic-bezier(0.2, 0, 0.2, 0.2);
 }
 
 @keyframes spin-action {
