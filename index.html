@@ -15,6 +15,7 @@
     <div class="m3-shape shape-squircle"></div>
     <div class="m3-shape shape-poly"></div>
     <div class="m3-shape shape-circle"></div>
+    <div class="m3-shape shape-eladanca"></div>
     
     <div id="loader" class="loader-overlay">
         <div class="md-spinner"></div>
@@ -32,6 +33,9 @@
     </header>
 
     <main>
+
+        <div id="toast" class="toast-notification">Ключ скопирован!</div>
+
         <section id="home" class="page-section active">
             <div class="hero">
                 <h1>Интернет без границ</h1>
@@ -147,7 +151,7 @@
     <h2>Vless</h2>
     <p>Отличный вариант для обхода блокировок. Хорошо маскирует ваш трафик. Использует протокол Vless.</p>
 <div class="keys-group">
-    <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Основной ключ:</p>
+    <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Мои ключи(на 1 ключе всего 20 мест):</p>
     
    <div class="copy-container">
     <span id="vless-key-1" class="secret-text">https://shrimp.fish/sub/KT-vzBZAsUkz3PXj</span>
@@ -164,8 +168,6 @@
 
 <div id="toast" class="toast-notification">Ключ скопирован!</div>
 
-    <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Второй ключ:</p>
-    
    <div class="copy-container">
     <span id="vless-key-2" class="secret-text">https://connect.stealthsurf.net/to/c65e78e39e9d796da25a3ced4339231a</span>
     
@@ -182,12 +184,12 @@
 <div id="toast" class="toast-notification">Ключ скопирован!</div>
 
     <div class="tool-info"><b>Android</b></div>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-        <button class="btn" onclick="toggleGuide('guide-Vless-android')">Гайд</button>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+         <button class="btn" onclick="toggleGuide('guide-Vless-android')">Гайд</button>
         <a href="#" target="_blank" class="btn">Видео гайд</a>
         <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
     </div>
-    <div id="guide-Vless-android" class="guide-content" style="display: none;">
+    <div id="guide-Vless-android" class="guide-content">
         1. Скачайте Incy с оф. сайта, Google Play или Github (.apk).<br>
         2. Скопируйте ключ с моего сайта и вставьте в приложение.<br>
         3. Включите, и всё работает.
@@ -195,11 +197,11 @@
 
     <div class="tool-info"><b>Windows</b></div>
     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button class="btn" onclick="toggleGuide('guide-Vless-win')">Гайд</button>
+         <button class="btn" onclick="toggleGuide('guide-Vless-win')">Гайд</button>
         <a href="#" target="_blank" class="btn">Видео гайд</a>
         <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
     </div>
-    <div id="guide-Vless-win" class="guide-content" style="display: none;">
+    <div id="guide-Vless-win" class="guide-content">
         1. Скачайте Incy.exe из релизов в Github.<br>
         2. Скопируйте ключ с моего сайта и вставьте в приложение.<br>
         3. Включите VPN, вам предложат запустить от имени администратора.<br>
@@ -216,7 +218,7 @@
 
             <div class="card">
                 <h2>Zapret Discord YouTube</h2>
-                <p>Утилита для модификации трафика на лету на Windows. Отлично подходит для восстановления работы голосовых чатов Discord и быстрой загрузки видео на YouTube.</p>
+                <p>Утилита для модификации трафика на лету для Windows. Отлично подходит для обхода блокировок от РКН.</p>
                 <div class="tool-info"><b>Windows</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="btn" onclick="toggleGuide('guide-zapret')">Гайд</button>
@@ -232,7 +234,7 @@
 
             <div class="card">
                 <h2>TG WS Proxy (Telegram)</h2>
-                <p>Если Telegram долго грузит медиа или не подключается, используй WebSocket прокси.</p>
+                <p>Один из лучших способов обхода блокировки Telegram, использует MTProto.</p>
 
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
@@ -264,22 +266,39 @@
         </section>
 
         <section id="whitelist" class="page-section">
-            <h1 class="page-title">Умные маршруты</h1>
+            <h1 class="page-title">Белые Списки</h1>
 
             <div class="card">
                 <h2>Что такое белые списки?</h2>
-                <p>Вместо того чтобы пускать ВЕСЬ ваш трафик через зарубежный сервер, вы можете использовать белые списки. ВПН будет включаться автоматически <strong>только для заблокированных сайтов</strong>.</p>
+                <p>Официальный перечень одобренных отечественных сайтов и мобильных приложений, доступ к которым сохраняется даже при <strong>частичных отключениях или ограничениях мобильного интернета</strong>.</p>
             </div>
 
             <div class="card">
-                <h2>Как установить?</h2>
+                <h2>Как установить обход их?</h2>
                 <ol>
-                    <li>Скачайте и установите совместимый клиент.</li>
-                    <li>Загрузите файл конфигурации правил маршрутизации.</li>
-                    <li>В настройках выберите режим <b>"Обход LAN и России"</b>.</li>
+                    <li>Скачайте и установите совместимый клиент, например  Incy.</li>
+                    <li>Скоппируте все ключи с гитхаба.</li>
+                    <li>Вставте все ключи в приложение и все.</li>
                 </ol>
-                <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/Vless-Reality-White-Lists-Rus-Mobile.txt" target="_blank" class="btn">Скачать файл белого списка</a>
-            </div>
+                <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/Vless-Reality-White-Lists-Rus-Mobile.txt" target="_blank" class="btn">Скачать файл обхода БС</a>
+                
+                <div class="key-group">
+    <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Мой ключ(макс 20 пользователей):</p>
+    
+   <div class="copy-container">
+    <span id="BS-key-1" class="secret-text">https://shrimp.fish/sub/vu0eLnwz6Ytx9VR0</span>
+    
+    <button class="btn copy-btn" onclick="copyKey('BS-key-1', this)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        
+        <span class="tooltip-text">Скопировать</span>
+    </button>
+</div>
+
+<div id="toast" class="toast-notification">Ключ скопирован!</div>
         </section>
 
         <section id="speed" class="page-section">

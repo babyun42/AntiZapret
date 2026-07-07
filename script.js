@@ -5,15 +5,11 @@ window.addEventListener('load', () => {
     }, 400); 
 });
 
-// Функция для открытия/закрытия гайдов (если она сломалась, замени на эту)
-        function toggleGuide(guideId) {
-            var guide = document.getElementById(guideId);
-            if (guide.style.display === "none" || guide.style.display === "") {
-                guide.style.display = "block";
-            } else {
-                guide.style.display = "none";
-            }
-        }
+// Переключение обычных гайдов
+function toggleGuide(id) {
+    const guide = document.getElementById(id);
+    guide.classList.toggle('visible');
+}
 
 // Специальное переключение для Tor Android (ссылки + текст)
 function toggleTorGuide() {
@@ -139,29 +135,28 @@ ipSpan.addEventListener('click', () => {
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveIp(); });
 });
 
+// Создаем переменную для хранения таймера вне функции
+let toastTimeout; 
+
 function copyKey(elementId, btn) {
     const textToCopy = document.getElementById(elementId).innerText;
     
     navigator.clipboard.writeText(textToCopy).then(() => {
-        // 1. Запускаем анимацию вращения кнопки
-        btn.classList.add("spinning");
-        
-        // Убираем класс вращения через полсекунды, чтобы можно было покрутить снова
-        setTimeout(() => {
-            btn.classList.remove("spinning");
-        }, 500);
 
-        // 2. Показываем уведомление внизу экрана
+        // 2. Показываем уведомление
         const toast = document.getElementById("toast");
         toast.classList.add("show");
         
-        // 3. Прячем уведомление через 3 секунды
-        setTimeout(() => {
+        // 3. САМОЕ ВАЖНОЕ: отменяем старый таймер, если мы быстро кликнули еще раз
+        clearTimeout(toastTimeout);
+        
+        // 4. Запускаем новый таймер. 
+        // Когда класс "show" убирается, CSS автоматически делает плавное затухание
+        toastTimeout = setTimeout(() => {
             toast.classList.remove("show");
         }, 3000);
         
     }).catch(err => {
-        console.error("Ошибка при копировании: ", err);
-        alert("Не удалось скопировать текст.");
+        console.error("Ошибка: ", err);
     });
 }
