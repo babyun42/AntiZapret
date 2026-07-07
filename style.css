@@ -196,6 +196,42 @@ body.dark-theme .secret-text {
     transform: translateX(-50%) translateY(0); /* Всплывает наверх */
 }
 
+/* Базовый стиль для всех фоновых фигур */
+.m3-shape {
+    position: fixed;
+    z-index: -1; /* Чтобы фигуры всегда были за контентом */
+    pointer-events: none; /* Чтобы можно было кликать сквозь них */
+    filter: blur(0px); /* Можно добавить легкий blur, если хочешь мягкости */
+    opacity: 0.6; /* Полупрозрачность, чтобы не мешало читать */
+}
+
+/* ЭТА САМАЯ ФОРМА КАК НА ФОТО */
+.blob-shape {
+    width: 300px;
+    height: 300px;
+    /* Этот хитрый border-radius создает ту самую органическую форму */
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
+    background: linear-gradient(135deg, #FFB4AB, #FF8F80); /* Цвет с картинки */
+    
+    /* Добавляем легкое вращение, чтобы форма смотрелась интереснее */
+    animation: rotate-blob 10s linear infinite;
+}
+
+/* Еще одна вариация формы (другой изгиб) */
+.blob-shape-2 {
+    width: 250px;
+    height: 250px;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    background: #D0BCFF;
+    animation: rotate-blob 15s linear infinite reverse;
+}
+
+/* Анимация вращения, чтобы форма "дышала" */
+@keyframes rotate-blob {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 body {
     /* Добавляем глобальный шрифт в стиле Material 3 */
     font-family: 'Roboto', system-ui, -apple-system, sans-serif;
