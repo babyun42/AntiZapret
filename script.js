@@ -17,15 +17,38 @@ function toggleTorGuide() {
     document.getElementById('guide-tor-android').classList.toggle('visible');
 }
 
-/* ЛОГИКА ТЕМНОЙ ТЕМЫ С ОБНОВЛЕНИЕМ КАРТЫ */
+/* ЛОГИКА ТЕМНОЙ ТЕМЫ С ОБНОВЛЕНИЕМ КАРТЫ И СОХРАНЕНИЕМ */
 const themeBtn = document.getElementById('theme-btn');
+
+// 1. Проверяем память СРАЗУ при загрузке скрипта
+const savedTheme = localStorage.getItem('site-theme');
+
+// Если в памяти есть темная тема, сразу включаем её и ставим нужную иконку
+if (savedTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+    themeBtn.innerText = '☀️';
+} else {
+    document.body.classList.remove('dark-theme');
+    themeBtn.innerText = '🌙';
+}
+
+// 2. Логика при нажатии на кнопку
 themeBtn.addEventListener('click', () => {
+    // Переключаем тему
     document.body.classList.toggle('dark-theme');
-    themeBtn.innerText = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
+    
+    // Проверяем, включилась ли темная тема
+    const isDark = document.body.classList.contains('dark-theme');
+    
+    // Меняем иконку
+    themeBtn.innerText = isDark ? '☀️' : '🌙';
+    
+    // Записываем результат в память браузера (localStorage)
+    localStorage.setItem('site-theme', isDark ? 'dark' : 'light');
     
     // Если карта уже загружена, меняем её стиль на лету
     if (map && window.currentTiles) {
-        const newTilesUrl = document.body.classList.contains('dark-theme')
+        const newTilesUrl = isDark
             ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
             : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
         window.currentTiles.setUrl(newTilesUrl);
