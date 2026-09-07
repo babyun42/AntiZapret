@@ -4,29 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Free Internet</title>
-    
+
     <!-- Подключаем шрифты Roboto и иконки Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    
+
     <!-- Подключаем стили для карты -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
+
     <style>
         /* --- СТИЛИ КАРТЫ И СКРЫТИЕ ПЛАШЕК --- */
         .leaflet-control-container {
             display: none !important;
         }
-        #map { 
-            height: 250px; 
-            width: 100%; 
-            border-radius: 16px; 
-            margin-top: 16px; 
-            z-index: 1; 
+        #map {
+            height: 250px;
+            width: 100%;
+            border-radius: 16px;
+            margin-top: 16px;
+            z-index: 1;
             border: 2px solid var(--md-sys-color-surface-variant);
         }
-        .leaflet-container { 
-            background-color: var(--md-sys-color-background) !important; 
+        .leaflet-container {
+            background-color: var(--md-sys-color-background) !important;
         }
 
         /* --- СТИЛЬ ДЛЯ ИНТЕРАКТИВНОГО IP И ПОЛЯ ВВОДА --- */
@@ -138,7 +138,7 @@
             background-color: #005ac1 !important;
             color: #E3E3E3 !important;
             border: none !important;
-            width: 52px !important; 
+            width: 52px !important;
             height: 52px !important;
             border-radius: 18px !important;
             display: flex !important;
@@ -185,7 +185,7 @@
             left: 50%;
             transform: translateX(-50%) translateY(20px);
             opacity: 0 !important;
-            visibility: hidden !important; 
+            visibility: hidden !important;
             transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease !important;
             background-color: #322F35;
             color: #F5EFF7;
@@ -206,8 +206,8 @@
             font-family: 'Roboto', system-ui, -apple-system, sans-serif;
             background-color: var(--md-sys-color-background);
             color: var(--md-sys-color-on-background);
-            margin: 0; 
-            padding: 0; 
+            margin: 0;
+            padding: 0;
             line-height: 1.5;
             transition: background-color 0.3s, color 0.3s;
         }
@@ -222,24 +222,24 @@
         }
 
         body.dark-theme .m3-shape {
-            opacity: 0.12; 
+            opacity: 0.12;
         }
 
         .shape-blob {
-            width: 350px; 
+            width: 350px;
             height: 350px;
-            background-color: #FFB4AB; 
-            top: -50px; 
+            background-color: #FFB4AB;
+            top: -50px;
             left: -50px;
             border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
             animation: morph-blob 8s ease-in-out infinite alternate;
         }
 
         .shape-squircle {
-            width: 400px; 
+            width: 400px;
             height: 380px;
-            background-color: #D0BCFF; 
-            top: 30%; 
+            background-color: #D0BCFF;
+            top: 30%;
             right: -80px;
             border-radius: 35%;
             transform: rotate(15deg);
@@ -247,30 +247,30 @@
         }
 
         .shape-poly {
-            width: 220px; 
+            width: 220px;
             height: 220px;
-            background-color: #4F378B; 
-            bottom: 10%; 
+            background-color: #4F378B;
+            bottom: 10%;
             left: 2%;
             clip-path: polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%);
             animation: float-shape 12s ease-in-out infinite alternate-reverse;
         }
 
         .shape-circle {
-            width: 180px; 
+            width: 180px;
             height: 180px;
-            background-color: #D8E2FF; 
-            bottom: -30px; 
+            background-color: #D8E2FF;
+            bottom: -30px;
             right: 15%;
             border-radius: 50%;
             animation: morph-blob 9s ease-in-out infinite alternate-reverse;
         }
 
         .shape-eladanca {
-            width: 260px; 
+            width: 260px;
             height: 230px;
-            background-color: #d2abff; 
-            top: 100px; 
+            background-color: #d2abff;
+            top: 100px;
             left: 1180px;
             border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
             animation: float-shape 50s ease-in-out infinite alternate;
@@ -286,12 +286,61 @@
             100% { transform: translateY(300px) rotate(100deg); }
         }
 
+        @keyframes spin-material {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .material-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            animation: spin-material 2.5s linear infinite;
+            fill: currentColor;
+        }
+
+        /* --- ЭКРАН ЗАГРУЗКИ ---
+           Раньше у #loader/.loader-overlay/.md-spinner не было вообще никаких
+           стилей, поэтому оверлей никогда не появлялся, а JS просто добавлял
+           класс .hidden, которого тоже не существовало. Экран загрузки был
+           полностью "мёртвым". */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--md-sys-color-background);
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .loader-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .md-spinner {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 4px solid var(--md-sys-color-surface-variant);
+            border-top-color: var(--md-sys-color-primary);
+            animation: spin-material 0.8s linear infinite;
+        }
+
+        .btn:disabled {
+            transform: scale(0.96) !important;
+            pointer-events: none !important;
+        }
+
         /* --- ШАПКА И НАВИГАЦИЯ --- */
         header {
-            padding: 12px 16px; 
+            padding: 12px 16px;
             position: sticky; top: 0;
             background-color: var(--header-bg);
-            backdrop-filter: blur(12px); 
+            backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             z-index: 1000;
             display: flex;
@@ -299,29 +348,54 @@
             justify-content: space-between;
             gap: 12px;
             transition: background-color 0.3s;
-            border-radius: 0 0 10px 10px; 
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); 
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
         }
 
         .nav-container {
-            display: flex; gap: 8px; 
-            overflow-x: auto; 
-            scrollbar-width: none; 
-            -webkit-overflow-scrolling: touch; 
+            display: flex; gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
             flex-grow: 1;
             min-width: 0;
         }
         .nav-container::-webkit-scrollbar { display: none; }
 
+        /* На тач-устройствах вкладки листаются пальцем, поэтому скроллбар там
+           только мешает — прячем его (правила выше). А вот на компьютере, если
+           окно узкое и часть вкладок не помещается, скрытый скроллбар means
+           у пользователя с обычной мышью нет ни одного способа долистать до
+           них. Показываем тонкий скроллбар только для устройств с мышью и
+           наведением, плюс отдаём вкладкам горизонтальную прокрутку колесом
+           мыши (см. JS ниже). */
+        @media (hover: hover) and (pointer: fine) {
+            .nav-container {
+                scrollbar-width: thin;
+                scrollbar-color: var(--md-sys-color-outline) transparent;
+            }
+            .nav-container::-webkit-scrollbar {
+                display: block;
+                height: 4px;
+            }
+            .nav-container::-webkit-scrollbar-thumb {
+                background-color: var(--md-sys-color-outline);
+                border-radius: 100px;
+            }
+            .nav-container::-webkit-scrollbar-track {
+                background: transparent;
+            }
+        }
+
         .nav-item {
             background-color: var(--md-sys-color-surface-variant);
             color: var(--md-sys-color-on-surface-variant);
-            padding: 10px 20px; 
+            padding: 10px 20px;
             border-radius: 100px;
-            cursor: pointer; 
-            font-size: 14px; font-weight: 500; 
-            white-space: nowrap; 
-            flex-shrink: 0; 
+            cursor: pointer;
+            font-size: 14px; font-weight: 500;
+            white-space: nowrap;
+            flex-shrink: 0;
             transition: all 0.2s ease;
             user-select: none;
         }
@@ -350,7 +424,7 @@
         main { max-width: 900px; margin: 0 auto; padding: 16px; }
 
         .page-section {
-            display: none; 
+            display: none;
             animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .page-section.active { display: block; }
@@ -369,28 +443,28 @@
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
 
-        .btn { 
-            font-family: 'Roboto', sans-serif; 
-            display: inline-block; 
-            background-color: var(--md-sys-color-primary); 
-            color: var(--md-sys-color-on-primary); 
-            padding: 12px 24px; 
-            border-radius: 100px; 
-            text-decoration: none; 
-            margin-top: 12px; 
-            font-weight: 500; 
-            text-align: center; 
-            border: none; 
-            cursor: pointer; 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+        .btn {
+            font-family: 'Roboto', sans-serif;
+            display: inline-block;
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            padding: 12px 24px;
+            border-radius: 100px;
+            text-decoration: none;
+            margin-top: 12px;
+            font-weight: 500;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .btn:hover { transform: scale(1.03); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         .btn:active { transform: scale(0.95); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        .btn-outline { 
-            background-color: transparent; 
-            color: var(--md-sys-color-primary); 
-            border: 1px solid var(--md-sys-color-outline); 
+        .btn-outline {
+            background-color: transparent;
+            color: var(--md-sys-color-primary);
+            border: 1px solid var(--md-sys-color-outline);
         }
 
         .tool-info { margin-bottom: 8px; font-size: 15px; }
@@ -400,11 +474,37 @@
         iframe { width: 100%; height: 100%; border: none; }
         ul, ol { padding-left: 20px; color: var(--md-sys-color-on-surface-variant); }
 
+        .custom-speedtest { padding: 8px 0; }
+        /* Раньше .result-box был flex-элементом с явным min-width: 100px.
+           Явный min-width отключает автоматический "минимум по контенту" у
+           flex-элемента, поэтому на узком экране браузер сжимал блок сильнее,
+           чем требовала надпись "СКАЧИВАНИЕ" — а у .result-label не было ни
+           overflow, ни переноса, так что текст просто вылезал за скругление
+           поверх соседнего блока. Плюс uppercase + letter-spacing: 1px — это
+           стилистика Material 2 (лейбл-оверлайн), а не Material You, и она
+           только уширяла кириллический текст. Grid с равными колонками решает
+           проблему "неровных" по ширине блоков, а сама надпись теперь умеет
+           переноситься, если вдруг не помещается. */
+        .speed-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+        .result-box { min-width: 0; background-color: var(--md-sys-color-surface-variant); padding: 16px 8px; border-radius: 16px; text-align: center; overflow: hidden; }
+        .result-label {
+            font-size: 12px;
+            color: var(--md-sys-color-on-surface-variant);
+            margin-bottom: 6px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            line-height: 1.3;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        .result-value { font-size: clamp(18px, 6vw, 28px); font-weight: 700; color: var(--md-sys-color-primary); }
+        .result-value span { font-size: 12px; font-weight: 400; opacity: 0.8; }
+
         .extra-links {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            max-height: 0; 
+            max-height: 0;
             opacity: 0;
             overflow: hidden;
             margin-top: 0;
@@ -413,8 +513,8 @@
             transition: all 0.4s ease-in-out;
             transform: translateY(-5px);
         }
-        .extra-links.visible { 
-            max-height: 150px; 
+        .extra-links.visible {
+            max-height: 150px;
             opacity: 1;
             margin-top: 16px;
             padding-bottom: 8px;
@@ -423,11 +523,11 @@
         }
 
         .guide-content {
-            max-height: 0; 
+            max-height: 0;
             opacity: 0;
             overflow: hidden;
             margin-top: 0;
-            padding: 0 16px; 
+            padding: 0 16px;
             background-color: var(--md-sys-color-surface-variant);
             border-radius: 16px;
             font-family: 'Roboto', sans-serif;
@@ -435,15 +535,15 @@
             line-height: 1.6;
             color: var(--md-sys-color-on-surface-variant);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateY(-10px); 
+            transform: translateY(-10px);
         }
-        .guide-content.visible { 
-            max-height: 1000px; 
+        .guide-content.visible {
+            max-height: 1000px;
             opacity: 1;
             margin-top: 12px;
-            padding: 16px; 
-            transform: translateY(0); 
-        }
+            padding: 16px;
+            transform: translateY(0);
+       }
     </style>
 </head>
 <body>
@@ -452,7 +552,7 @@
     <div class="m3-shape shape-poly"></div>
     <div class="m3-shape shape-circle"></div>
     <div class="m3-shape shape-eladanca"></div>
-    
+
     <div id="loader" class="loader-overlay">
         <div class="md-spinner"></div>
     </div>
@@ -472,7 +572,7 @@
     <main>
 
         <div id="toast" class="toast-notification">Ключ скопирован!</div>
-        
+
         <section id="home" class="page-section active">
             <div class="hero">
                 <h1>Интернет без границ</h1>
@@ -506,9 +606,9 @@
             <h1 class="page-title">Надежные ВПН</h1>
 
             <div class="card">
-                <h2>Tor Bridges (Мосты)</h2>
+                <h2>Tor Bridges <span style="opacity: 0.5;">мосты</span></h2>
                 <p>Если стандартный internet сильно заглушен, Tor с мостами поможет восстановить доступ к сети. Доступен на любые платформы.</p>
-                
+
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
                     <button class="btn btn-guide" onclick="toggleTorGuide()">Гайд</button>
@@ -589,10 +689,10 @@
                 <p>Отличный вариант для обхода блокировок. Хорошо маскирует ваш трафик. Использует протокол Vless.</p>
                 <div class="keys-group">
                     <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Мои ключи(на 1 ключе всего 20 мест):</p>
-                    
+
                     <div class="copy-container">
                         <span id="vless-key-1" class="secret-text">https://shrimp.fish/sub/KT-vzBZAsUkz3PXj</span>
-                        
+
                         <button class="btn copy-btn" onclick="copyKey('vless-key-1', this)">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -604,7 +704,7 @@
 
                     <div class="copy-container">
                         <span id="vless-key-2" class="secret-text">https://connect.stealthsurf.net/to/c65e78e39e9d796da25a3ced4339231a</span>
-                        
+
                         <button class="btn copy-btn" onclick="copyKey('vless-key-2', this)">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -674,7 +774,7 @@
                     <a href="*" target="_blank" class="btn">Видео гайд</a>
                     <a href="https://github.com/romanvht/ByeByeDPI" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
-    
+
                 <div id="guide-byebyedpi" class="guide-content">
                     1. Перейдите на GitHub и скачайте актуальный "universal-release.apk" файл из раздела Releases.<br>
                     2. Установите приложение на ваш телефон.<br>
@@ -733,13 +833,13 @@
                     <li>Вставте все ключи в приложение и все должно работать.</li>
                 </ol>
                 <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/Vless-Reality-White-Lists-Rus-Mobile.txt" target="_blank" class="btn">Скачать файл обхода БС</a>
-                
+
                 <div class="key-group">
                     <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Мой ключ(макс 20 пользователей):</p>
-                    
+
                     <div class="copy-container">
                         <span id="BS-key-1" class="secret-text">https://shrimp.fish/sub/vu0eLnwz6Ytx9VR0</span>
-                        
+
                         <button class="btn copy-btn" onclick="copyKey('BS-key-1', this)">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -755,23 +855,44 @@
         <section id="speed" class="page-section">
             <h1 class="page-title">Измерение скорости</h1>
             <div class="card">
-                <p style="margin-top: 0; color: var(--md-sys-color-on-surface-variant);">Проверьте скорость вашего интернета или текущего ВПН-подключения.</p>
-                <div class="speedtest-container">
-                    <iframe src="https://librespeed.org/" scrolling="yes"></iframe>
-                </div>
+                <p style="margin-top: 0; color: var(--md-sys-color-on-surface-variant);">Проверьте скорость своего соединения.</p>
+
+                <div class="custom-speedtest">
+                    <div class="speed-results">
+                        <div class="result-box">
+                            <div class="result-label">Пинг</div>
+                            <div class="result-value" id="res-ping">-- <span>мс</span></div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Скачивание</div>
+                            <div class="result-value" id="res-down">-- <span>Мбит/с</span></div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Загрузка</div>
+                            <div class="result-value" id="res-up">-- <span>Мбит/с</span></div>
+                        </div>
+                    </div>
+                <button class="btn" id="start-speedtest-btn" style="width: 100%; font-size: 16px; height: 52px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">Начать тест скорости</button>                </div>
+            </div>
+
+            <div class="card">
+                <h2>Другие сайты с измерением скорости: </h2>
+                    <a href="https://2ip.io/speed" target="_blank" class="btn">2ip</a>
+                    <a href="https://librespeed.org" target="_blank" class="btn btn-outline">LibreSpeed</a>
+                    <a href="https://www.speedtest.net" target="_blank" class="btn btn-outline">Speedtest by Ookla</a>
             </div>
         </section>
     </main>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
+
     <script>
         /* ЛОГИКА ЭКРАНА ЗАГРУЗКИ */
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loader = document.getElementById('loader');
                 if(loader) loader.classList.add('hidden');
-            }, 400); 
+            }, 400);
         });
 
         // Переключение обычных гайдов
@@ -797,7 +918,7 @@
         // Если в памяти есть темная тема, сразу включаем её и ставим иконку light_mode (солнце)
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-theme');
-            if(themeBtn) themeBtn.innerText = 'light_mode'; 
+            if(themeBtn) themeBtn.innerText = 'light_mode';
         } else {
             document.body.classList.remove('dark-theme');
             if(themeBtn) themeBtn.innerText = 'dark_mode'; // Иконка луны для светлой темы
@@ -808,16 +929,16 @@
             themeBtn.addEventListener('click', () => {
                 // Переключаем тему
                 document.body.classList.toggle('dark-theme');
-                
+
                 // Проверяем, включилась ли темная тема
                 const isDark = document.body.classList.contains('dark-theme');
-                
+
                 // Меняем иконку (если включили темную - показываем солнце для обратного переключения)
                 themeBtn.innerText = isDark ? 'light_mode' : 'dark_mode';
-                
+
                 // Записываем результат в память браузера (localStorage)
                 localStorage.setItem('site-theme', isDark ? 'dark' : 'light');
-                
+
                 // Если карта уже загружена, меняем её стиль на лету
                 if (map && window.currentTiles) {
                     const newTilesUrl = isDark
@@ -829,26 +950,96 @@
         }
 
         /* ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК */
+        const navContainer = document.querySelector('.nav-container');
         const navItems = document.querySelectorAll('.nav-item[data-target]');
         const sections = document.querySelectorAll('.page-section');
+        const mainEl = document.querySelector('main');
+        // Порядок вкладок берём прямо из шапки — этим же порядком идём при свайпе
+        const tabOrder = Array.from(navItems).map(item => item.getAttribute('data-target'));
+
+        function activateTab(targetId, options = {}) {
+            const targetItem = document.querySelector(`.nav-item[data-target="${targetId}"]`);
+            const targetSection = document.getElementById(targetId);
+            if (!targetItem || !targetSection) return;
+
+            navItems.forEach(nav => nav.classList.remove('active'));
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            targetItem.classList.add('active');
+            targetSection.classList.add('active');
+
+            // Если вкладку переключили свайпом, а не кликом по шапке — она может
+            // быть не видна в горизонтально прокручиваемой шапке. Докручиваем
+            // шапку так, чтобы активная вкладка отобразилась и "следовала" за выбором.
+            if (options.scrollNavIntoView) {
+                targetItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (targetId === 'home' && typeof map !== 'undefined' && map) {
+                setTimeout(() => map.invalidateSize(), 100);
+            }
+        }
 
         navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                navItems.forEach(nav => nav.classList.remove('active'));
-                sections.forEach(sec => sec.classList.remove('active'));
-
-                item.classList.add('active');
-                const targetId = item.getAttribute('data-target');
-                const targetSection = document.getElementById(targetId);
-                if(targetSection) targetSection.classList.add('active');
-                
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                if (targetId === 'home' && typeof map !== 'undefined') {
-                    setTimeout(() => map.invalidateSize(), 100);
-                }
-            });
+            item.addEventListener('click', () => activateTab(item.getAttribute('data-target')));
         });
+
+        /* --- СВАЙП ВЛЕВО/ВПРАВО ДЛЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК (МОБИЛЬНЫЕ) --- */
+        (function setupSwipeNavigation() {
+            if (!mainEl) return;
+
+            const SWIPE_MIN_DISTANCE = 60; // минимальная длина свайпа по горизонтали, px
+            const SWIPE_MAX_DRIFT = 75;    // допустимый "съезд" по вертикали, px
+            let startX = 0, startY = 0, startTarget = null;
+
+            mainEl.addEventListener('touchstart', (e) => {
+                const touch = e.changedTouches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
+                startTarget = e.target;
+            }, { passive: true });
+
+            mainEl.addEventListener('touchend', (e) => {
+                // Не мешаем управлению картой (перетаскивание/зум) на главной вкладке
+                if (startTarget && startTarget.closest('#map')) return;
+
+                const touch = e.changedTouches[0];
+                const dx = touch.clientX - startX;
+                const dy = touch.clientY - startY;
+
+                if (Math.abs(dx) < SWIPE_MIN_DISTANCE || Math.abs(dy) > SWIPE_MAX_DRIFT) return;
+
+                const currentId = document.querySelector('.page-section.active')?.id;
+                const currentIndex = tabOrder.indexOf(currentId);
+                if (currentIndex === -1) return;
+
+                let nextIndex = currentIndex;
+                if (dx < 0 && currentIndex < tabOrder.length - 1) nextIndex = currentIndex + 1; // влево — следующая вкладка
+                if (dx > 0 && currentIndex > 0) nextIndex = currentIndex - 1;                    // вправо — предыдущая вкладка
+
+                if (nextIndex !== currentIndex) {
+                    activateTab(tabOrder[nextIndex], { scrollNavIntoView: true });
+                }
+            }, { passive: true });
+        })();
+
+        /* --- ПРОКРУТКА ШАПКИ КОЛЕСОМ МЫШИ (УЗКОЕ ОКНО НА КОМПЬЮТЕРЕ) ---
+           На телефоне вкладки листаются пальцем. На компьютере с обычной мышью
+           (без трекпада) в узком окне часть вкладок может не помещаться, а
+           тащить скрытый скроллбар нечем — переводим вертикальную прокрутку
+           колеса в горизонтальную, пока курсор над шапкой. Трекпад, который и
+           так шлёт горизонтальный deltaX, не трогаем — там нативный жест уже
+           работает. */
+        if (navContainer) {
+            navContainer.addEventListener('wheel', (e) => {
+                if (navContainer.scrollWidth <= navContainer.clientWidth) return;
+                if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+                e.preventDefault();
+                navContainer.scrollLeft += e.deltaY;
+            }, { passive: false });
+        }
 
         /* --- СТИЛЬНАЯ КАРТА CARTO DB И ОБНОВЛЕНИЕ IP --- */
         var map;
@@ -869,7 +1060,7 @@
                 .then(data => {
                     if(userIp) userIp.innerText = data.ip || ip || 'Неизвестно';
                     if(userIsp) userIsp.innerText = data.organization_name || 'Неизвестно';
-                    
+
                     if (userCountry) {
                         const country = data.country || '';
                         const city = data.city || '';
@@ -878,18 +1069,18 @@
 
                     var lat = parseFloat(data.latitude) || 55.75;
                     var lon = parseFloat(data.longitude) || 37.61;
-                    
+
                     const mapEl = document.getElementById('map');
                     if(mapEl) {
                         if (!map) {
                             // Инициализируем карту
                             map = L.map('map', { zoomControl: false, attributionControl: false }).setView([lat, lon], 12);
-                            
+
                             // Определяем тему карты
                             const tilesUrl = document.body.classList.contains('dark-theme')
                                 ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
                                 : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-                            
+
                             window.currentTiles = L.tileLayer(tilesUrl).addTo(map);
                             marker = L.marker([lat, lon]).addTo(map);
                         } else {
@@ -911,11 +1102,11 @@
         const ipSpan = document.getElementById('user-ip');
         if(ipSpan) {
             ipSpan.addEventListener('click', () => {
-                // Поскольку иконка карандаша теперь сделана через псевдоэлемент ::after, 
+                // Поскольку иконка карандаша теперь сделана через псевдоэлемент ::after,
                 // она больше не попадает в innerText, так что нам не нужно удалять эмодзи через replace
                 let currentIp = ipSpan.innerText.trim();
                 if (currentIp === 'Загрузка...' || currentIp === 'Определяем...') currentIp = '';
-                
+
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.value = currentIp;
@@ -928,37 +1119,196 @@
                     if (newIp) {
                         ipSpan.innerText = newIp;
                         input.replaceWith(ipSpan);
-                        updateIpInfo(newIp); 
+                        updateIpInfo(newIp);
                     } else {
                         input.replaceWith(ipSpan);
                     }
                 };
-                
+
                 input.addEventListener('blur', saveIp);
                 input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveIp(); });
             });
         }
 
-        let toastTimeout; 
+        let toastTimeout;
 
         function copyKey(elementId, btn) {
             const el = document.getElementById(elementId);
             if(!el) return;
             const textToCopy = el.innerText;
-            
+
             navigator.clipboard.writeText(textToCopy).then(() => {
                 const toast = document.getElementById("toast");
                 if(!toast) return;
-                
+
                 toast.classList.add("show");
                 clearTimeout(toastTimeout);
-                
+
                 toastTimeout = setTimeout(() => {
                     toast.classList.remove("show");
                 }, 3000);
-                
+
             }).catch(err => {
                 console.error("Ошибка: ", err);
+            });
+        }
+
+        const btnSpeed = document.getElementById('start-speedtest-btn');
+        const resPing = document.getElementById('res-ping');
+        const resDown = document.getElementById('res-down');
+        const resUp = document.getElementById('res-up');
+
+        // Тест скорости всегда идёт на тот же адрес (домен/порт), с которого
+        // загружена страница. Раньше здесь стояло "http://localhost:2202" — это
+        // работало ТОЛЬКО на самом устройстве с сервером. Для любого другого
+        // посетителя сайта (через домен) это либо запрос "в никуда", либо
+        // блокировка браузером из-за смешанного содержимого (страница на https,
+        // а запрос на http). Пустая строка означает "тот же origin, с которого
+        // открыта страница" — работает и локально, и через домен с SSL.
+        const BACKEND_URL = '';
+
+        // Тест ограничен по ВРЕМЕНИ, а не по фиксированному объёму: так на
+        // медленном канале он не будет тянуться минутами, а на быстром — не
+        // закончится раньше, чем скорость успеет разогнаться. Значения ниже —
+        // это "потолок" объёма, который мы готовы передать за один тест.
+        const MAX_DOWNLOAD_BYTES = 300 * 1024 * 1024; // 300 MB
+        const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;   // 100 MB (генерируется в браузере)
+        const TEST_DURATION_MS = 8000;                // максимальная длительность замера
+        const WARMUP_MS = 300;                        // не учитываем самое начало (разгон TCP/TLS)
+
+        function formatSpeed(mbps) {
+            if (mbps >= 1000) {
+                return `${(mbps / 1000).toFixed(2).replace('.', ',')} <span>Гбит/с</span>`;
+            }
+            return `${Math.round(mbps)} <span>Мбит/с</span>`;
+        }
+
+        // --- Скачивание: читаем поток кусками и считаем скорость "на лету" ---
+        async function measureDownload(onProgress) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), TEST_DURATION_MS);
+            const startTime = performance.now();
+            let bytesReceived = 0;
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/download?size=${MAX_DOWNLOAD_BYTES}`, {
+                    cache: 'no-store',
+                    signal: controller.signal
+                });
+
+                if (!response.body || !response.body.getReader) {
+                    // Совсем старые браузеры без потоков — считаем по факту полной загрузки
+                    const buf = await response.arrayBuffer();
+                    bytesReceived = buf.byteLength;
+                } else {
+                    const reader = response.body.getReader();
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        bytesReceived += value.length;
+                        const elapsedMs = performance.now() - startTime;
+                        if (elapsedMs > WARMUP_MS) {
+                            onProgress((bytesReceived * 8) / (elapsedMs / 1000) / 1000000);
+                        }
+                    }
+                }
+            } catch (err) {
+                if (err.name !== 'AbortError') throw err;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+
+            const totalElapsed = (performance.now() - startTime) / 1000;
+            return totalElapsed > 0 ? (bytesReceived * 8) / totalElapsed / 1000000 : 0;
+        }
+
+        // --- Отдача: шлём случайные данные, прогресс отслеживаем через XHR ---
+        function measureUpload(onProgress) {
+            return new Promise((resolve) => {
+                const data = new Uint8Array(MAX_UPLOAD_BYTES);
+                const xhr = new XMLHttpRequest();
+                const startTime = performance.now();
+                let lastLoaded = 0;
+                let finished = false;
+
+                const timeoutId = setTimeout(() => {
+                    if (!finished) xhr.abort();
+                }, TEST_DURATION_MS);
+
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (!e.lengthComputable) return;
+                    lastLoaded = e.loaded;
+                    const elapsedMs = performance.now() - startTime;
+                    if (elapsedMs > WARMUP_MS) {
+                        onProgress((lastLoaded * 8) / (elapsedMs / 1000) / 1000000);
+                    }
+                });
+
+                function finish() {
+                    if (finished) return;
+                    finished = true;
+                    clearTimeout(timeoutId);
+                    const elapsed = (performance.now() - startTime) / 1000;
+                    resolve(elapsed > 0 ? (lastLoaded * 8) / elapsed / 1000000 : 0);
+                }
+
+                xhr.addEventListener('load', finish);
+                xhr.addEventListener('error', finish);
+                xhr.addEventListener('abort', finish);
+
+                xhr.open('POST', `${BACKEND_URL}/upload`);
+                xhr.send(data);
+            });
+        }
+
+        if (btnSpeed) {
+            btnSpeed.addEventListener('click', async () => {
+                btnSpeed.disabled = true;
+
+                btnSpeed.innerHTML = `
+                <svg class="material-spinner" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M41.7,3.3C46.6-1.1,53.4-1.1,58.3,3.3l5,4.5c2.3,2.1,5.4,3.2,8.5,3.2l6.7,0.1c6.5,0.1,11.8,5.4,11.9,11.9l0.1,6.7 c0,3.1,1.1,6.2,3.2,8.5l4.5,5c4.4,4.9,4.4,11.7,0,16.6l-4.5,5c-2.1,2.3-3.2,5.4-3.2,8.5l-0.1,6.7c-0.1,6.5-5.4,11.8-11.9,11.9 l-6.7,0.1c-3.1,0-6.2,1.1-8.5,3.2l-5,4.5c-4.9,4.4-11.7,4.4-16.6,0l-5-4.5c-2.3-2.1-5.4-3.2-8.5-3.2l-6.7-0.1 c-6.5-0.1-11.8-5.4-11.9-11.9l-0.1-6.7c0-3.1-1.1-6.2-3.2-8.5l-4.5-5c-4.4-4.9-4.4-11.7,0-16.6l4.5-5c2.1-2.3,3.2-5.4,3.2-8.5 l0.1-6.7c0.1-6.5,5.4-11.8,11.9-11.9l6.7-0.1c3.1,0,6.2-1.1,8.5-3.2L41.7,3.3z"></path>
+                </svg>`;
+                btnSpeed.style.opacity = '0.7';
+
+                resPing.innerHTML = '-- <span>мс</span>';
+                resDown.innerHTML = '-- <span>Мбит/с</span>';
+                resUp.innerHTML = '-- <span>Мбит/с</span>';
+
+                try {
+                    // 1. Пинг — несколько замеров подряд, показываем медиану
+                    //    (устойчивее к разовым сетевым всплескам, чем один замер)
+                    const pings = [];
+                    for (let i = 0; i < 5; i++) {
+                        const t0 = performance.now();
+                        await fetch(`${BACKEND_URL}/ping`, { cache: 'no-store' });
+                        pings.push(performance.now() - t0);
+                    }
+                    pings.sort((a, b) => a - b);
+                    const medianPing = Math.round(pings[Math.floor(pings.length / 2)]);
+                    resPing.innerHTML = `${medianPing} <span>мс</span>`;
+
+                    // 2. Скачивание — идёт до TEST_DURATION_MS, цифра обновляется вживую
+                    const dlMbps = await measureDownload((mbps) => {
+                        resDown.innerHTML = formatSpeed(mbps);
+                    });
+                    resDown.innerHTML = formatSpeed(dlMbps);
+
+                    // 3. Отдача — аналогично, тоже с живым обновлением
+                    const ulMbps = await measureUpload((mbps) => {
+                        resUp.innerHTML = formatSpeed(mbps);
+                    });
+                    resUp.innerHTML = formatSpeed(ulMbps);
+
+                    btnSpeed.innerText = 'Повторить';
+                } catch (err) {
+                    console.error(err);
+                    btnSpeed.innerText = 'Ошибка соединения!';
+                    alert('Не удалось подключиться к серверу проверки скорости. Убедитесь, что server.js запущен на телефоне.');
+                } finally {
+                    btnSpeed.disabled = false;
+                    btnSpeed.style.opacity = '1';
+                }
             });
         }
     </script>
