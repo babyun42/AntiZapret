@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Free Internet</title>
-    
+
     <!-- Подключаем шрифты Roboto и иконки Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <!-- Подключаем стили для карты -->
-    <link rel="stylesheet" href="style.css"/>
-    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="m3-shape shape-blob"></div>
@@ -20,7 +20,7 @@
     <div class="m3-shape shape-poly"></div>
     <div class="m3-shape shape-circle"></div>
     <div class="m3-shape shape-eladanca"></div>
-    
+
     <div id="loader" class="loader-overlay">
         <div class="md-spinner"></div>
     </div>
@@ -40,7 +40,7 @@
     <main>
 
         <div id="toast" class="toast-notification">Ключ скопирован!</div>
-        
+
         <section id="home" class="page-section active">
             <div class="hero">
                 <h1>Интернет без границ</h1>
@@ -74,9 +74,9 @@
             <h1 class="page-title">Надежные ВПН</h1>
 
             <div class="card">
-                <h2>Tor Bridges (Мосты)</h2>
+                <h2>Tor Bridges <span style="opacity: 0.5;">мосты</span></h2>
                 <p>Если стандартный internet сильно заглушен, Tor с мостами поможет восстановить доступ к сети. Доступен на любые платформы.</p>
-                
+
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
                     <button class="btn btn-guide" onclick="toggleTorGuide()">Гайд</button>
@@ -157,10 +157,10 @@
                 <p>Отличный вариант для обхода блокировок. Хорошо маскирует ваш трафик. Использует протокол Vless.</p>
                 <div class="keys-group">
                     <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Мои ключи(на 1 ключе всего 20 мест):</p>
-                    
+
                     <div class="copy-container">
                         <span id="vless-key-1" class="secret-text">https://shrimp.fish/sub/KT-vzBZAsUkz3PXj</span>
-                        
+
                         <button class="btn copy-btn" onclick="copyKey('vless-key-1', this)">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -172,7 +172,7 @@
 
                     <div class="copy-container">
                         <span id="vless-key-2" class="secret-text">https://connect.stealthsurf.net/to/c65e78e39e9d796da25a3ced4339231a</span>
-                        
+
                         <button class="btn copy-btn" onclick="copyKey('vless-key-2', this)">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -242,7 +242,7 @@
                     <a href="*" target="_blank" class="btn">Видео гайд</a>
                     <a href="https://github.com/romanvht/ByeByeDPI" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
-    
+
                 <div id="guide-byebyedpi" class="guide-content">
                     1. Перейдите на GitHub и скачайте актуальный "universal-release.apk" файл из раздела Releases.<br>
                     2. Установите приложение на ваш телефон.<br>
@@ -301,13 +301,13 @@
                     <li>Вставте все ключи в приложение и все должно работать.</li>
                 </ol>
                 <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/Vless-Reality-White-Lists-Rus-Mobile.txt" target="_blank" class="btn">Скачать файл обхода БС</a>
-                
+
                 <div class="key-group">
                     <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Мой ключ(макс 20 пользователей):</p>
-                    
+
                     <div class="copy-container">
                         <span id="BS-key-1" class="secret-text">https://shrimp.fish/sub/vu0eLnwz6Ytx9VR0</span>
-                        
+
                         <button class="btn copy-btn" onclick="copyKey('BS-key-1', this)">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -323,10 +323,30 @@
         <section id="speed" class="page-section">
             <h1 class="page-title">Измерение скорости</h1>
             <div class="card">
-                <p style="margin-top: 0; color: var(--md-sys-color-on-surface-variant);">Проверьте скорость вашего интернета или текущего ВПН-подключения.</p>
-                <div class="speedtest-container">
-                    <iframe src="https://librespeed.org/" scrolling="yes"></iframe>
-                </div>
+                <p style="margin-top: 0; color: var(--md-sys-color-on-surface-variant);">Проверьте скорость своего соединения.</p>
+
+                <div class="custom-speedtest">
+                    <div class="speed-results">
+                        <div class="result-box">
+                            <div class="result-label">Пинг</div>
+                            <div class="result-value" id="res-ping">-- <span>мс</span></div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Скачивание</div>
+                            <div class="result-value" id="res-down">-- <span>Мбит/с</span></div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Загрузка</div>
+                            <div class="result-value" id="res-up">-- <span>Мбит/с</span></div>
+                        </div>
+                    </div>
+                <button class="btn" id="start-speedtest-btn" style="width: 100%; font-size: 16px; height: 52px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">Начать тест скорости</button>                </div>
+            </div>
+
+            <div class="card">
+                <h2>Другие сайты с измерением скорости: </h2>
+                    <a href="https://2ip.io/speed" target="_blank" class="btn btn-outline">2ip</a>
+                    <a href="https://librespeed.org" target="_blank" class="btn btn-outline">LibreSpeed</a>
             </div>
         </section>
     </main>
