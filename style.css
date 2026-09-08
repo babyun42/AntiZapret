@@ -50,16 +50,65 @@
 .ip-edit-input {
     font-family: 'Roboto', sans-serif;
     font-size: inherit;
-    color: var(--md-sys-color-on-primary-container);
-    background-color: var(--md-sys-color-primary-container);
+    font-weight: 500;
+    /* Раньше поле ввода перекрашивалось в цвета hover-состояния и теряло
+       скругление снизу (border-radius: 8px 8px 0 0) — из-за этого при клике
+       строка IP заметно "прыгала" по стилю. Теперь инпут выглядит как копия
+       статичного (не наведённого) вида #user-ip — того же фона и цвета
+       текста, тех же скруглений, — так что переключение между span и input
+       визуально почти незаметно. */
+    color: var(--md-sys-color-primary);
+    background-color: var(--md-sys-color-surface-variant);
     border: none;
-    border-bottom: 2px solid var(--md-sys-color-primary);
-    border-radius: 8px 8px 0 0;
+    border-radius: 8px;
     padding: 2px 8px;
     width: 100%;
     max-width: 180px;
     outline: none;
     transition: all 0.15s ease;
+}
+
+/* --- "мосты" РЯДОМ С TOR BRIDGES: подсветка при наведении --- */
+.bridges-hint {
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+.bridges-hint.is-peeking {
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+.bridges-hint.is-settled {
+    opacity: 0.6;
+    transition: opacity 2s ease;
+}
+
+/* --- ПОДСКАЗКА НАД КНОПКОЙ ТЕСТА СКОРОСТИ (наведение + 3с удержания) --- */
+.speedtest-btn-wrap {
+    position: relative;
+}
+.speedtest-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 10px);
+    transform: translate(-50%, 6px);
+    width: max-content;
+    max-width: 260px;
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 5;
+}
+.speedtest-tooltip.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
 }
 
 /* --- СВЕТЛАЯ ТЕМА (ПО УМОЛЧАНИЮ) --- */
@@ -349,12 +398,16 @@ header {
 
 /* На тач-устройствах вкладки листаются пальцем, поэтому скроллбар там
    только мешает — прячем его (правила выше). А вот на компьютере, если
-   окно узкое и часть вкладок не помещается, скрытый скроллбар means
-   у пользователя с обычной мышью нет ни одного способа долистать до
-   них. Показываем тонкий скроллбар только для устройств с мышью и
-   наведением, плюс отдаём вкладкам горизонтальную прокрутку колесом
-   мыши (см. JS ниже). */
+   окно узкое и часть вкладок не помещается, скрытый скроллбар оставляет
+   пользователя с обычной мышью без единого способа долистать до них.
+   Показываем тонкий скроллбар только для устройств с мышью и наведением,
+   плюс отдаём вкладкам горизонтальную прокрутку колесом мыши (см. JS ниже).
+   Заодно чуть увеличиваем весь интерфейс — на большом экране компьютера
+   вёрстка, рассчитанная на телефон, выглядит мелковато. */
 @media (hover: hover) and (pointer: fine) {
+    html {
+        zoom: 1.15;
+    }
     .nav-container {
         scrollbar-width: thin;
         scrollbar-color: var(--md-sys-color-outline) transparent;

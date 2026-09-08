@@ -218,30 +218,58 @@ if(ipSpan) {
         let currentIp = ipSpan.innerText.trim();
         if (currentIp === 'Загрузка...' || currentIp === 'Определяем...') currentIp = '';
 
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = currentIp;
-        input.classList.add('ip-edit-input');
-        ipSpan.replaceWith(input);
-        input.focus();
+        // Раньше клик сразу превращал строку в поле ввода и ничего не копировал.
+        // Теперь сначала копируем текущий IP в буфер обмена (с тостом), и только
+        // после этого включаем редактирование.
+        const startEditing = () => {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentIp;
+            input.classList.add('ip-edit-input');
+            ipSpan.replaceWith(input);
+            input.focus();
+            input.select();
 
-        const saveIp = () => {
-            const newIp = input.value.trim();
-            if (newIp) {
-                ipSpan.innerText = newIp;
-                input.replaceWith(ipSpan);
-                updateIpInfo(newIp);
-            } else {
-                input.replaceWith(ipSpan);
-            }
+            const saveIp = () => {
+                const newIp = input.value.trim();
+                if (newIp) {
+                    ipSpan.innerText = newIp;
+                    input.replaceWith(ipSpan);
+                    updateIpInfo(newIp);
+                } else {
+                    input.replaceWith(ipSpan);
+                }
+            };
+
+            input.addEventListener('blur', saveIp);
+            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveIp(); });
         };
 
-        input.addEventListener('blur', saveIp);
-        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveIp(); });
+        if (currentIp && navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(currentIp)
+                .then(() => showToast('IP скопирован!'))
+                .catch(() => {})
+                .finally(startEditing);
+        } else {
+            startEditing();
+        }
     });
 }
 
 let toastTimeout;
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+
+    if (message) toast.innerText = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimeout);
+
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+}
 
 function copyKey(elementId, btn) {
     const el = document.getElementById(elementId);
@@ -249,20 +277,58 @@ function copyKey(elementId, btn) {
     const textToCopy = el.innerText;
 
     navigator.clipboard.writeText(textToCopy).then(() => {
-        const toast = document.getElementById("toast");
-        if(!toast) return;
-
-        toast.classList.add("show");
-        clearTimeout(toastTimeout);
-
-        toastTimeout = setTimeout(() => {
-            toast.classList.remove("show");
-        }, 3000);
-
+        showToast('Ключ скопирован!');
     }).catch(err => {
         console.error("Ошибка: ", err);
     });
 }
+
+/* --- "мосты" РЯДОМ С TOR BRIDGES: подсветка при наведении ---
+   Наводим — сразу становится хорошо видно (opacity: 1), держим так пару
+   секунд, потом медленно гасим до 0.6 (было статично 0.5). */
+(function setupBridgesHint() {
+    const hint = document.querySelector('.bridges-hint');
+    if (!hint) return;
+    let settleTimeout = null;
+
+    hint.addEventListener('mouseenter', () => {
+        if (settleTimeout) return; // эффект уже идёт — не перезапускаем заново
+        hint.classList.remove('is-settled');
+        hint.classList.add('is-peeking');
+
+        settleTimeout = setTimeout(() => {
+            hint.classList.remove('is-peeking');
+            hint.classList.add('is-settled');
+            settleTimeout = null;
+        }, 2000);
+    });
+})();
+
+/* --- ПОДСКАЗКА НАД КНОПКОЙ ТЕСТА СКОРОСТИ ---
+   Если навести на кнопку и продержать курсор 3 секунды, пока идёт сам тест
+   (кнопка задизейблена), показываем шутливую подсказку. Слушаем hover не на
+   самой кнопке, а на обёртке — задизейбленная кнопка не всегда стабильно
+   отдаёт мышиные события в разных браузерах. */
+(function setupSpeedtestHint() {
+    const btn = document.getElementById('start-speedtest-btn');
+    const tooltip = document.getElementById('speedtest-tooltip');
+    const wrap = btn ? (btn.closest('.speedtest-btn-wrap') || btn.parentElement) : null;
+    if (!btn || !tooltip || !wrap) return;
+
+    let holdTimeout = null;
+
+    wrap.addEventListener('mouseenter', () => {
+        if (!btn.disabled) return; // подсказка нужна только пока реально идёт тест
+        holdTimeout = setTimeout(() => {
+            if (btn.disabled) tooltip.classList.add('show');
+        }, 3000);
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+        clearTimeout(holdTimeout);
+        tooltip.classList.remove('show');
+    });
+})();
 
 const btnSpeed = document.getElementById('start-speedtest-btn');
 const resPing = document.getElementById('res-ping');

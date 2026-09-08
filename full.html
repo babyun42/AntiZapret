@@ -65,16 +65,65 @@
         .ip-edit-input {
             font-family: 'Roboto', sans-serif;
             font-size: inherit;
-            color: var(--md-sys-color-on-primary-container);
-            background-color: var(--md-sys-color-primary-container);
+            font-weight: 500;
+            /* Раньше поле ввода перекрашивалось в цвета hover-состояния и теряло
+               скругление снизу (border-radius: 8px 8px 0 0) — из-за этого при клике
+               строка IP заметно "прыгала" по стилю. Теперь инпут выглядит как копия
+               статичного (не наведённого) вида #user-ip — того же фона и цвета
+               текста, тех же скруглений, — так что переключение между span и input
+               визуально почти незаметно. */
+            color: var(--md-sys-color-primary);
+            background-color: var(--md-sys-color-surface-variant);
             border: none;
-            border-bottom: 2px solid var(--md-sys-color-primary);
-            border-radius: 8px 8px 0 0;
+            border-radius: 8px;
             padding: 2px 8px;
             width: 100%;
             max-width: 180px;
             outline: none;
             transition: all 0.15s ease;
+        }
+
+        /* --- "мосты" РЯДОМ С TOR BRIDGES: подсветка при наведении --- */
+        .bridges-hint {
+            opacity: 0.5;
+            transition: opacity 0.2s ease;
+        }
+        .bridges-hint.is-peeking {
+            opacity: 1;
+            transition: opacity 0.2s ease;
+        }
+        .bridges-hint.is-settled {
+            opacity: 0.6;
+            transition: opacity 2s ease;
+        }
+
+        /* --- ПОДСКАЗКА НАД КНОПКОЙ ТЕСТА СКОРОСТИ (наведение + 3с удержания) --- */
+        .speedtest-btn-wrap {
+            position: relative;
+        }
+        .speedtest-tooltip {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 10px);
+            transform: translate(-50%, 6px);
+            width: max-content;
+            max-width: 260px;
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.4;
+            text-align: center;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            z-index: 5;
+        }
+        .speedtest-tooltip.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
         }
 
         /* --- СВЕТЛАЯ ТЕМА (ПО УМОЛЧАНИЮ) --- */
@@ -364,12 +413,16 @@
 
         /* На тач-устройствах вкладки листаются пальцем, поэтому скроллбар там
            только мешает — прячем его (правила выше). А вот на компьютере, если
-           окно узкое и часть вкладок не помещается, скрытый скроллбар means
-           у пользователя с обычной мышью нет ни одного способа долистать до
-           них. Показываем тонкий скроллбар только для устройств с мышью и
-           наведением, плюс отдаём вкладкам горизонтальную прокрутку колесом
-           мыши (см. JS ниже). */
+           окно узкое и часть вкладок не помещается, скрытый скроллбар оставляет
+           пользователя с обычной мышью без единого способа долистать до них.
+           Показываем тонкий скроллбар только для устройств с мышью и наведением,
+           плюс отдаём вкладкам горизонтальную прокрутку колесом мыши (см. JS ниже).
+           Заодно чуть увеличиваем весь интерфейс — на большом экране компьютера
+           вёрстка, рассчитанная на телефон, выглядит мелковато. */
         @media (hover: hover) and (pointer: fine) {
+            html {
+                zoom: 1.15;
+            }
             .nav-container {
                 scrollbar-width: thin;
                 scrollbar-color: var(--md-sys-color-outline) transparent;
@@ -543,7 +596,8 @@
             margin-top: 12px;
             padding: 16px;
             transform: translateY(0);
-       }
+               }
+
     </style>
 </head>
 <body>
@@ -606,7 +660,7 @@
             <h1 class="page-title">Надежные ВПН</h1>
 
             <div class="card">
-                <h2>Tor Bridges <span style="opacity: 0.5;">мосты</span></h2>
+                <h2>Tor Bridges <span class="bridges-hint">мосты</span></h2>
                 <p>Если стандартный internet сильно заглушен, Tor с мостами поможет восстановить доступ к сети. Доступен на любые платформы.</p>
 
                 <div class="tool-info"><b>Android</b></div>
@@ -872,14 +926,17 @@
                             <div class="result-value" id="res-up">-- <span>Мбит/с</span></div>
                         </div>
                     </div>
-                <button class="btn" id="start-speedtest-btn" style="width: 100%; font-size: 16px; height: 52px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">Начать тест скорости</button>                </div>
+                    <div class="speedtest-btn-wrap">
+                        <button class="btn" id="start-speedtest-btn" style="width: 100%; font-size: 16px; height: 52px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">Начать тест скорости</button>
+                        <div class="speedtest-tooltip" id="speedtest-tooltip">На данный момент у меня недостаточно серверов для лучшего решения для вас, так что пользуетесь тем, что есть.</div>
+                    </div>
+                </div>
             </div>
 
             <div class="card">
                 <h2>Другие сайты с измерением скорости: </h2>
-                    <a href="https://2ip.io/speed" target="_blank" class="btn">2ip</a>
+                    <a href="https://2ip.io/speed" target="_blank" class="btn btn-outline">2ip</a>
                     <a href="https://librespeed.org" target="_blank" class="btn btn-outline">LibreSpeed</a>
-                    <a href="https://www.speedtest.net" target="_blank" class="btn btn-outline">Speedtest by Ookla</a>
             </div>
         </section>
     </main>
@@ -1107,30 +1164,58 @@
                 let currentIp = ipSpan.innerText.trim();
                 if (currentIp === 'Загрузка...' || currentIp === 'Определяем...') currentIp = '';
 
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.value = currentIp;
-                input.classList.add('ip-edit-input');
-                ipSpan.replaceWith(input);
-                input.focus();
+                // Раньше клик сразу превращал строку в поле ввода и ничего не копировал.
+                // Теперь сначала копируем текущий IP в буфер обмена (с тостом), и только
+                // после этого включаем редактирование.
+                const startEditing = () => {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = currentIp;
+                    input.classList.add('ip-edit-input');
+                    ipSpan.replaceWith(input);
+                    input.focus();
+                    input.select();
 
-                const saveIp = () => {
-                    const newIp = input.value.trim();
-                    if (newIp) {
-                        ipSpan.innerText = newIp;
-                        input.replaceWith(ipSpan);
-                        updateIpInfo(newIp);
-                    } else {
-                        input.replaceWith(ipSpan);
-                    }
+                    const saveIp = () => {
+                        const newIp = input.value.trim();
+                        if (newIp) {
+                            ipSpan.innerText = newIp;
+                            input.replaceWith(ipSpan);
+                            updateIpInfo(newIp);
+                        } else {
+                            input.replaceWith(ipSpan);
+                        }
+                    };
+
+                    input.addEventListener('blur', saveIp);
+                    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveIp(); });
                 };
 
-                input.addEventListener('blur', saveIp);
-                input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveIp(); });
+                if (currentIp && navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(currentIp)
+                        .then(() => showToast('IP скопирован!'))
+                        .catch(() => {})
+                        .finally(startEditing);
+                } else {
+                    startEditing();
+                }
             });
         }
 
         let toastTimeout;
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            if (!toast) return;
+
+            if (message) toast.innerText = message;
+            toast.classList.add("show");
+            clearTimeout(toastTimeout);
+
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3000);
+        }
 
         function copyKey(elementId, btn) {
             const el = document.getElementById(elementId);
@@ -1138,33 +1223,68 @@
             const textToCopy = el.innerText;
 
             navigator.clipboard.writeText(textToCopy).then(() => {
-                const toast = document.getElementById("toast");
-                if(!toast) return;
-
-                toast.classList.add("show");
-                clearTimeout(toastTimeout);
-
-                toastTimeout = setTimeout(() => {
-                    toast.classList.remove("show");
-                }, 3000);
-
+                showToast('Ключ скопирован!');
             }).catch(err => {
                 console.error("Ошибка: ", err);
             });
         }
+
+        /* --- "мосты" РЯДОМ С TOR BRIDGES: подсветка при наведении ---
+           Наводим — сразу становится хорошо видно (opacity: 1), держим так пару
+           секунд, потом медленно гасим до 0.6 (было статично 0.5). */
+        (function setupBridgesHint() {
+            const hint = document.querySelector('.bridges-hint');
+            if (!hint) return;
+            let settleTimeout = null;
+
+            hint.addEventListener('mouseenter', () => {
+                if (settleTimeout) return; // эффект уже идёт — не перезапускаем заново
+                hint.classList.remove('is-settled');
+                hint.classList.add('is-peeking');
+
+                settleTimeout = setTimeout(() => {
+                    hint.classList.remove('is-peeking');
+                    hint.classList.add('is-settled');
+                    settleTimeout = null;
+                }, 2000);
+            });
+        })();
+
+        /* --- ПОДСКАЗКА НАД КНОПКОЙ ТЕСТА СКОРОСТИ ---
+           Если навести на кнопку и продержать курсор 3 секунды, пока идёт сам тест
+           (кнопка задизейблена), показываем шутливую подсказку. Слушаем hover не на
+           самой кнопке, а на обёртке — задизейбленная кнопка не всегда стабильно
+           отдаёт мышиные события в разных браузерах. */
+        (function setupSpeedtestHint() {
+            const btn = document.getElementById('start-speedtest-btn');
+            const tooltip = document.getElementById('speedtest-tooltip');
+            const wrap = btn ? (btn.closest('.speedtest-btn-wrap') || btn.parentElement) : null;
+            if (!btn || !tooltip || !wrap) return;
+
+            let holdTimeout = null;
+
+            wrap.addEventListener('mouseenter', () => {
+                if (!btn.disabled) return; // подсказка нужна только пока реально идёт тест
+                holdTimeout = setTimeout(() => {
+                    if (btn.disabled) tooltip.classList.add('show');
+                }, 3000);
+            });
+
+            wrap.addEventListener('mouseleave', () => {
+                clearTimeout(holdTimeout);
+                tooltip.classList.remove('show');
+            });
+        })();
 
         const btnSpeed = document.getElementById('start-speedtest-btn');
         const resPing = document.getElementById('res-ping');
         const resDown = document.getElementById('res-down');
         const resUp = document.getElementById('res-up');
 
-        // Тест скорости всегда идёт на тот же адрес (домен/порт), с которого
-        // загружена страница. Раньше здесь стояло "http://localhost:2202" — это
-        // работало ТОЛЬКО на самом устройстве с сервером. Для любого другого
-        // посетителя сайта (через домен) это либо запрос "в никуда", либо
-        // блокировка браузером из-за смешанного содержимого (страница на https,
-        // а запрос на http). Пустая строка означает "тот же origin, с которого
-        // открыта страница" — работает и локально, и через домен с SSL.
+        // Фронтенд лежит на GitHub Pages, а бэкенд (/ping, /download, /upload) —
+        // на отдельном сервере, поэтому тут прямой адрес, а не пустая строка.
+        // ВАЖНО: обязательно https — Pages отдаёт страницу по https, и запрос на
+        // http браузер заблокирует как смешанный контент.
         const BACKEND_URL = 'https://babyun.fun';
 
         // Тест ограничен по ВРЕМЕНИ, а не по фиксированному объёму: так на
@@ -1304,13 +1424,14 @@
                 } catch (err) {
                     console.error(err);
                     btnSpeed.innerText = 'Ошибка соединения!';
-                    alert('Не удалось подключиться к серверу проверки скорости. Убедитесь, что server.js запущен на телефоне.');
+                    alert('Не удалось подключиться к серверу проверки скорости. Проверьте подключение к интернету и попробуйте ещё раз.');
                 } finally {
                     btnSpeed.disabled = false;
                     btnSpeed.style.opacity = '1';
                 }
             });
         }
+
     </script>
 </body>
 </html>

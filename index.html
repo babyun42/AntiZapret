@@ -74,7 +74,7 @@
             <h1 class="page-title">Надежные ВПН</h1>
 
             <div class="card">
-                <h2>Tor Bridges <span style="opacity: 0.5;">мосты</span></h2>
+                <h2>Tor Bridges <span class="bridges-hint">мосты</span></h2>
                 <p>Если стандартный internet сильно заглушен, Tor с мостами поможет восстановить доступ к сети. Доступен на любые платформы.</p>
 
                 <div class="tool-info"><b>Android</b></div>
@@ -340,14 +340,17 @@
                             <div class="result-value" id="res-up">-- <span>Мбит/с</span></div>
                         </div>
                     </div>
-                <button class="btn" id="start-speedtest-btn" style="width: 100%; font-size: 16px; height: 52px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">Начать тест скорости</button>                </div>
+                    <div class="speedtest-btn-wrap">
+                        <button class="btn" id="start-speedtest-btn" style="width: 100%; font-size: 16px; height: 52px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">Начать тест скорости</button>
+                        <div class="speedtest-tooltip" id="speedtest-tooltip">На данный момент у меня недостаточно серверов для лучшего решения для вас, так что пользуетесь тем, что есть.</div>
+                    </div>
+                </div>
             </div>
 
             <div class="card">
                 <h2>Другие сайты с измерением скорости: </h2>
-                    <a href="https://2ip.io/speed" target="_blank" class="btn">2ip</a>
+                    <a href="https://2ip.io/speed" target="_blank" class="btn btn-outline">2ip</a>
                     <a href="https://librespeed.org" target="_blank" class="btn btn-outline">LibreSpeed</a>
-                    <a href="https://www.speedtest.net" target="_blank" class="btn btn-outline">Speedtest by Ookla</a>
             </div>
         </section>
     </main>
