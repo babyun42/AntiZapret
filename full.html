@@ -13,6 +13,27 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
+        /* --- УТИЛИТА ДЛЯ ИКОНОК MATERIAL SYMBOLS ---
+           Общий класс для всех иконок-лигатур по сайту (вкладки, split-button,
+           редактор темы и т.д.), чтобы не дублировать этот набор свойств в каждом
+           отдельном месте. */
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 20px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            vertical-align: middle;
+        }
+
         /* --- СТИЛИ КАРТЫ И СКРЫТИЕ ПЛАШЕК --- */
         .leaflet-control-container {
             display: none !important;
@@ -70,31 +91,30 @@
                скругление снизу (border-radius: 8px 8px 0 0) — из-за этого при клике
                строка IP заметно "прыгала" по стилю. Теперь инпут выглядит как копия
                статичного (не наведённого) вида #user-ip — того же фона и цвета
-               текста, тех же скруглений, — так что переключение между span и input
-               визуально почти незаметно. */
+               текста, тех же скруглений, — а точный размер (ширину/высоту) JS
+               выставляет инлайн-стилем по факту замера span перед подменой, так что
+               переключение между span и input визуально не даёт никакого "скачка". */
             color: var(--md-sys-color-primary);
             background-color: var(--md-sys-color-surface-variant);
             border: none;
             border-radius: 8px;
             padding: 2px 8px;
-            width: 100%;
-            max-width: 180px;
             outline: none;
-            transition: all 0.15s ease;
+            transition: background-color 0.15s ease, color 0.15s ease;
         }
 
         /* --- "мосты" РЯДОМ С TOR BRIDGES: подсветка при наведении --- */
         .bridges-hint {
-            opacity: 0.5;
-            transition: opacity 0.2s ease;
+            opacity: 0.2;
+            transition: opacity 0.6s ease;
         }
         .bridges-hint.is-peeking {
             opacity: 1;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.4s ease;
         }
         .bridges-hint.is-settled {
-            opacity: 0.6;
-            transition: opacity 2s ease;
+            opacity: 0.2;
+            transition: opacity 0.6s ease;
         }
 
         /* --- ПОДСКАЗКА НАД КНОПКОЙ ТЕСТА СКОРОСТИ (наведение + 3с удержания) --- */
@@ -118,7 +138,7 @@
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.25s ease, transform 0.25s ease;
+            transition: opacity 0.5s ease, transform 0.5s ease;
             z-index: 5;
         }
         .speedtest-tooltip.show {
@@ -138,7 +158,7 @@
             --md-sys-color-primary-container: #d8e2ff;
             --md-sys-color-on-primary-container: #001a41;
             --md-sys-color-outline: #74777f;
-            --header-bg: rgba(253, 251, 255, 0.85);
+            --header-bg: rgba(255, 255, 255, 0.75);
         }
 
         /* --- ТЕМНАЯ ТЕМА --- */
@@ -153,7 +173,7 @@
             --md-sys-color-primary-container: #004a77;
             --md-sys-color-on-primary-container: #c2e7ff;
             --md-sys-color-outline: #8e918f;
-            --header-bg: rgba(26, 28, 30, 0.85);
+            --header-bg: rgba(28, 27, 31, 0.75);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -352,43 +372,90 @@
            Раньше у #loader/.loader-overlay/.md-spinner не было вообще никаких
            стилей, поэтому оверлей никогда не появлялся, а JS просто добавлял
            класс .hidden, которого тоже не существовало. Экран загрузки был
-           полностью "мёртвым". */
-        .loader-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9998;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--md-sys-color-background);
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-        .loader-overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        .md-spinner {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 4px solid var(--md-sys-color-surface-variant);
-            border-top-color: var(--md-sys-color-primary);
-            animation: spin-material 0.8s linear infinite;
-        }
+           полностью "мёртвым". Круговой индикатор — незамкнутая дуга: она и
+           вращается, и сама меняет длину, как настоящий M3-индикатор
+           неопределённого прогресса (не просто крутящаяся окружность). */
+           .loader-overlay {
+               position: fixed;
+               inset: 0;
+               z-index: 9998;
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               background-color: var(--md-sys-color-background);
+               opacity: 1;
+               visibility: visible;
+               transition: opacity 0.6s ease, visibility 0.6s ease;
+           }
+           .loader-overlay.hidden {
+               opacity: 0;
+               visibility: hidden;
+               pointer-events: none;
+           }
+
+           /* Общее непрерывное вращение контейнера */
+           .spinner {
+               width: 48px;
+               height: 48px;
+               animation: spinner-rotate 1.6s linear infinite;
+               transform-origin: center;
+           }
+
+           .arc-bg,
+           .arc-active {
+               stroke-linecap: round;
+               transform-origin: center;
+               transition: stroke 0.3s ease;
+           }
+
+           /* Фоновая дуга (строго в своей полусфере) */
+           .arc-bg {
+               stroke: var(--md-sys-color-surface-variant, #49454f);
+               transform: rotate(90deg);
+               animation: morph-arc 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+           }
+
+           /* Активная дуга (строго в противоположной полусфере) */
+           .arc-active {
+               stroke: var(--md-sys-color-primary, #d0bcff);
+               transform: rotate(-90deg);
+               animation: morph-arc 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+           }
+
+           /* Вращение всей конструкции */
+           @keyframes spinner-rotate {
+               0% { transform: rotate(0deg); }
+               100% { transform: rotate(360deg); }
+           }
+
+           /* Синхронное сжатие и расширение дуг без выхода за границы */
+           @keyframes morph-arc {
+               0% {
+                   stroke-dasharray: 8 118;  /* Короткие дуги, широкие зазоры */
+                   stroke-dashoffset: 0;
+               }
+               50% {
+                   stroke-dasharray: 44 82;  /* Максимальная длина (не превышает 180 градусов) */
+                   stroke-dashoffset: -8;
+               }
+               100% {
+                   stroke-dasharray: 8 118;  /* Возврат к короткой форме */
+                   stroke-dashoffset: -52;
+               }
+           }
 
         .btn:disabled {
             transform: scale(0.96) !important;
             pointer-events: none !important;
         }
 
-        /* --- ШАПКА И НАВИГАЦИЯ --- */
         header {
             padding: 12px 16px;
             position: sticky; top: 0;
-            background-color: var(--header-bg);
+
+            /* Автоматически подмешивает 20% прозрачности к текущему цвету темы */
+            background-color: color-mix(in srgb, var(--md-sys-color-surface, #1c1b1f) 80%, transparent);
+
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             z-index: 1000;
@@ -397,17 +464,18 @@
             justify-content: space-between;
             gap: 12px;
             transition: background-color 0.3s;
-            border-radius: 0 0 10px 10px;
+            border-radius: 0 0 30px 30px;
             box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
         }
 
         .nav-container {
-            display: flex; gap: 8px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-            flex-grow: 1;
-            min-width: 0;
+            display: inline-flex;
+            gap: 2px; /* Физическое разделение вкладок */
+            align-items: center;
+            background-color: transparent;
+            border: none; /* Убираем общую рамку контейнера */
+            padding: 0;
+            width: fit-content;
         }
         .nav-container::-webkit-scrollbar { display: none; }
 
@@ -441,21 +509,52 @@
         }
 
         .nav-item {
-            background-color: var(--md-sys-color-surface-variant);
+            /* Непрозрачный фон для базового (неактивного) состояния */
+            background-color: var(--md-sys-color-surface-variant, #49454f);
             color: var(--md-sys-color-on-surface-variant);
-            padding: 10px 20px;
-            border-radius: 100px;
+            padding: 10px 16px;
+            border: none; /* Удаляем линии-разделители */
+
+            /* Базовое небольшое скругление для элементов в центре */
+            border-radius: 10px;
+
+            display: flex;
+            align-items: center;
+            gap: 6px;
             cursor: pointer;
             font-size: 14px; font-weight: 500;
             white-space: nowrap;
             flex-shrink: 0;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+            user-select: none;
+            font-size: 14px; font-weight: 500;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
             user-select: none;
         }
-        .nav-item.active {
-            background-color: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
+        .nav-item-icon, .nav-item-check {
+            font-size: 18px;
         }
+
+        /* Асимметричное скругление для крайних элементов */
+        .nav-item:first-child {
+            border-radius: 100px 50px 50px 100px;
+        }
+
+        .nav-item:last-child {
+            border-radius: 50px 100px 100px 50px;
+        }
+
+        .nav-item-check { display: none; }
+        .nav-item.active {
+            background-color: var(--md-sys-color-primary-container, #eaddff);
+                color: var(--md-sys-color-on-primary-container);
+                border-radius: 100px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+        }
+        .nav-item.active .nav-item-icon { display: none; }
+        .nav-item.active .nav-item-check { display: inline-block; }
 
         /* Назначаем класс Material Symbols для кнопки переключения темы */
         .theme-toggle-btn {
@@ -472,6 +571,160 @@
             transition: transform 0.2s, background-color 0.3s;
         }
         .theme-toggle-btn:active { transform: scale(0.9); }
+
+        /* --- РЕДАКТОР ТЕМЫ (попап при клике на кнопку) --- */
+        .theme-editor-wrap {
+            position: relative;
+        }
+        .theme-editor-panel {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 260px;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-background);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            transform: translateY(-8px) scale(0.96);
+            transform-origin: top right;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 50;
+        }
+        .theme-editor-panel.open {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        .theme-editor-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 6px 0;
+        }
+        .theme-editor-row-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .theme-editor-row-label .material-symbols-outlined {
+            font-size: 20px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        .theme-editor-divider {
+            height: 1px;
+            background-color: var(--md-sys-color-surface-variant);
+            margin: 10px 0;
+        }
+        .theme-editor-section-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--md-sys-color-on-surface-variant);
+            margin-bottom: 8px;
+        }
+        .theme-preset-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .theme-preset {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+        .theme-preset:hover { transform: scale(1.1); }
+        .theme-preset.selected {
+            border-color: var(--md-sys-color-on-background);
+        }
+
+        /* Приводим нативный input[type=color] к тому же кругляшку, что и пресеты */
+        .theme-color-input {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            padding: 0;
+            cursor: pointer;
+            background: none;
+        }
+        .theme-color-input::-webkit-color-swatch-wrapper { padding: 0; border-radius: 50%; }
+        .theme-color-input::-webkit-color-swatch { border: 2px solid var(--md-sys-color-outline); border-radius: 50%; }
+        .theme-color-input::-moz-color-swatch { border: 2px solid var(--md-sys-color-outline); border-radius: 50%; }
+
+        /* Переключатель тёмной темы — простой M3-подобный switch */
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        .theme-switch-track {
+            position: absolute;
+            inset: 0;
+            background-color: var(--md-sys-color-surface-variant);
+            border: 2px solid var(--md-sys-color-outline);
+            border-radius: 100px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            cursor: pointer;
+        }
+        .theme-switch-thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: var(--md-sys-color-outline);
+            border-radius: 50%;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .theme-switch input:checked + .theme-switch-track {
+            background-color: var(--md-sys-color-primary);
+            border-color: var(--md-sys-color-primary);
+        }
+        .theme-switch input:checked + .theme-switch-track .theme-switch-thumb {
+            transform: translateX(16px);
+            background-color: var(--md-sys-color-on-primary);
+        }
+
+        .theme-reset-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            margin-top: 14px;
+            padding: 10px;
+            border-radius: 100px;
+            border: 1px solid var(--md-sys-color-outline);
+            background: transparent;
+            color: var(--md-sys-color-on-surface-variant);
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .theme-reset-btn:hover { background-color: var(--md-sys-color-surface-variant); }
+        .theme-reset-btn .material-symbols-outlined { font-size: 18px; }
 
         /* --- ОСНОВНОЙ КОНТЕНТ --- */
         main { max-width: 900px; margin: 0 auto; padding: 16px; }
@@ -518,6 +771,78 @@
             background-color: transparent;
             color: var(--md-sys-color-primary);
             border: 1px solid var(--md-sys-color-outline);
+        }
+
+        /* --- СОСТАВНАЯ КНОПКА "ГАЙД" (текстовый + видео гайд в одной группе) --- */
+        .guide-btn-group {
+            display: inline-flex;
+            align-items: stretch;
+            /* Расстояние МЕЖДУ сегментами — поменяй это значение, чтобы
+               сделать зазор больше/меньше (0px — сегменты снова слипнутся). */
+            gap: 3px;
+            margin-top: 12px;
+        }
+        .guide-btn {
+            font-family: 'Roboto', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            min-height: 44px;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            /* border-radius и transform тоже анимируются — это и даёт
+               "перетекание" формы при наведении/нажатии, а не резкий скачок. */
+            transition: filter 0.2s ease, background-color 0.2s ease,
+                        transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-radius 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.2s ease;
+        }
+        .guide-btn:hover {
+            filter: brightness(1.12);
+            transform: scale(1.04);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+        }
+        .guide-btn:active {
+            filter: brightness(0.9);
+            transform: scale(0.94);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+            /* При нажатии сегмент "распрямляется" в полную капсулу —
+               перебивает скругление .guide-btn-icon/.guide-btn-video ниже,
+               т.к. у ":active" выше специфичность (два класса против одного). */
+            border-radius: 100px;
+        }
+        .guide-btn .material-symbols-outlined {
+            font-size: 20px;
+            line-height: 1;
+            transition: transform 0.18s ease, opacity 0.18s ease;
+        }
+        /* Левый сегмент — только иконка (обычный, текстовый гайд).
+           border-radius идёт по углам: верх-лево, верх-право, низ-право, низ-лево.
+           Внешние (левые) углы — большие, почти капсула (100px).
+           Внутренние (правые, обращённые к соседней кнопке) — маленькие,
+           это и даёт лёгкое, а не полное скругление на стыке. */
+        .guide-btn-icon {
+            padding: 0 16px;
+            border-radius: 100px 20px 20px 100px;
+        }
+        /* Пока текстовый гайд открыт (класс добавляется в JS в toggleGuide/
+           toggleTorGuide), левая кнопка превращается в полную капсулу —
+           так видно, что она сейчас "раскрыта", даже без наведения. */
+        .guide-btn-icon.open {
+            border-radius: 100px;
+        }
+        /* Правый сегмент — иконка + текст "Гайд" (открывает видео гайд).
+           Здесь наоборот: внутренние (левые) углы маленькие, внешние (правые) — большие. */
+        .guide-btn-video {
+            padding: 0 20px 0 16px;
+            border-radius: 20px 100px 100px 20px;
         }
 
         .tool-info { margin-bottom: 8px; font-size: 15px; }
@@ -597,7 +922,6 @@
             padding: 16px;
             transform: translateY(0);
                }
-
     </style>
 </head>
 <body>
@@ -608,19 +932,86 @@
     <div class="m3-shape shape-eladanca"></div>
 
     <div id="loader" class="loader-overlay">
-        <div class="md-spinner"></div>
-    </div>
+            <svg class="spinner" viewBox="0 0 50 50">
+                <circle class="arc-bg" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                <circle class="arc-active" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+            </svg>
+        </div>
+
 
     <header>
         <nav class="nav-container">
-            <div class="nav-item active" data-target="home">Главная</div>
-            <div class="nav-item" data-target="vpn">ВПН</div>
-            <div class="nav-item" data-target="bypass">Обход</div>
-            <div class="nav-item" data-target="whitelist">Белые списки</div>
-            <div class="nav-item" data-target="speed">Скорость</div>
+            <div class="nav-item active" data-target="home">
+                <span class="nav-item-icon material-symbols-outlined">home</span>
+                <span class="nav-item-check material-symbols-outlined">check</span>
+                <span class="nav-item-label">Главная</span>
+            </div>
+            <div class="nav-item" data-target="vpn">
+                <span class="nav-item-icon material-symbols-outlined">vpn_key</span>
+                <span class="nav-item-check material-symbols-outlined">check</span>
+                <span class="nav-item-label">ВПН</span>
+            </div>
+            <div class="nav-item" data-target="bypass">
+                <span class="nav-item-icon material-symbols-outlined">alt_route</span>
+                <span class="nav-item-check material-symbols-outlined">check</span>
+                <span class="nav-item-label">Обход</span>
+            </div>
+            <div class="nav-item" data-target="whitelist">
+                <span class="nav-item-icon material-symbols-outlined">checklist</span>
+                <span class="nav-item-check material-symbols-outlined">check</span>
+                <span class="nav-item-label">Белые списки</span>
+            </div>
+            <div class="nav-item" data-target="speed">
+                <span class="nav-item-icon material-symbols-outlined">speed</span>
+                <span class="nav-item-check material-symbols-outlined">check</span>
+                <span class="nav-item-label">Скорость</span>
+            </div>
         </nav>
-        <!-- Иконка темы по умолчанию (moon) -->
-        <button class="theme-toggle-btn" id="theme-btn" aria-label="Переключить тему">dark_mode</button>
+        <!-- Кнопка теперь открывает редактор темы, а не переключает её напрямую -->
+        <div class="theme-editor-wrap">
+            <button class="theme-toggle-btn" id="theme-btn" aria-label="Настройки темы">palette</button>
+
+            <div class="theme-editor-panel" id="theme-editor-panel">
+                <div class="theme-editor-row">
+                    <span class="theme-editor-row-label">
+                        <span class="material-symbols-outlined">dark_mode</span>
+                        Тёмная тема
+                    </span>
+                    <label class="theme-switch">
+                        <input type="checkbox" id="dark-mode-switch">
+                        <span class="theme-switch-track"><span class="theme-switch-thumb"></span></span>
+                    </label>
+                </div>
+
+                <div class="theme-editor-divider"></div>
+
+                <div class="theme-editor-section-label">Готовые темы</div>
+                <div class="theme-preset-row">
+                    <button type="button" class="theme-preset" data-hue="213" style="background: hsl(213, 90%, 38%);" aria-label="Синяя тема"></button>
+                    <button type="button" class="theme-preset" data-hue="270" style="background: hsl(270, 60%, 45%);" aria-label="Фиолетовая тема"></button>
+                    <button type="button" class="theme-preset" data-hue="140" style="background: hsl(140, 60%, 32%);" aria-label="Зелёная тема"></button>
+                    <button type="button" class="theme-preset" data-hue="30" style="background: hsl(30, 90%, 45%);" aria-label="Оранжевая тема"></button>
+                    <button type="button" class="theme-preset" data-hue="340" style="background: hsl(340, 70%, 48%);" aria-label="Розовая тема"></button>
+                    <button type="button" class="theme-preset" data-hue="180" style="background: hsl(180, 60%, 32%);" aria-label="Бирюзовая тема"></button>
+                    <button type="button" class="theme-preset" data-hue="5" style="background: hsl(5, 70%, 45%);" aria-label="Красная тема"></button>
+                </div>
+
+                <div class="theme-editor-divider"></div>
+
+                <div class="theme-editor-row">
+                    <span class="theme-editor-row-label">
+                        <span class="material-symbols-outlined">colorize</span>
+                        Свой цвет
+                    </span>
+                    <input type="color" id="custom-color-input" class="theme-color-input" value="#005ac1" aria-label="Выбрать свой цвет">
+                </div>
+
+                <button type="button" class="theme-reset-btn" id="theme-reset-btn">
+                    <span class="material-symbols-outlined">restart_alt</span>
+                    Сбросить
+                </button>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -665,8 +1056,10 @@
 
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-                    <button class="btn btn-guide" onclick="toggleTorGuide()">Гайд</button>
-                    <a href="https://www.youtube.com/watch?v=2MDuuydMWbY" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleTorGuide(this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://www.youtube.com/watch?v=2MDuuydMWbY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://torproject.org" target="_blank" class="btn btn-outline">Официальный сайт</a>
                     <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/TOR-BRIDGES/TOR_BRIDGES_TOP100.txt" target="_blank" class="btn btn-outline">Конфиги</a>
                 </div>
@@ -686,8 +1079,10 @@
 
                 <div class="tool-info"><b>Windows</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-tor-win')">Гайд</button>
-                    <a href="https://youtu.be/k-Y8NniEvP4" target="_blank" class="btn">Video гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tor-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://youtu.be/k-Y8NniEvP4" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://dragonfruit.network/onionfruit" target="_blank" class="btn btn-outline">Официальный сайт</a>
                     <a href="https://github.com/igareck/vpn-configs-for-russia" target="_blank" class="btn btn-outline">GitHub</a>
                     <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/TOR-BRIDGES/TOR_BRIDGES_TOP100.txt" target="_blank" class="btn btn-outline">Конфиги</a>
@@ -710,8 +1105,10 @@
 
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-                     <button class="btn" onclick="toggleGuide('guide-amn-android')">Гайд</button>
-                    <a href="https://www.youtube.com/watch?v=3ueG-ChggqE" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-amn-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://www.youtube.com/watch?v=3ueG-ChggqE" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://amnezia.org/ru/downloads" target="_blank" class="btn btn-outline">Официальный сайт</a>
                     <a href="https://warp-mirrors.vercel.app/" target="_blank" class="btn btn-outline">Сайт для конфига</a>
                 </div>
@@ -725,8 +1122,10 @@
 
                 <div class="tool-info"><b>Windows</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-amn-win')">Гайд</button>
-                    <a href="https://www.youtube.com/watch?v=OJZnxPN7_PQ" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-amn-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://www.youtube.com/watch?v=OJZnxPN7_PQ" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://amnezia.org/ru/downloads" target="_blank" class="btn btn-outline">Официальный сайт</a>
                     <a href="https://warp-mirrors.vercel.app/" target="_blank" class="btn btn-outline">Сайт для конфига</a>
                 </div>
@@ -770,8 +1169,10 @@
 
                     <div class="tool-info"><b>Android</b></div>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button class="btn" onclick="toggleGuide('guide-Vless-android')">Гайд</button>
-                        <a href="#" target="_blank" class="btn">Видео гайд</a>
+                        <div class="guide-btn-group">
+                            <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-Vless-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                            <a href="#" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                        </div>
                         <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
                     </div>
                     <div id="guide-Vless-android" class="guide-content">
@@ -782,8 +1183,10 @@
 
                     <div class="tool-info"><b>Windows</b></div>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button class="btn" onclick="toggleGuide('guide-Vless-win')">Гайд</button>
-                        <a href="https://youtu.be/2164aQjPpVs" target="_blank" class="btn">Видео гайд</a>
+                        <div class="guide-btn-group">
+                            <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-Vless-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                            <a href="https://youtu.be/2164aQjPpVs" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                        </div>
                         <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
                     </div>
                     <div id="guide-Vless-win" class="guide-content">
@@ -807,8 +1210,10 @@
                 <p>Утилита для модификации трафика на лету для Windows. Отлично подходит для обхода блокировок от РКН.</p>
                 <div class="tool-info"><b>Windows</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-zapret')">Гайд</button>
-                    <a href="https://youtu.be/zJ0iayCzIhY" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-zapret', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://youtu.be/zJ0iayCzIhY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://github.com/flowseal/zapret-discord-youtube" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
                 <div id="guide-zapret" class="guide-content">
@@ -824,8 +1229,10 @@
 
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-byebyedpi')">Гайд</button>
-                    <a href="*" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-byebyedpi', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="*" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://github.com/romanvht/ByeByeDPI" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
 
@@ -844,8 +1251,10 @@
 
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-                    <button class="btn" onclick="toggleGuide('guide-tg-android')">Гайд</button>
-                    <a href="https://www.youtube.com/watch?v=RhZ330eeCTc" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tg-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://www.youtube.com/watch?v=RhZ330eeCTc" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://github.com/amurcanov/tg-ws-proxy-android" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
                 <div id="guide-tg-android" class="guide-content">
@@ -858,8 +1267,10 @@
 
                 <div class="tool-info"><b>Windows</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-tg-win')">Гайд</button>
-                    <a href="https://www.youtube.com/watch?v=eWr-mK9wiNY" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tg-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://www.youtube.com/watch?v=eWr-mK9wiNY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://github.com/Flowseal/tg-ws-proxy" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
                 <div id="guide-tg-win" class="guide-content">
@@ -935,8 +1346,9 @@
 
             <div class="card">
                 <h2>Другие сайты с измерением скорости: </h2>
-                    <a href="https://2ip.io/speed" target="_blank" class="btn btn-outline">2ip</a>
+                    <a href="https://2ip.io/speed" target="_blank" class="btn">2ip</a>
                     <a href="https://librespeed.org" target="_blank" class="btn btn-outline">LibreSpeed</a>
+                    <a href="https://www.speedtest.net" target="_blank" class="btn btn-outline">Speedtest by Ookla</a>
             </div>
         </section>
     </main>
@@ -946,65 +1358,247 @@
     <script>
         /* ЛОГИКА ЭКРАНА ЗАГРУЗКИ */
         window.addEventListener('load', () => {
+            // Задержка внутри 1–3с, чтобы экран загрузки не мигал слишком быстро,
+            // плюс сам фейд теперь длиннее (0.6с в CSS) — исчезновение выглядит плавным.
             setTimeout(() => {
                 const loader = document.getElementById('loader');
                 if(loader) loader.classList.add('hidden');
-            }, 400);
+            }, 1800);
         });
 
+        // Переключает иконку внутри кнопки-гайда: Keyboard Arrow Down <-> close (открыто),
+        // с небольшой анимацией — иконка сначала сжимается/поворачивается и исчезает,
+        // затем на её месте появляется новая.
+        function setGuideBtnIcon(btn, isOpen) {
+            if(!btn) return;
+            const icon = btn.querySelector('.material-symbols-outlined');
+            if(!icon) return;
+            icon.style.transform = 'scale(0.4) rotate(-90deg)';
+            icon.style.opacity = '0';
+            setTimeout(() => {
+                icon.textContent = isOpen ? 'close' : 'Keyboard_Arrow_Down';
+                icon.style.transform = 'scale(1) rotate(0deg)';
+                icon.style.opacity = '1';
+            }, 140);
+        }
+
         // Переключение обычных гайдов
-        function toggleGuide(id) {
+        function toggleGuide(id, btn) {
             const guide = document.getElementById(id);
             if(guide) guide.classList.toggle('visible');
+            const isOpen = guide && guide.classList.contains('visible');
+            // Пока гайд открыт — левая (иконочная) кнопка остаётся полностью
+            // скруглённой капсулой, а не только на время наведения/нажатия.
+            if(btn) btn.classList.toggle('open', isOpen);
+            setGuideBtnIcon(btn, isOpen);
         }
 
         // Специальное переключение для Tor Android (ссылки + текст)
-        function toggleTorGuide() {
+        function toggleTorGuide(btn) {
             const links = document.getElementById('tor-android-links');
             const guide = document.getElementById('guide-tor-android');
             if(links) links.classList.toggle('visible');
             if(guide) guide.classList.toggle('visible');
+            const isOpen = guide && guide.classList.contains('visible');
+            if(btn) btn.classList.toggle('open', isOpen);
+            setGuideBtnIcon(btn, isOpen);
         }
 
-        /* ЛОГИКА ТЕМНОЙ ТЕМЫ С ИКОНКАМИ MATERIAL */
-        const themeBtn = document.getElementById('theme-btn');
 
-        // 1. Проверяем память СРАЗУ при загрузке скрипта
-        const savedTheme = localStorage.getItem('site-theme');
+        /* ЛОГИКА ТЕМЫ: ТЁМНЫЙ/СВЕТЛЫЙ РЕЖИМ + ДИНАМИЧЕСКИЙ АКЦЕНТНЫЙ ЦВЕТ
+           Кнопка теперь не переключает тему сама, а открывает панель-редактор:
+           внутри — переключатель светлой/тёмной темы, набор готовых цветов, свой
+           цвет и сброс. Активный акцентный цвет задаётся одним "оттенком" (hue),
+           из которого на лету пересчитываются все 10 цветовых токенов сайта. */
+        const THEME_STORAGE_KEY = 'site-theme-settings';
+        const THEME_TOKENS = [
+            '--md-sys-color-background', '--md-sys-color-on-background',
+            '--md-sys-color-surface', '--md-sys-color-surface-variant', '--md-sys-color-on-surface-variant',
+            '--md-sys-color-primary', '--md-sys-color-on-primary',
+            '--md-sys-color-primary-container', '--md-sys-color-on-primary-container',
+            '--md-sys-color-outline'
+        ];
 
-        // Если в памяти есть темная тема, сразу включаем её и ставим иконку light_mode (солнце)
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-theme');
-            if(themeBtn) themeBtn.innerText = 'light_mode';
-        } else {
-            document.body.classList.remove('dark-theme');
-            if(themeBtn) themeBtn.innerText = 'dark_mode'; // Иконка луны для светлой темы
+        function loadThemeSettings() {
+            try {
+                const raw = localStorage.getItem(THEME_STORAGE_KEY);
+                return raw ? JSON.parse(raw) : {};
+            } catch (e) { return {}; }
+        }
+        function saveThemeSettings(settings) {
+            try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(settings)); } catch (e) {}
         }
 
-        // 2. Логика при нажатии на кнопку
-        if(themeBtn) {
-            themeBtn.addEventListener('click', () => {
-                // Переключаем тему
-                document.body.classList.toggle('dark-theme');
+        // Оттенок (0-360) из HEX — нужен, чтобы понять, какой hue выбрали через
+        // нативный input[type=color].
+        function hexToHue(hex) {
+            const r = parseInt(hex.slice(1, 3), 16) / 255;
+            const g = parseInt(hex.slice(3, 5), 16) / 255;
+            const b = parseInt(hex.slice(5, 7), 16) / 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            const d = max - min;
+            let h = 0;
+            if (d !== 0) {
+                if (max === r) h = ((g - b) / d) % 6;
+                else if (max === g) h = (b - r) / d + 2;
+                else h = (r - g) / d + 4;
+                h = Math.round(h * 60);
+                if (h < 0) h += 360;
+            }
+            return h;
+        }
 
-                // Проверяем, включилась ли темная тема
-                const isDark = document.body.classList.contains('dark-theme');
+        // Обратно: HSL -> HEX, чтобы показать текущий акцент в input[type=color].
+        function hslToHex(h, s, l) {
+            s /= 100; l /= 100;
+            const k = n => (n + h / 30) % 12;
+            const a = s * Math.min(l, 1 - l);
+            const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+            const toHex = x => Math.round(255 * x).toString(16).padStart(2, '0');
+            return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+        }
+        function hueToHex(hue) {
+            return hslToHex(hue, 90, 38);
+        }
 
-                // Меняем иконку (если включили темную - показываем солнце для обратного переключения)
-                themeBtn.innerText = isDark ? 'light_mode' : 'dark_mode';
+        // Приблизительная генерация M3-подобной палитры из одного оттенка. Это не
+        // полноценный алгоритм HCT из material-color-utilities, а лёгкое
+        // HSL-приближение — но токенов всего 10, и подобранные S/L неплохо держат
+        // контраст текста на фоне в обоих режимах.
+        function buildPalette(hue, isDark) {
+            return isDark ? {
+                '--md-sys-color-background': `hsl(${hue}, 12%, 10%)`,
+                '--md-sys-color-on-background': `hsl(${hue}, 8%, 90%)`,
+                '--md-sys-color-surface': `hsl(${hue}, 10%, 13%)`,
+                '--md-sys-color-surface-variant': `hsl(${hue}, 10%, 28%)`,
+                '--md-sys-color-on-surface-variant': `hsl(${hue}, 12%, 79%)`,
+                '--md-sys-color-primary': `hsl(${hue}, 80%, 83%)`,
+                '--md-sys-color-on-primary': `hsl(${hue}, 60%, 18%)`,
+                '--md-sys-color-primary-container': `hsl(${hue}, 55%, 27%)`,
+                '--md-sys-color-on-primary-container': `hsl(${hue}, 80%, 90%)`,
+                '--md-sys-color-outline': `hsl(${hue}, 6%, 58%)`,
+            } : {
+                '--md-sys-color-background': `hsl(${hue}, 30%, 99%)`,
+                '--md-sys-color-on-background': `hsl(${hue}, 10%, 11%)`,
+                '--md-sys-color-surface': `hsl(${hue}, 24%, 96%)`,
+                '--md-sys-color-surface-variant': `hsl(${hue}, 20%, 90%)`,
+                '--md-sys-color-on-surface-variant': `hsl(${hue}, 8%, 29%)`,
+                '--md-sys-color-primary': `hsl(${hue}, 90%, 38%)`,
+                '--md-sys-color-on-primary': '#ffffff',
+                '--md-sys-color-primary-container': `hsl(${hue}, 95%, 92%)`,
+                '--md-sys-color-on-primary-container': `hsl(${hue}, 85%, 15%)`,
+                '--md-sys-color-outline': `hsl(${hue}, 6%, 48%)`,
+            };
+        }
 
-                // Записываем результат в память браузера (localStorage)
-                localStorage.setItem('site-theme', isDark ? 'dark' : 'light');
+        // hue === null значит "заводская палитра" — просто снимаем инлайн-переопределения
+        // и в силу вступают обычные значения из :root / body.dark-theme в style.css.
+        // ВАЖНО: переопределяем именно на <body>, а не на <html> — иначе в тёмной
+        // теме правило body.dark-theme{...} (объявлено прямо на самом body) всё
+        // равно победило бы унаследованное с html значение, и кастомный цвет просто
+        // не был бы виден при переключении на тёмную тему.
+        function applyHue(hue, isDark) {
+            const rootStyle = document.body.style;
+            if (hue === null || hue === undefined) {
+                THEME_TOKENS.forEach(t => rootStyle.removeProperty(t));
+                return;
+            }
+            const palette = buildPalette(hue, isDark);
+            THEME_TOKENS.forEach(t => rootStyle.setProperty(t, palette[t]));
+        }
 
-                // Если карта уже загружена, меняем её стиль на лету
-                if (map && window.currentTiles) {
-                    const newTilesUrl = isDark
-                        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                        : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-                    window.currentTiles.setUrl(newTilesUrl);
-                }
+        function syncMapTiles(isDark) {
+            if (map && window.currentTiles) {
+                const newTilesUrl = isDark
+                    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+                window.currentTiles.setUrl(newTilesUrl);
+            }
+        }
+
+        // 1. Считываем сохранённые настройки и сразу применяем их — ещё до того, как
+        //    настроится сама панель, чтобы страница не "мигала" заводской темой.
+        const themeSettings = loadThemeSettings();
+        const legacySavedTheme = localStorage.getItem('site-theme'); // старый ключ, для обратной совместимости
+        let isDarkMode = typeof themeSettings.dark === 'boolean' ? themeSettings.dark : (legacySavedTheme === 'dark');
+        let currentHue = typeof themeSettings.hue === 'number' ? themeSettings.hue : null;
+
+        document.body.classList.toggle('dark-theme', isDarkMode);
+        applyHue(currentHue, isDarkMode);
+
+        // 2. Сама панель: открытие/закрытие, переключатель, пресеты, свой цвет, сброс.
+        (function setupThemeEditor() {
+            const btn = document.getElementById('theme-btn');
+            const panel = document.getElementById('theme-editor-panel');
+            const darkSwitch = document.getElementById('dark-mode-switch');
+            const colorInput = document.getElementById('custom-color-input');
+            const resetBtn = document.getElementById('theme-reset-btn');
+            const presetButtons = document.querySelectorAll('.theme-preset');
+            if (!btn) return;
+
+            if (darkSwitch) darkSwitch.checked = isDarkMode;
+            if (colorInput && currentHue !== null) colorInput.value = hueToHex(currentHue);
+
+            function highlightPreset() {
+                presetButtons.forEach(p => {
+                    p.classList.toggle('selected', Number(p.dataset.hue) === currentHue);
+                });
+            }
+            highlightPreset();
+
+            function persist() {
+                saveThemeSettings({ dark: isDarkMode, hue: currentHue });
+                localStorage.setItem('site-theme', isDarkMode ? 'dark' : 'light'); // держим старый ключ синхронным
+            }
+
+            if (panel) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    panel.classList.toggle('open');
+                });
+                panel.addEventListener('click', (e) => e.stopPropagation());
+                document.addEventListener('click', () => panel.classList.remove('open'));
+            }
+
+            if (darkSwitch) {
+                darkSwitch.addEventListener('change', () => {
+                    isDarkMode = darkSwitch.checked;
+                    document.body.classList.toggle('dark-theme', isDarkMode);
+                    applyHue(currentHue, isDarkMode);
+                    syncMapTiles(isDarkMode);
+                    persist();
+                });
+            }
+
+            presetButtons.forEach(p => {
+                p.addEventListener('click', () => {
+                    currentHue = Number(p.dataset.hue);
+                    applyHue(currentHue, isDarkMode);
+                    if (colorInput) colorInput.value = hueToHex(currentHue);
+                    highlightPreset();
+                    persist();
+                });
             });
-        }
+
+            if (colorInput) {
+                colorInput.addEventListener('input', () => {
+                    currentHue = hexToHue(colorInput.value);
+                    applyHue(currentHue, isDarkMode);
+                    highlightPreset();
+                    persist();
+                });
+            }
+
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    currentHue = null;
+                    applyHue(null, isDarkMode);
+                    if (colorInput) colorInput.value = '#005ac1';
+                    highlightPreset();
+                    persist();
+                });
+            }
+        })();
 
         /* ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК */
         const navContainer = document.querySelector('.nav-container');
@@ -1168,10 +1762,21 @@
                 // Теперь сначала копируем текущий IP в буфер обмена (с тостом), и только
                 // после этого включаем редактирование.
                 const startEditing = () => {
+                    // Замеряем точный размер строки ДО подмены на input — так рамка не
+                    // "прыгнет" в размере, даже если у input чуть другие метрики
+                    // шрифта или box-sizing по умолчанию, отличные от span.
+                    const rect = ipSpan.getBoundingClientRect();
+                    const computed = getComputedStyle(ipSpan);
+
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.value = currentIp;
                     input.classList.add('ip-edit-input');
+                    input.style.width = `${rect.width}px`;
+                    input.style.height = `${rect.height}px`;
+                    input.style.boxSizing = 'border-box';
+                    input.style.fontSize = computed.fontSize;
+
                     ipSpan.replaceWith(input);
                     input.focus();
                     input.select();
@@ -1251,10 +1856,11 @@
         })();
 
         /* --- ПОДСКАЗКА НАД КНОПКОЙ ТЕСТА СКОРОСТИ ---
-           Если навести на кнопку и продержать курсор 3 секунды, пока идёт сам тест
-           (кнопка задизейблена), показываем шутливую подсказку. Слушаем hover не на
-           самой кнопке, а на обёртке — задизейбленная кнопка не всегда стабильно
-           отдаёт мышиные события в разных браузерах. */
+           Наводишь на кнопку (в любом её состоянии — и активна, и пока идёт тест) и
+           держишь курсор ~2 секунды — всплывает подсказка. Работает и на десктопе
+           (наведение мышью), и на телефоне (тап и удержание — mouseenter там тоже
+           срабатывает). Слушаем hover не на самой кнопке, а на обёртке — задизейбленная
+           кнопка не всегда стабильно отдаёт мышиные события в разных браузерах. */
         (function setupSpeedtestHint() {
             const btn = document.getElementById('start-speedtest-btn');
             const tooltip = document.getElementById('speedtest-tooltip');
@@ -1264,10 +1870,9 @@
             let holdTimeout = null;
 
             wrap.addEventListener('mouseenter', () => {
-                if (!btn.disabled) return; // подсказка нужна только пока реально идёт тест
                 holdTimeout = setTimeout(() => {
-                    if (btn.disabled) tooltip.classList.add('show');
-                }, 3000);
+                    tooltip.classList.add('show');
+                }, 2000);
             });
 
             wrap.addEventListener('mouseleave', () => {
