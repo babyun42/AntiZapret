@@ -22,19 +22,86 @@
     <div class="m3-shape shape-eladanca"></div>
 
     <div id="loader" class="loader-overlay">
-        <div class="md-spinner"></div>
-    </div>
+            <svg class="spinner" viewBox="0 0 50 50">
+                <circle class="arc-bg" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                <circle class="arc-active" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+            </svg>
+        </div>
+
 
     <header>
         <nav class="nav-container">
-            <div class="nav-item active" data-target="home">Главная</div>
-            <div class="nav-item" data-target="vpn">ВПН</div>
-            <div class="nav-item" data-target="bypass">Обход</div>
-            <div class="nav-item" data-target="whitelist">Белые списки</div>
-            <div class="nav-item" data-target="speed">Скорость</div>
+            <div class="nav-item active" data-target="home">
+                <span class="nav-item-icon material-symbols-outlined">home</span>
+                <span class="nav-item-check material-symbols-outlined">check</span>
+                <span class="nav-item-label">Главная</span>
+            </div>
+            <div class="nav-item" data-target="vpn">
+                <span class="nav-item-icon material-symbols-outlined">vpn_key</span>
+                <span class="nav-item-check material-symbols-outlined">check</span>
+                <span class="nav-item-label">ВПН</span>
+            </div>
+            <div class="nav-item" data-target="bypass">
+                <span class="nav-item-icon material-symbols-outlined">alt_route</span>
+                <span class="nav-item-check material-symbols-outlined">check</span>
+                <span class="nav-item-label">Обход</span>
+            </div>
+            <div class="nav-item" data-target="whitelist">
+                <span class="nav-item-icon material-symbols-outlined">checklist</span>
+                <span class="nav-item-check material-symbols-outlined">check</span>
+                <span class="nav-item-label">Белые списки</span>
+            </div>
+            <div class="nav-item" data-target="speed">
+                <span class="nav-item-icon material-symbols-outlined">speed</span>
+                <span class="nav-item-check material-symbols-outlined">check</span>
+                <span class="nav-item-label">Скорость</span>
+            </div>
         </nav>
-        <!-- Иконка темы по умолчанию (moon) -->
-        <button class="theme-toggle-btn" id="theme-btn" aria-label="Переключить тему">dark_mode</button>
+        <!-- Кнопка теперь открывает редактор темы, а не переключает её напрямую -->
+        <div class="theme-editor-wrap">
+            <button class="theme-toggle-btn" id="theme-btn" aria-label="Настройки темы">palette</button>
+
+            <div class="theme-editor-panel" id="theme-editor-panel">
+                <div class="theme-editor-row">
+                    <span class="theme-editor-row-label">
+                        <span class="material-symbols-outlined">dark_mode</span>
+                        Тёмная тема
+                    </span>
+                    <label class="theme-switch">
+                        <input type="checkbox" id="dark-mode-switch">
+                        <span class="theme-switch-track"><span class="theme-switch-thumb"></span></span>
+                    </label>
+                </div>
+
+                <div class="theme-editor-divider"></div>
+
+                <div class="theme-editor-section-label">Готовые темы</div>
+                <div class="theme-preset-row">
+                    <button type="button" class="theme-preset" data-hue="213" style="background: hsl(213, 90%, 38%);" aria-label="Синяя тема"></button>
+                    <button type="button" class="theme-preset" data-hue="270" style="background: hsl(270, 60%, 45%);" aria-label="Фиолетовая тема"></button>
+                    <button type="button" class="theme-preset" data-hue="140" style="background: hsl(140, 60%, 32%);" aria-label="Зелёная тема"></button>
+                    <button type="button" class="theme-preset" data-hue="30" style="background: hsl(30, 90%, 45%);" aria-label="Оранжевая тема"></button>
+                    <button type="button" class="theme-preset" data-hue="340" style="background: hsl(340, 70%, 48%);" aria-label="Розовая тема"></button>
+                    <button type="button" class="theme-preset" data-hue="180" style="background: hsl(180, 60%, 32%);" aria-label="Бирюзовая тема"></button>
+                    <button type="button" class="theme-preset" data-hue="5" style="background: hsl(5, 70%, 45%);" aria-label="Красная тема"></button>
+                </div>
+
+                <div class="theme-editor-divider"></div>
+
+                <div class="theme-editor-row">
+                    <span class="theme-editor-row-label">
+                        <span class="material-symbols-outlined">colorize</span>
+                        Свой цвет
+                    </span>
+                    <input type="color" id="custom-color-input" class="theme-color-input" value="#005ac1" aria-label="Выбрать свой цвет">
+                </div>
+
+                <button type="button" class="theme-reset-btn" id="theme-reset-btn">
+                    <span class="material-symbols-outlined">restart_alt</span>
+                    Сбросить
+                </button>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -79,8 +146,10 @@
 
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-                    <button class="btn btn-guide" onclick="toggleTorGuide()">Гайд</button>
-                    <a href="https://www.youtube.com/watch?v=2MDuuydMWbY" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleTorGuide(this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://www.youtube.com/watch?v=2MDuuydMWbY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://torproject.org" target="_blank" class="btn btn-outline">Официальный сайт</a>
                     <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/TOR-BRIDGES/TOR_BRIDGES_TOP100.txt" target="_blank" class="btn btn-outline">Конфиги</a>
                 </div>
@@ -100,8 +169,10 @@
 
                 <div class="tool-info"><b>Windows</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-tor-win')">Гайд</button>
-                    <a href="https://youtu.be/k-Y8NniEvP4" target="_blank" class="btn">Video гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tor-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://youtu.be/k-Y8NniEvP4" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://dragonfruit.network/onionfruit" target="_blank" class="btn btn-outline">Официальный сайт</a>
                     <a href="https://github.com/igareck/vpn-configs-for-russia" target="_blank" class="btn btn-outline">GitHub</a>
                     <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/TOR-BRIDGES/TOR_BRIDGES_TOP100.txt" target="_blank" class="btn btn-outline">Конфиги</a>
@@ -124,8 +195,10 @@
 
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-                     <button class="btn" onclick="toggleGuide('guide-amn-android')">Гайд</button>
-                    <a href="https://www.youtube.com/watch?v=3ueG-ChggqE" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-amn-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://www.youtube.com/watch?v=3ueG-ChggqE" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://amnezia.org/ru/downloads" target="_blank" class="btn btn-outline">Официальный сайт</a>
                     <a href="https://warp-mirrors.vercel.app/" target="_blank" class="btn btn-outline">Сайт для конфига</a>
                 </div>
@@ -139,8 +212,10 @@
 
                 <div class="tool-info"><b>Windows</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-amn-win')">Гайд</button>
-                    <a href="https://www.youtube.com/watch?v=OJZnxPN7_PQ" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-amn-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://www.youtube.com/watch?v=OJZnxPN7_PQ" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://amnezia.org/ru/downloads" target="_blank" class="btn btn-outline">Официальный сайт</a>
                     <a href="https://warp-mirrors.vercel.app/" target="_blank" class="btn btn-outline">Сайт для конфига</a>
                 </div>
@@ -184,8 +259,10 @@
 
                     <div class="tool-info"><b>Android</b></div>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button class="btn" onclick="toggleGuide('guide-Vless-android')">Гайд</button>
-                        <a href="#" target="_blank" class="btn">Видео гайд</a>
+                        <div class="guide-btn-group">
+                            <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-Vless-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                            <a href="#" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                        </div>
                         <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
                     </div>
                     <div id="guide-Vless-android" class="guide-content">
@@ -196,8 +273,10 @@
 
                     <div class="tool-info"><b>Windows</b></div>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button class="btn" onclick="toggleGuide('guide-Vless-win')">Гайд</button>
-                        <a href="https://youtu.be/2164aQjPpVs" target="_blank" class="btn">Видео гайд</a>
+                        <div class="guide-btn-group">
+                            <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-Vless-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                            <a href="https://youtu.be/2164aQjPpVs" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                        </div>
                         <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
                     </div>
                     <div id="guide-Vless-win" class="guide-content">
@@ -221,8 +300,10 @@
                 <p>Утилита для модификации трафика на лету для Windows. Отлично подходит для обхода блокировок от РКН.</p>
                 <div class="tool-info"><b>Windows</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-zapret')">Гайд</button>
-                    <a href="https://youtu.be/zJ0iayCzIhY" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-zapret', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://youtu.be/zJ0iayCzIhY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://github.com/flowseal/zapret-discord-youtube" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
                 <div id="guide-zapret" class="guide-content">
@@ -238,8 +319,10 @@
 
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-byebyedpi')">Гайд</button>
-                    <a href="*" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-byebyedpi', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="*" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://github.com/romanvht/ByeByeDPI" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
 
@@ -258,8 +341,10 @@
 
                 <div class="tool-info"><b>Android</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-                    <button class="btn" onclick="toggleGuide('guide-tg-android')">Гайд</button>
-                    <a href="https://www.youtube.com/watch?v=RhZ330eeCTc" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tg-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://www.youtube.com/watch?v=RhZ330eeCTc" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://github.com/amurcanov/tg-ws-proxy-android" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
                 <div id="guide-tg-android" class="guide-content">
@@ -272,8 +357,10 @@
 
                 <div class="tool-info"><b>Windows</b></div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn" onclick="toggleGuide('guide-tg-win')">Гайд</button>
-                    <a href="https://www.youtube.com/watch?v=eWr-mK9wiNY" target="_blank" class="btn">Видео гайд</a>
+                    <div class="guide-btn-group">
+                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tg-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                        <a href="https://www.youtube.com/watch?v=eWr-mK9wiNY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                    </div>
                     <a href="https://github.com/Flowseal/tg-ws-proxy" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
                 <div id="guide-tg-win" class="guide-content">
@@ -349,8 +436,9 @@
 
             <div class="card">
                 <h2>Другие сайты с измерением скорости: </h2>
-                    <a href="https://2ip.io/speed" target="_blank" class="btn btn-outline">2ip</a>
+                    <a href="https://2ip.io/speed" target="_blank" class="btn">2ip</a>
                     <a href="https://librespeed.org" target="_blank" class="btn btn-outline">LibreSpeed</a>
+                    <a href="https://www.speedtest.net" target="_blank" class="btn btn-outline">Speedtest by Ookla</a>
             </div>
         </section>
     </main>

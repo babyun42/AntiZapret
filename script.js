@@ -1,64 +1,246 @@
 /* ЛОГИКА ЭКРАНА ЗАГРУЗКИ */
 window.addEventListener('load', () => {
+    // Задержка внутри 1–3с, чтобы экран загрузки не мигал слишком быстро,
+    // плюс сам фейд теперь длиннее (0.6с в CSS) — исчезновение выглядит плавным.
     setTimeout(() => {
         const loader = document.getElementById('loader');
         if(loader) loader.classList.add('hidden');
-    }, 400);
+    }, 1800);
 });
 
+// Переключает иконку внутри кнопки-гайда: Keyboard Arrow Down <-> close (открыто),
+// с небольшой анимацией — иконка сначала сжимается/поворачивается и исчезает,
+// затем на её месте появляется новая.
+function setGuideBtnIcon(btn, isOpen) {
+    if(!btn) return;
+    const icon = btn.querySelector('.material-symbols-outlined');
+    if(!icon) return;
+    icon.style.transform = 'scale(0.4) rotate(-90deg)';
+    icon.style.opacity = '0';
+    setTimeout(() => {
+        icon.textContent = isOpen ? 'close' : 'Keyboard_Arrow_Down';
+        icon.style.transform = 'scale(1) rotate(0deg)';
+        icon.style.opacity = '1';
+    }, 140);
+}
+
 // Переключение обычных гайдов
-function toggleGuide(id) {
+function toggleGuide(id, btn) {
     const guide = document.getElementById(id);
     if(guide) guide.classList.toggle('visible');
+    const isOpen = guide && guide.classList.contains('visible');
+    // Пока гайд открыт — левая (иконочная) кнопка остаётся полностью
+    // скруглённой капсулой, а не только на время наведения/нажатия.
+    if(btn) btn.classList.toggle('open', isOpen);
+    setGuideBtnIcon(btn, isOpen);
 }
 
 // Специальное переключение для Tor Android (ссылки + текст)
-function toggleTorGuide() {
+function toggleTorGuide(btn) {
     const links = document.getElementById('tor-android-links');
     const guide = document.getElementById('guide-tor-android');
     if(links) links.classList.toggle('visible');
     if(guide) guide.classList.toggle('visible');
+    const isOpen = guide && guide.classList.contains('visible');
+    if(btn) btn.classList.toggle('open', isOpen);
+    setGuideBtnIcon(btn, isOpen);
 }
 
-/* ЛОГИКА ТЕМНОЙ ТЕМЫ С ИКОНКАМИ MATERIAL */
-const themeBtn = document.getElementById('theme-btn');
 
-// 1. Проверяем память СРАЗУ при загрузке скрипта
-const savedTheme = localStorage.getItem('site-theme');
+/* ЛОГИКА ТЕМЫ: ТЁМНЫЙ/СВЕТЛЫЙ РЕЖИМ + ДИНАМИЧЕСКИЙ АКЦЕНТНЫЙ ЦВЕТ
+   Кнопка теперь не переключает тему сама, а открывает панель-редактор:
+   внутри — переключатель светлой/тёмной темы, набор готовых цветов, свой
+   цвет и сброс. Активный акцентный цвет задаётся одним "оттенком" (hue),
+   из которого на лету пересчитываются все 10 цветовых токенов сайта. */
+const THEME_STORAGE_KEY = 'site-theme-settings';
+const THEME_TOKENS = [
+    '--md-sys-color-background', '--md-sys-color-on-background',
+    '--md-sys-color-surface', '--md-sys-color-surface-variant', '--md-sys-color-on-surface-variant',
+    '--md-sys-color-primary', '--md-sys-color-on-primary',
+    '--md-sys-color-primary-container', '--md-sys-color-on-primary-container',
+    '--md-sys-color-outline'
+];
 
-// Если в памяти есть темная тема, сразу включаем её и ставим иконку light_mode (солнце)
-if (savedTheme === 'dark') {
-    document.body.classList.add('dark-theme');
-    if(themeBtn) themeBtn.innerText = 'light_mode';
-} else {
-    document.body.classList.remove('dark-theme');
-    if(themeBtn) themeBtn.innerText = 'dark_mode'; // Иконка луны для светлой темы
+function loadThemeSettings() {
+    try {
+        const raw = localStorage.getItem(THEME_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+}
+function saveThemeSettings(settings) {
+    try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(settings)); } catch (e) {}
 }
 
-// 2. Логика при нажатии на кнопку
-if(themeBtn) {
-    themeBtn.addEventListener('click', () => {
-        // Переключаем тему
-        document.body.classList.toggle('dark-theme');
+// Оттенок (0-360) из HEX — нужен, чтобы понять, какой hue выбрали через
+// нативный input[type=color].
+function hexToHue(hex) {
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    const d = max - min;
+    let h = 0;
+    if (d !== 0) {
+        if (max === r) h = ((g - b) / d) % 6;
+        else if (max === g) h = (b - r) / d + 2;
+        else h = (r - g) / d + 4;
+        h = Math.round(h * 60);
+        if (h < 0) h += 360;
+    }
+    return h;
+}
 
-        // Проверяем, включилась ли темная тема
-        const isDark = document.body.classList.contains('dark-theme');
+// Обратно: HSL -> HEX, чтобы показать текущий акцент в input[type=color].
+function hslToHex(h, s, l) {
+    s /= 100; l /= 100;
+    const k = n => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    const toHex = x => Math.round(255 * x).toString(16).padStart(2, '0');
+    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+}
+function hueToHex(hue) {
+    return hslToHex(hue, 90, 38);
+}
 
-        // Меняем иконку (если включили темную - показываем солнце для обратного переключения)
-        themeBtn.innerText = isDark ? 'light_mode' : 'dark_mode';
+// Приблизительная генерация M3-подобной палитры из одного оттенка. Это не
+// полноценный алгоритм HCT из material-color-utilities, а лёгкое
+// HSL-приближение — но токенов всего 10, и подобранные S/L неплохо держат
+// контраст текста на фоне в обоих режимах.
+function buildPalette(hue, isDark) {
+    return isDark ? {
+        '--md-sys-color-background': `hsl(${hue}, 12%, 10%)`,
+        '--md-sys-color-on-background': `hsl(${hue}, 8%, 90%)`,
+        '--md-sys-color-surface': `hsl(${hue}, 10%, 13%)`,
+        '--md-sys-color-surface-variant': `hsl(${hue}, 10%, 28%)`,
+        '--md-sys-color-on-surface-variant': `hsl(${hue}, 12%, 79%)`,
+        '--md-sys-color-primary': `hsl(${hue}, 80%, 83%)`,
+        '--md-sys-color-on-primary': `hsl(${hue}, 60%, 18%)`,
+        '--md-sys-color-primary-container': `hsl(${hue}, 55%, 27%)`,
+        '--md-sys-color-on-primary-container': `hsl(${hue}, 80%, 90%)`,
+        '--md-sys-color-outline': `hsl(${hue}, 6%, 58%)`,
+    } : {
+        '--md-sys-color-background': `hsl(${hue}, 30%, 99%)`,
+        '--md-sys-color-on-background': `hsl(${hue}, 10%, 11%)`,
+        '--md-sys-color-surface': `hsl(${hue}, 24%, 96%)`,
+        '--md-sys-color-surface-variant': `hsl(${hue}, 20%, 90%)`,
+        '--md-sys-color-on-surface-variant': `hsl(${hue}, 8%, 29%)`,
+        '--md-sys-color-primary': `hsl(${hue}, 90%, 38%)`,
+        '--md-sys-color-on-primary': '#ffffff',
+        '--md-sys-color-primary-container': `hsl(${hue}, 95%, 92%)`,
+        '--md-sys-color-on-primary-container': `hsl(${hue}, 85%, 15%)`,
+        '--md-sys-color-outline': `hsl(${hue}, 6%, 48%)`,
+    };
+}
 
-        // Записываем результат в память браузера (localStorage)
-        localStorage.setItem('site-theme', isDark ? 'dark' : 'light');
+// hue === null значит "заводская палитра" — просто снимаем инлайн-переопределения
+// и в силу вступают обычные значения из :root / body.dark-theme в style.css.
+// ВАЖНО: переопределяем именно на <body>, а не на <html> — иначе в тёмной
+// теме правило body.dark-theme{...} (объявлено прямо на самом body) всё
+// равно победило бы унаследованное с html значение, и кастомный цвет просто
+// не был бы виден при переключении на тёмную тему.
+function applyHue(hue, isDark) {
+    const rootStyle = document.body.style;
+    if (hue === null || hue === undefined) {
+        THEME_TOKENS.forEach(t => rootStyle.removeProperty(t));
+        return;
+    }
+    const palette = buildPalette(hue, isDark);
+    THEME_TOKENS.forEach(t => rootStyle.setProperty(t, palette[t]));
+}
 
-        // Если карта уже загружена, меняем её стиль на лету
-        if (map && window.currentTiles) {
-            const newTilesUrl = isDark
-                ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-            window.currentTiles.setUrl(newTilesUrl);
-        }
+function syncMapTiles(isDark) {
+    if (map && window.currentTiles) {
+        const newTilesUrl = isDark
+            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+            : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+        window.currentTiles.setUrl(newTilesUrl);
+    }
+}
+
+// 1. Считываем сохранённые настройки и сразу применяем их — ещё до того, как
+//    настроится сама панель, чтобы страница не "мигала" заводской темой.
+const themeSettings = loadThemeSettings();
+const legacySavedTheme = localStorage.getItem('site-theme'); // старый ключ, для обратной совместимости
+let isDarkMode = typeof themeSettings.dark === 'boolean' ? themeSettings.dark : (legacySavedTheme === 'dark');
+let currentHue = typeof themeSettings.hue === 'number' ? themeSettings.hue : null;
+
+document.body.classList.toggle('dark-theme', isDarkMode);
+applyHue(currentHue, isDarkMode);
+
+// 2. Сама панель: открытие/закрытие, переключатель, пресеты, свой цвет, сброс.
+(function setupThemeEditor() {
+    const btn = document.getElementById('theme-btn');
+    const panel = document.getElementById('theme-editor-panel');
+    const darkSwitch = document.getElementById('dark-mode-switch');
+    const colorInput = document.getElementById('custom-color-input');
+    const resetBtn = document.getElementById('theme-reset-btn');
+    const presetButtons = document.querySelectorAll('.theme-preset');
+    if (!btn) return;
+
+    if (darkSwitch) darkSwitch.checked = isDarkMode;
+    if (colorInput && currentHue !== null) colorInput.value = hueToHex(currentHue);
+
+    function highlightPreset() {
+        presetButtons.forEach(p => {
+            p.classList.toggle('selected', Number(p.dataset.hue) === currentHue);
+        });
+    }
+    highlightPreset();
+
+    function persist() {
+        saveThemeSettings({ dark: isDarkMode, hue: currentHue });
+        localStorage.setItem('site-theme', isDarkMode ? 'dark' : 'light'); // держим старый ключ синхронным
+    }
+
+    if (panel) {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            panel.classList.toggle('open');
+        });
+        panel.addEventListener('click', (e) => e.stopPropagation());
+        document.addEventListener('click', () => panel.classList.remove('open'));
+    }
+
+    if (darkSwitch) {
+        darkSwitch.addEventListener('change', () => {
+            isDarkMode = darkSwitch.checked;
+            document.body.classList.toggle('dark-theme', isDarkMode);
+            applyHue(currentHue, isDarkMode);
+            syncMapTiles(isDarkMode);
+            persist();
+        });
+    }
+
+    presetButtons.forEach(p => {
+        p.addEventListener('click', () => {
+            currentHue = Number(p.dataset.hue);
+            applyHue(currentHue, isDarkMode);
+            if (colorInput) colorInput.value = hueToHex(currentHue);
+            highlightPreset();
+            persist();
+        });
     });
-}
+
+    if (colorInput) {
+        colorInput.addEventListener('input', () => {
+            currentHue = hexToHue(colorInput.value);
+            applyHue(currentHue, isDarkMode);
+            highlightPreset();
+            persist();
+        });
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            currentHue = null;
+            applyHue(null, isDarkMode);
+            if (colorInput) colorInput.value = '#005ac1';
+            highlightPreset();
+            persist();
+        });
+    }
+})();
 
 /* ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК */
 const navContainer = document.querySelector('.nav-container');
@@ -222,10 +404,21 @@ if(ipSpan) {
         // Теперь сначала копируем текущий IP в буфер обмена (с тостом), и только
         // после этого включаем редактирование.
         const startEditing = () => {
+            // Замеряем точный размер строки ДО подмены на input — так рамка не
+            // "прыгнет" в размере, даже если у input чуть другие метрики
+            // шрифта или box-sizing по умолчанию, отличные от span.
+            const rect = ipSpan.getBoundingClientRect();
+            const computed = getComputedStyle(ipSpan);
+
             const input = document.createElement('input');
             input.type = 'text';
             input.value = currentIp;
             input.classList.add('ip-edit-input');
+            input.style.width = `${rect.width}px`;
+            input.style.height = `${rect.height}px`;
+            input.style.boxSizing = 'border-box';
+            input.style.fontSize = computed.fontSize;
+
             ipSpan.replaceWith(input);
             input.focus();
             input.select();
@@ -305,10 +498,11 @@ function copyKey(elementId, btn) {
 })();
 
 /* --- ПОДСКАЗКА НАД КНОПКОЙ ТЕСТА СКОРОСТИ ---
-   Если навести на кнопку и продержать курсор 3 секунды, пока идёт сам тест
-   (кнопка задизейблена), показываем шутливую подсказку. Слушаем hover не на
-   самой кнопке, а на обёртке — задизейбленная кнопка не всегда стабильно
-   отдаёт мышиные события в разных браузерах. */
+   Наводишь на кнопку (в любом её состоянии — и активна, и пока идёт тест) и
+   держишь курсор ~2 секунды — всплывает подсказка. Работает и на десктопе
+   (наведение мышью), и на телефоне (тап и удержание — mouseenter там тоже
+   срабатывает). Слушаем hover не на самой кнопке, а на обёртке — задизейбленная
+   кнопка не всегда стабильно отдаёт мышиные события в разных браузерах. */
 (function setupSpeedtestHint() {
     const btn = document.getElementById('start-speedtest-btn');
     const tooltip = document.getElementById('speedtest-tooltip');
@@ -318,10 +512,9 @@ function copyKey(elementId, btn) {
     let holdTimeout = null;
 
     wrap.addEventListener('mouseenter', () => {
-        if (!btn.disabled) return; // подсказка нужна только пока реально идёт тест
         holdTimeout = setTimeout(() => {
-            if (btn.disabled) tooltip.classList.add('show');
-        }, 3000);
+            tooltip.classList.add('show');
+        }, 2000);
     });
 
     wrap.addEventListener('mouseleave', () => {
@@ -485,3 +678,4 @@ if (btnSpeed) {
         }
     });
 }
+
