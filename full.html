@@ -1,2056 +1,1933 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Free Internet</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+   <title>Free Internet</title>
 
-    <!-- Подключаем шрифты Roboto и иконки Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+   <!-- Подключаем шрифты Roboto и иконки Material Symbols -->
+   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
-    <!-- Подключаем стили для карты -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+   <!-- Подключаем стили для карты -->
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-    <style>
-        /* --- УТИЛИТА ДЛЯ ИКОНОК MATERIAL SYMBOLS ---
-           Общий класс для всех иконок-лигатур по сайту (вкладки, split-button,
-           редактор темы и т.д.), чтобы не дублировать этот набор свойств в каждом
-           отдельном месте. */
-        .material-symbols-outlined {
-            font-family: 'Material Symbols Outlined';
-            font-weight: normal;
-            font-style: normal;
-            font-size: 20px;
-            line-height: 1;
-            letter-spacing: normal;
-            text-transform: none;
-            display: inline-block;
-            white-space: nowrap;
-            word-wrap: normal;
-            direction: ltr;
-            -webkit-font-feature-settings: 'liga';
-            -webkit-font-smoothing: antialiased;
-            vertical-align: middle;
-        }
+   <style>
+       /* --- УТИЛИТА ДЛЯ ИКОНОК MATERIAL SYMBOLS --- */
+       .material-symbols-outlined {
+           font-family: 'Material Symbols Outlined';
+           font-weight: normal;
+           font-style: normal;
+           font-size: 20px;
+           line-height: 1;
+           letter-spacing: normal;
+           text-transform: none;
+           display: inline-block;
+           white-space: nowrap;
+           word-wrap: normal;
+           direction: ltr;
+           -webkit-font-feature-settings: 'liga';
+           -webkit-font-smoothing: antialiased;
+           vertical-align: middle;
+       }
 
-        /* --- СТИЛИ КАРТЫ И СКРЫТИЕ ПЛАШЕК --- */
-        .leaflet-control-container {
-            display: none !important;
-        }
-        #map {
-            height: 250px;
-            width: 100%;
-            border-radius: 16px;
-            margin-top: 16px;
-            z-index: 1;
-            border: 2px solid var(--md-sys-color-surface-variant);
-        }
-        .leaflet-container {
-            background-color: var(--md-sys-color-background) !important;
-        }
+       /* --- СТИЛИ КАРТЫ И СКРЫТИЕ ПЛАШЕК --- */
+       .leaflet-control-container {
+           display: none !important;
+       }
+       #map {
+           height: 250px;
+           width: 100%;
+           border-radius: 16px;
+           margin-top: 16px;
+           z-index: 1;
+           border: 2px solid var(--md-sys-color-surface-variant);
+       }
+       .leaflet-container {
+           background-color: var(--md-sys-color-background) !important;
+       }
 
-        /* --- СТИЛЬ ДЛЯ ИНТЕРАКТИВНОГО IP И ПОЛЯ ВВОДА --- */
-        #user-ip {
-            color: var(--md-sys-color-primary);
-            cursor: pointer;
-            padding: 2px 8px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background-color: var(--md-sys-color-surface-variant);
-        }
-        #user-ip:hover {
-            background-color: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-        }
-        /* Иконка Material "edit" (Карандаш) */
-        #user-ip::after {
-            content: "edit";
-            font-family: 'Material Symbols Outlined';
-            font-size: 16px;
-            opacity: 0.8;
-            font-weight: normal;
-            font-style: normal;
-            line-height: 1;
-            letter-spacing: normal;
-            text-transform: none;
-            display: inline-block;
-            -webkit-font-feature-settings: 'liga';
-            -webkit-font-smoothing: antialiased;
-        }
+       /* --- СТИЛЬ ДЛЯ ИНТЕРАКТИВНОГО IP И ПОЛЯ ВВОДА --- */
+       #user-ip {
+           color: var(--md-sys-color-primary);
+           cursor: pointer;
+           padding: 2px 8px;
+           border-radius: 8px;
+           transition: all 0.2s ease;
+           font-weight: 500;
+           display: inline-flex;
+           align-items: center;
+           gap: 6px;
+           background-color: var(--md-sys-color-surface-variant);
+       }
+       #user-ip:hover {
+           background-color: var(--md-sys-color-primary-container);
+           color: var(--md-sys-color-on-primary-container);
+       }
+       #user-ip::after {
+           content: "edit";
+           font-family: 'Material Symbols Outlined';
+           font-size: 16px;
+           opacity: 0.8;
+           font-weight: normal;
+           font-style: normal;
+           line-height: 1;
+           letter-spacing: normal;
+           text-transform: none;
+           display: inline-block;
+           -webkit-font-feature-settings: 'liga';
+           -webkit-font-smoothing: antialiased;
+       }
 
-        .ip-edit-input {
-            font-family: 'Roboto', sans-serif;
-            font-size: inherit;
-            font-weight: 500;
-            /* Раньше поле ввода перекрашивалось в цвета hover-состояния и теряло
-               скругление снизу (border-radius: 8px 8px 0 0) — из-за этого при клике
-               строка IP заметно "прыгала" по стилю. Теперь инпут выглядит как копия
-               статичного (не наведённого) вида #user-ip — того же фона и цвета
-               текста, тех же скруглений, — а точный размер (ширину/высоту) JS
-               выставляет инлайн-стилем по факту замера span перед подменой, так что
-               переключение между span и input визуально не даёт никакого "скачка". */
-            color: var(--md-sys-color-primary);
-            background-color: var(--md-sys-color-surface-variant);
-            border: none;
-            border-radius: 8px;
-            padding: 2px 8px;
-            outline: none;
-            transition: background-color 0.15s ease, color 0.15s ease;
-        }
+       .ip-edit-input {
+           font-family: 'Roboto', sans-serif;
+           font-size: inherit;
+           font-weight: 500;
+           color: var(--md-sys-color-primary);
+           background-color: var(--md-sys-color-surface-variant);
+           border: none;
+           border-radius: 8px;
+           padding: 2px 8px;
+           outline: none;
+           transition: background-color 0.15s ease, color 0.15s ease;
+       }
 
-        /* --- "мосты" РЯДОМ С TOR BRIDGES: подсветка при наведении --- */
-        .bridges-hint {
-            opacity: 0.2;
-            transition: opacity 0.6s ease;
-        }
-        .bridges-hint.is-peeking {
-            opacity: 1;
-            transition: opacity 0.4s ease;
-        }
-        .bridges-hint.is-settled {
-            opacity: 0.2;
-            transition: opacity 0.6s ease;
-        }
+       /* --- "мосты" РЯДОМ С TOR BRIDGES --- */
+       .bridges-hint {
+           opacity: 0.2;
+           transition: opacity 0.6s ease;
+       }
+       .bridges-hint.is-peeking {
+           opacity: 1;
+           transition: opacity 0.4s ease;
+       }
+       .bridges-hint.is-settled {
+           opacity: 0.2;
+           transition: opacity 0.6s ease;
+       }
 
-        /* --- ПОДСКАЗКА НАД КНОПКОЙ ТЕСТА СКОРОСТИ (наведение + 3с удержания) --- */
-        .speedtest-btn-wrap {
-            position: relative;
-        }
-        .speedtest-tooltip {
-            position: absolute;
-            left: 50%;
-            bottom: calc(100% + 10px);
-            transform: translate(-50%, 6px);
-            width: max-content;
-            max-width: 260px;
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 13px;
-            line-height: 1.4;
-            text-align: center;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            z-index: 5;
-        }
-        .speedtest-tooltip.show {
-            opacity: 1;
-            transform: translate(-50%, 0);
-        }
+       /* --- ПОДСКАЗКА НАД КНОПКОЙ ТЕСТА СКОРОСТИ --- */
+       .speedtest-btn-wrap {
+           position: relative;
+       }
+       .speedtest-tooltip {
+           position: absolute;
+           left: 50%;
+           bottom: calc(100% + 10px);
+           transform: translate(-50%, 6px);
+           width: max-content;
+           max-width: 260px;
+           background-color: var(--md-sys-color-primary);
+           color: var(--md-sys-color-on-primary);
+           padding: 10px 14px;
+           border-radius: 12px;
+           font-size: 13px;
+           line-height: 1.4;
+           text-align: center;
+           box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+           opacity: 0;
+           pointer-events: none;
+           transition: opacity 0.5s ease, transform 0.5s ease;
+           z-index: 5;
+       }
+       .speedtest-tooltip.show {
+           opacity: 1;
+           transform: translate(-50%, 0);
+       }
 
-        /* --- СВЕТЛАЯ ТЕМА (ПО УМОЛЧАНИЮ) --- */
-        :root {
-            --md-sys-color-background: #fdfbff;
-            --md-sys-color-on-background: #1a1b1e;
-            --md-sys-color-surface: #f3f3fa;
-            --md-sys-color-surface-variant: #e1e2ec;
-            --md-sys-color-on-surface-variant: #44474e;
-            --md-sys-color-primary: #005ac1;
-            --md-sys-color-on-primary: #ffffff;
-            --md-sys-color-primary-container: #d8e2ff;
-            --md-sys-color-on-primary-container: #001a41;
-            --md-sys-color-outline: #74777f;
-            --header-bg: rgba(255, 255, 255, 0.75);
-        }
+       /* --- СВЕТЛАЯ ТЕМА --- */
+       :root {
+           --md-sys-color-background: #fdfbff;
+           --md-sys-color-on-background: #1a1b1e;
+           --md-sys-color-surface: #f3f3fa;
+           --md-sys-color-surface-variant: #e1e2ec;
+           --md-sys-color-on-surface-variant: #44474e;
+           --md-sys-color-primary: #005ac1;
+           --md-sys-color-on-primary: #ffffff;
+           --md-sys-color-primary-container: #d8e2ff;
+           --md-sys-color-on-primary-container: #001a41;
+           --md-sys-color-outline: #74777f;
+           --header-bg: rgba(255, 255, 255, 0.75);
+       }
 
-        /* --- ТЕМНАЯ ТЕМА --- */
-        body.dark-theme {
-            --md-sys-color-background: #1a1c1e;
-            --md-sys-color-on-background: #e2e2e6;
-            --md-sys-color-surface: #202124;
-            --md-sys-color-surface-variant: #44474e;
-            --md-sys-color-on-surface-variant: #c4c6d0;
-            --md-sys-color-primary: #a8c7fa;
-            --md-sys-color-on-primary: #003062;
-            --md-sys-color-primary-container: #004a77;
-            --md-sys-color-on-primary-container: #c2e7ff;
-            --md-sys-color-outline: #8e918f;
-            --header-bg: rgba(28, 27, 31, 0.75);
-        }
+       /* --- ТЕМНАЯ ТЕМА --- */
+       body.dark-theme {
+           --md-sys-color-background: #1a1c1e;
+           --md-sys-color-on-background: #e2e2e6;
+           --md-sys-color-surface: #202124;
+           --md-sys-color-surface-variant: #44474e;
+           --md-sys-color-on-surface-variant: #c4c6d0;
+           --md-sys-color-primary: #a8c7fa;
+           --md-sys-color-on-primary: #003062;
+           --md-sys-color-primary-container: #004a77;
+           --md-sys-color-on-primary-container: #c2e7ff;
+           --md-sys-color-outline: #8e918f;
+           --header-bg: rgba(28, 27, 31, 0.75);
+       }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+       * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* --- Стили для блока копирования --- */
-        .copy-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--md-sys-color-surface-variant, #E1E2E8);
-            padding: 12px 12px;
-            border-radius: 16px;
-            margin-bottom: 24px;
-            gap: 12px;
-        }
+       /* --- Стили для блока копирования --- */
+       .copy-container {
+           display: flex;
+           align-items: center;
+           justify-content: space-between;
+           background-color: var(--md-sys-color-surface-variant);
+           padding: 12px 12px;
+           border-radius: 16px;
+           margin-bottom: 24px;
+           gap: 12px;
+           position: relative;
+       }
 
-        .secret-text {
-            font-family: monospace;
-            color: #44474E;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            max-width: 60%;
-        }
+       .secret-text {
+           font-family: monospace;
+           color: var(--md-sys-color-on-surface-variant);
+           overflow: hidden;
+           white-space: nowrap;
+           text-overflow: ellipsis;
+           max-width: 60%;
+       }
 
-        body.dark-theme .secret-text {
-            color: #E3E3E3;
-        }
+       /* АДАПТИВНАЯ КНОПКА СКОПИРОВАТЬ */
+       .copy-btn {
+           background-color: var(--md-sys-color-primary) !important;
+           color: var(--md-sys-color-on-primary) !important;
+           border: none !important;
+           width: 52px !important;
+           height: 52px !important;
+           border-radius: 18px !important;
+           display: flex !important;
+           align-items: center !important;
+           justify-content: center !important;
+           padding: 0 !important;
+           cursor: pointer;
+           position: relative;
+           flex-shrink: 0;
+           transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), 
+                       background-color 0.3s ease, 
+                       filter 0.2s ease, 
+                       box-shadow 0.25s ease !important;
+       }
 
-        .copy-btn {
-            background-color: #005ac1 !important;
-            color: #E3E3E3 !important;
-            border: none !important;
-            width: 52px !important;
-            height: 52px !important;
-            border-radius: 18px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 0 !important;
-        }
+       .copy-btn svg {
+           margin: 0 !important;
+           display: block !important;
+       }
 
-        .copy-btn svg {
-            margin: 0 !important;
-            display: block !important;
-        }
+       .copy-btn:hover {
+           filter: brightness(1.12);
+           transform: scale(1.06);
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+       }
 
-        .copy-btn:hover {
-            background-color: #0072B1 !important;
-        }
+       .copy-btn:active {
+           transform: scale(0.95);
+       }
 
-        /* --- ПОДСКАЗКА ПРИ НАВЕДЕНИИ (TOOLTIP) --- */
-        .tooltip-text {
-            visibility: hidden;
-            background-color: #313033;
-            color: #F4EFF4;
-            text-align: center;
-            padding: 6px 12px;
-            border-radius: 8px;
-            position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 12px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
+       /* --- ПОДСКАЗКА ПРИ НАВЕДЕНИИ (TOOLTIP) --- */
+       .tooltip-text {
+           visibility: hidden;
+           background-color: var(--md-sys-color-on-background);
+           color: var(--md-sys-color-background);
+           text-align: center;
+           padding: 6px 12px;
+           border-radius: 8px;
+           position: absolute;
+           bottom: 120%;
+           left: 50%;
+           transform: translateX(-50%);
+           white-space: nowrap;
+           font-size: 12px;
+           opacity: 0;
+           transition: opacity 0.3s ease, transform 0.3s ease;
+           pointer-events: none;
+           box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+       }
 
-        .copy-btn:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
+       .copy-btn:hover .tooltip-text {
+           visibility: visible;
+           opacity: 1;
+           transform: translateX(-50%) translateY(-2px);
+       }
 
-        .toast-notification {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease !important;
-            background-color: #322F35;
-            color: #F5EFF7;
-            padding: 12px 24px;
-            border-radius: 100px;
-            z-index: 9999 !important;
-            box-shadow: 0px 3px 6px rgba(0,0,0,0.2);
-            pointer-events: none;
-        }
+       .toast-notification {
+           position: fixed;
+           bottom: 30px;
+           left: 50%;
+           transform: translateX(-50%) translateY(20px);
+           opacity: 0 !important;
+           visibility: hidden !important;
+           transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease !important;
+           background-color: #322F35;
+           color: #F5EFF7;
+           padding: 12px 24px;
+           border-radius: 100px;
+           z-index: 9999 !important;
+           box-shadow: 0px 3px 6px rgba(0,0,0,0.2);
+           pointer-events: none;
+       }
 
-        .toast-notification.show {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translateX(-50%) translateY(0);
-        }
+       .toast-notification.show {
+           opacity: 1 !important;
+           visibility: visible !important;
+           transform: translateX(-50%) translateY(0);
+       }
 
-        body {
-            font-family: 'Roboto', system-ui, -apple-system, sans-serif;
-            background-color: var(--md-sys-color-background);
-            color: var(--md-sys-color-on-background);
-            margin: 0;
-            padding: 0;
-            line-height: 1.5;
-            transition: background-color 0.3s, color 0.3s;
-            overflow-x: hidden; /* страховка от горизонтального скролла всей страницы на телефоне */
-        }
+       body {
+           font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+           background-color: var(--md-sys-color-background);
+           color: var(--md-sys-color-on-background);
+           margin: 0;
+           padding: 0;
+           line-height: 1.5;
+           transition: background-color 0.3s, color 0.3s;
+           overflow-x: hidden;
+       }
 
-        /* --- ЭЛЕМЕНТЫ ЗАДНЕГО ФОНА MATERIAL 3 --- */
-        .m3-shape {
-            position: fixed;
-            z-index: -1;
-            pointer-events: none;
-            opacity: 0.9;
-            transition: opacity 0.4s ease;
-        }
+       /* --- ЭЛЕМЕНТЫ ЗАДНЕГО ФОНА MATERIAL 3 --- */
+       .m3-shape {
+           position: fixed;
+           z-index: -1;
+           pointer-events: none;
+           opacity: 0.9;
+           transition: opacity 0.4s ease;
+       }
 
-        body.dark-theme .m3-shape {
-            opacity: 0.12;
-        }
+       body.dark-theme .m3-shape {
+           opacity: 0.12;
+       }
 
-        .shape-blob {
-            width: 350px;
-            height: 350px;
-            background-color: #FFB4AB;
-            top: -50px;
-            left: -50px;
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            animation: morph-blob 8s ease-in-out infinite alternate;
-        }
+       .shape-blob {
+           width: 350px;
+           height: 350px;
+           background-color: #FFB4AB;
+           top: -50px;
+           left: -50px;
+           border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+           animation: morph-blob 8s ease-in-out infinite alternate;
+       }
 
-        .shape-squircle {
-            width: 400px;
-            height: 380px;
-            background-color: #D0BCFF;
-            top: 30%;
-            right: -80px;
-            border-radius: 35%;
-            transform: rotate(15deg);
-            animation: float-shape 10s ease-in-out infinite alternate;
-        }
+       .shape-squircle {
+           width: 400px;
+           height: 380px;
+           background-color: #D0BCFF;
+           top: 30%;
+           right: -80px;
+           border-radius: 35%;
+           transform: rotate(15deg);
+           animation: float-shape 10s ease-in-out infinite alternate;
+       }
 
-        .shape-poly {
-            width: 220px;
-            height: 220px;
-            background-color: #4F378B;
-            bottom: 10%;
-            left: 2%;
-            clip-path: polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%);
-            animation: float-shape 12s ease-in-out infinite alternate-reverse;
-        }
+       .shape-poly {
+           width: 220px;
+           height: 220px;
+           background-color: #4F378B;
+           bottom: 10%;
+           left: 2%;
+           clip-path: polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%);
+           animation: float-shape 12s ease-in-out infinite alternate-reverse;
+       }
 
-        .shape-circle {
-            width: 180px;
-            height: 180px;
-            background-color: #D8E2FF;
-            bottom: -30px;
-            right: 15%;
-            border-radius: 50%;
-            animation: morph-blob 9s ease-in-out infinite alternate-reverse;
-        }
+       .shape-circle {
+           width: 180px;
+           height: 180px;
+           background-color: #D8E2FF;
+           bottom: -30px;
+           right: 15%;
+           border-radius: 50%;
+           animation: morph-blob 9s ease-in-out infinite alternate-reverse;
+       }
 
-        .shape-eladanca {
-            width: 260px;
-            height: 230px;
-            background-color: #d2abff;
-            top: 100px;
-            left: 1180px;
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            animation: float-shape 50s ease-in-out infinite alternate;
-        }
+       .shape-eladanca {
+           width: 260px;
+           height: 230px;
+           background-color: #d2abff;
+           top: 100px;
+           left: 1180px;
+           border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+           animation: float-shape 50s ease-in-out infinite alternate;
+       }
 
-        @keyframes morph-blob {
-            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-        }
+       @keyframes morph-blob {
+           0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+           100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+       }
 
-        @keyframes float-shape {
-            0% { transform: translateY(-100) rotate(150deg); }
-            100% { transform: translateY(300px) rotate(100deg); }
-        }
+       @keyframes float-shape {
+           0% { transform: translateY(-100) rotate(150deg); }
+           100% { transform: translateY(300px) rotate(100deg); }
+       }
 
-        @keyframes spin-material {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+       @keyframes spin-material {
+           0% { transform: rotate(0deg); }
+           100% { transform: rotate(360deg); }
+       }
 
-        .material-spinner {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            animation: spin-material 2.5s linear infinite;
-            fill: currentColor;
-        }
+       .material-spinner {
+           display: inline-block;
+           width: 24px;
+           height: 24px;
+           animation: spin-material 2.5s linear infinite;
+           fill: currentColor;
+       }
 
-        /* --- ЭКРАН ЗАГРУЗКИ ---
-           Раньше у #loader/.loader-overlay/.md-spinner не было вообще никаких
-           стилей, поэтому оверлей никогда не появлялся, а JS просто добавлял
-           класс .hidden, которого тоже не существовало. Экран загрузки был
-           полностью "мёртвым". Круговой индикатор — незамкнутая дуга: она и
-           вращается, и сама меняет длину, как настоящий M3-индикатор
-           неопределённого прогресса (не просто крутящаяся окружность). */
-           .loader-overlay {
-               position: fixed;
-               inset: 0;
-               z-index: 9998;
-               display: flex;
-               align-items: center;
-               justify-content: center;
-               background-color: var(--md-sys-color-background);
-               opacity: 1;
-               visibility: visible;
-               transition: opacity 0.6s ease, visibility 0.6s ease;
+       /* --- ЭКРАН ЗАГРУЗКИ --- */
+       .loader-overlay {
+           position: fixed;
+           inset: 0;
+           z-index: 9998;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           background-color: var(--md-sys-color-background);
+           opacity: 1;
+           visibility: visible;
+           transition: opacity 0.6s ease, visibility 0.6s ease;
+       }
+       .loader-overlay.hidden {
+           opacity: 0;
+           visibility: hidden;
+           pointer-events: none;
+       }
+
+       .spinner {
+           width: 48px;
+           height: 48px;
+           animation: spinner-rotate 1.6s linear infinite;
+           transform-origin: center;
+       }
+
+       .arc-bg,
+       .arc-active {
+           stroke-linecap: round;
+           transform-origin: center;
+           transition: stroke 0.3s ease;
+       }
+
+       .arc-bg {
+           stroke: var(--md-sys-color-surface-variant, #49454f);
+           transform: rotate(90deg);
+           animation: morph-arc 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+       }
+
+       .arc-active {
+           stroke: var(--md-sys-color-primary, #d0bcff);
+           transform: rotate(-90deg);
+           animation: morph-arc 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+       }
+
+       @keyframes spinner-rotate {
+           0% { transform: rotate(0deg); }
+           100% { transform: rotate(360deg); }
+       }
+
+       @keyframes morph-arc {
+           0% {
+               stroke-dasharray: 8 118;
+               stroke-dashoffset: 0;
            }
-           .loader-overlay.hidden {
-               opacity: 0;
-               visibility: hidden;
-               pointer-events: none;
+           50% {
+               stroke-dasharray: 44 82;
+               stroke-dashoffset: -8;
            }
-
-           /* Общее непрерывное вращение контейнера */
-           .spinner {
-               width: 48px;
-               height: 48px;
-               animation: spinner-rotate 1.6s linear infinite;
-               transform-origin: center;
+           100% {
+               stroke-dasharray: 8 118;
+               stroke-dashoffset: -52;
            }
+       }
 
-           .arc-bg,
-           .arc-active {
-               stroke-linecap: round;
-               transform-origin: center;
-               transition: stroke 0.3s ease;
+       .btn:disabled {
+           transform: scale(0.96) !important;
+           pointer-events: none !important;
+       }
+
+       header {
+           padding: 8px 16px;
+           position: sticky; top: 0;
+           background-color: color-mix(in srgb, var(--md-sys-color-surface, #1c1b1f) 80%, transparent);
+           backdrop-filter: blur(12px);
+           -webkit-backdrop-filter: blur(12px);
+           z-index: 1000;
+           display: flex;
+           align-items: center;
+           justify-content: space-between;
+           gap: 12px;
+           transition: background-color 0.3s;
+           border-radius: 0 0 30px 30px;
+           box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+       }
+
+       /* ИСПРАВЛЕННЫЙ КОНТЕЙНЕР ВКЛАДОК */
+       .nav-container {
+           display: flex;
+           gap: 4px;
+           align-items: center;
+           background-color: transparent;
+           border: none;
+           padding: 6px 4px; /* Отступы сверху и снизу, чтобы анимация масштаба не резалась */
+           overflow-x: auto;
+           overflow-y: hidden; /* Отключаем вертикальную прокрутку */
+           touch-action: pan-x; /* Фиксируем только горизонтальные свайпы */
+           scrollbar-width: none;
+           -webkit-overflow-scrolling: touch;
+           flex-grow: 1;
+           min-width: 0;
+       }
+       .nav-container::-webkit-scrollbar { display: none; }
+
+       @media (hover: hover) and (pointer: fine) {
+           html {
+               zoom: 1.15;
            }
-
-           /* Фоновая дуга (строго в своей полусфере) */
-           .arc-bg {
-               stroke: var(--md-sys-color-surface-variant, #49454f);
-               transform: rotate(90deg);
-               animation: morph-arc 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+           .nav-container {
+               scrollbar-width: thin;
+               scrollbar-color: var(--md-sys-color-outline) transparent;
            }
-
-           /* Активная дуга (строго в противоположной полусфере) */
-           .arc-active {
-               stroke: var(--md-sys-color-primary, #d0bcff);
-               transform: rotate(-90deg);
-               animation: morph-arc 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+           .nav-container::-webkit-scrollbar {
+               display: block;
+               height: 4px;
            }
-
-           /* Вращение всей конструкции */
-           @keyframes spinner-rotate {
-               0% { transform: rotate(0deg); }
-               100% { transform: rotate(360deg); }
+           .nav-container::-webkit-scrollbar-thumb {
+               background-color: var(--md-sys-color-outline);
+               border-radius: 100px;
            }
-
-           /* Синхронное сжатие и расширение дуг без выхода за границы */
-           @keyframes morph-arc {
-               0% {
-                   stroke-dasharray: 8 118;  /* Короткие дуги, широкие зазоры */
-                   stroke-dashoffset: 0;
-               }
-               50% {
-                   stroke-dasharray: 44 82;  /* Максимальная длина (не превышает 180 градусов) */
-                   stroke-dashoffset: -8;
-               }
-               100% {
-                   stroke-dasharray: 8 118;  /* Возврат к короткой форме */
-                   stroke-dashoffset: -52;
-               }
+           .nav-container::-webkit-scrollbar-track {
+               background: transparent;
            }
+       }
 
-        .btn:disabled {
-            transform: scale(0.96) !important;
-            pointer-events: none !important;
-        }
+       /* ВКЛАДКИ И АНИМАЦИЯ ПРИ НАВЕДЕНИИ */
+       .nav-item {
+           background-color: var(--md-sys-color-surface-variant, #49454f);
+           color: var(--md-sys-color-on-surface-variant);
+           padding: 10px 16px;
+           border: none;
+           border-radius: 10px;
+           display: flex;
+           align-items: center;
+           gap: 6px;
+           cursor: pointer;
+           font-size: 14px; 
+           font-weight: 500;
+           white-space: nowrap;
+           flex-shrink: 0;
+           user-select: none;
+           transform: scale(1) translateY(0);
+           transition: background-color 0.25s cubic-bezier(0.2, 0, 0, 1),
+                       color 0.25s cubic-bezier(0.2, 0, 0, 1),
+                       border-radius 0.25s cubic-bezier(0.2, 0, 0, 1),
+                       box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1),
+                       transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                       filter 0.2s ease;
+       }
 
-        header {
-            padding: 12px 16px;
-            position: sticky; top: 0;
+       /* ЭФФЕКТ ПРИ НАВЕДЕНИИ (HOVER ANIMATION) */
+       .nav-item:hover {
+           transform: translateY(-2px) scale(1.05);
+           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+           filter: brightness(1.08);
+       }
 
-            /* Автоматически подмешивает 20% прозрачности к текущему цвету темы */
-            background-color: color-mix(in srgb, var(--md-sys-color-surface, #1c1b1f) 80%, transparent);
+       .nav-item-icon, .nav-item-check {
+           font-size: 18px;
+       }
 
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            transition: background-color 0.3s;
-            border-radius: 0 0 30px 30px;
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-        }
+       .nav-item:first-child {
+           border-radius: 100px 50px 50px 100px;
+       }
 
-        .nav-container {
-            display: flex;
-            gap: 2px; /* Физическое разделение вкладок */
-            align-items: center;
-            background-color: transparent;
-            border: none; /* Убираем общую рамку контейнера */
-            padding: 0;
-            /* Раньше тут стояло width: fit-content + display: inline-flex —
-               контейнер сжимался под размер контента и НЕ мог сжаться ещё
-               уже, поэтому на телефоне, где 5 вкладок с иконками просто не
-               помещаются в ширину экрана, они вылезали за границы шапки. */
-            overflow-x: auto;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-            flex-grow: 1;
-            min-width: 0; /* без этого flex-элемент не сожмётся уже родительского контента */
-        }
-        .nav-container::-webkit-scrollbar { display: none; }
+       .nav-item:last-child {
+           border-radius: 50px 100px 100px 50px;
+       }
 
-        /* На тач-устройствах вкладки листаются пальцем, поэтому скроллбар там
-           только мешает — прячем его (правила выше). А вот на компьютере, если
-           окно узкое и часть вкладок не помещается, скрытый скроллбар оставляет
-           пользователя с обычной мышью без единого способа долистать до них.
-           Показываем тонкий скроллбар только для устройств с мышью и наведением,
-           плюс отдаём вкладкам горизонтальную прокрутку колесом мыши (см. JS ниже).
-           Заодно чуть увеличиваем весь интерфейс — на большом экране компьютера
-           вёрстка, рассчитанная на телефон, выглядит мелковато. */
-        @media (hover: hover) and (pointer: fine) {
-            html {
-                zoom: 1.15;
-            }
-            .nav-container {
-                scrollbar-width: thin;
-                scrollbar-color: var(--md-sys-color-outline) transparent;
-            }
-            .nav-container::-webkit-scrollbar {
-                display: block;
-                height: 4px;
-            }
-            .nav-container::-webkit-scrollbar-thumb {
-                background-color: var(--md-sys-color-outline);
-                border-radius: 100px;
-            }
-            .nav-container::-webkit-scrollbar-track {
-                background: transparent;
-            }
-        }
+       .nav-item-check { display: none; }
+       
+       .nav-item.active {
+           background-color: var(--md-sys-color-primary-container, #eaddff);
+           color: var(--md-sys-color-on-primary-container);
+           border-radius: 100px;
+           box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+           transform: scale(1.05);
+       }
 
-        .nav-item {
-            /* Непрозрачный фон для базового (неактивного) состояния */
-            background-color: var(--md-sys-color-surface-variant, #49454f);
-            color: var(--md-sys-color-on-surface-variant);
-            padding: 10px 16px;
-            border: none; /* Удаляем линии-разделители */
+       .nav-item.active:hover {
+           transform: translateY(-2px) scale(1.08);
+           box-shadow: 0 5px 12px rgba(0, 0, 0, 0.22);
+       }
 
-            /* Базовое небольшое скругление для элементов в центре */
-            border-radius: 10px;
+       .nav-item:active {
+           transform: scale(0.96) translateY(0);
+       }
 
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            font-size: 14px; font-weight: 500;
-            white-space: nowrap;
-            flex-shrink: 0;
-            user-select: none;
-            transform: scale(1);
-            /* Цвет/фон/скругление едут на обычном плавном переходе, а вот
-               "подпрыгивание" (transform) — на пружинистой кривой с
-               небольшим перехлёстом, это и даёт заметную анимацию
-               переключения вкладки, а не просто смену цвета. */
-            transition: background-color 0.25s cubic-bezier(0.2, 0, 0, 1),
-                        color 0.25s cubic-bezier(0.2, 0, 0, 1),
-                        border-radius 0.25s cubic-bezier(0.2, 0, 0, 1),
-                        box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1),
-                        transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .nav-item-icon, .nav-item-check {
-            font-size: 18px;
-        }
+       .nav-item.active .nav-item-icon { display: none; }
+       .nav-item.active .nav-item-check { display: inline-block; }
 
-        /* Асимметричное скругление для крайних элементов */
-        .nav-item:first-child {
-            border-radius: 100px 50px 50px 100px;
-        }
+       .theme-toggle-btn {
+           font-family: 'Material Symbols Outlined' !important;
+           background-color: var(--md-sys-color-surface-variant);
+           color: var(--md-sys-color-on-surface-variant);
+           border: none;
+           border-radius: 50%;
+           width: 40px; height: 40px;
+           display: flex; align-items: center; justify-content: center;
+           font-size: 22px;
+           cursor: pointer;
+           flex-shrink: 0;
+           transition: transform 0.2s, background-color 0.3s;
+       }
+       .theme-toggle-btn:active { transform: scale(0.9); }
 
-        .nav-item:last-child {
-            border-radius: 50px 100px 100px 50px;
-        }
+       /* --- РЕДАКТОР ТЕМЫ --- */
+       .theme-editor-wrap {
+           position: relative;
+       }
+       .theme-editor-panel {
+           position: absolute;
+           top: calc(100% + 10px);
+           right: 0;
+           width: 260px;
+           background-color: var(--md-sys-color-surface);
+           color: var(--md-sys-color-on-background);
+           border-radius: 20px;
+           padding: 16px;
+           box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+           opacity: 0;
+           transform: translateY(-8px) scale(0.96);
+           transform-origin: top right;
+           pointer-events: none;
+           transition: opacity 0.2s ease, transform 0.2s ease;
+           z-index: 50;
+       }
+       .theme-editor-panel.open {
+           opacity: 1;
+           transform: translateY(0) scale(1);
+           pointer-events: auto;
+       }
+       .theme-editor-row {
+           display: flex;
+           align-items: center;
+           justify-content: space-between;
+           gap: 12px;
+           padding: 6px 0;
+       }
+       .theme-editor-row-label {
+           display: flex;
+           align-items: center;
+           gap: 8px;
+           font-size: 14px;
+           font-weight: 500;
+       }
+       .theme-editor-row-label .material-symbols-outlined {
+           font-size: 20px;
+           color: var(--md-sys-color-on-surface-variant);
+       }
+       .theme-editor-divider {
+           height: 1px;
+           background-color: var(--md-sys-color-surface-variant);
+           margin: 10px 0;
+       }
+       .theme-editor-section-label {
+           font-size: 12px;
+           text-transform: uppercase;
+           letter-spacing: 0.5px;
+           color: var(--md-sys-color-on-surface-variant);
+           margin-bottom: 8px;
+       }
+       .theme-preset-row {
+           display: flex;
+           flex-wrap: wrap;
+           gap: 10px;
+       }
+       .theme-preset {
+           width: 32px;
+           height: 32px;
+           border-radius: 50%;
+           border: 2px solid transparent;
+           cursor: pointer;
+           padding: 0;
+           transition: transform 0.15s ease, border-color 0.15s ease;
+       }
+       .theme-preset:hover { transform: scale(1.1); }
+       .theme-preset.selected {
+           border-color: var(--md-sys-color-on-background);
+       }
 
-        .nav-item-check { display: none; }
-        .nav-item.active {
-            background-color: var(--md-sys-color-primary-container, #eaddff);
-            color: var(--md-sys-color-on-primary-container);
-            border-radius: 100px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
-            transform: scale(1.05); /* лёгкий "подскок" — заметно, что вкладка переключилась */
-        }
-        .nav-item.active .nav-item-icon { display: none; }
-        .nav-item.active .nav-item-check { display: inline-block; }
+       .theme-color-input {
+           -webkit-appearance: none;
+           appearance: none;
+           width: 32px;
+           height: 32px;
+           border: none;
+           border-radius: 50%;
+           padding: 0;
+           cursor: pointer;
+           background: none;
+       }
+       .theme-color-input::-webkit-color-swatch-wrapper { padding: 0; border-radius: 50%; }
+       .theme-color-input::-webkit-color-swatch { border: 2px solid var(--md-sys-color-outline); border-radius: 50%; }
+       .theme-color-input::-moz-color-swatch { border: 2px solid var(--md-sys-color-outline); border-radius: 50%; }
 
-        /* Назначаем класс Material Symbols для кнопки переключения темы */
-        .theme-toggle-btn {
-            font-family: 'Material Symbols Outlined' !important;
-            background-color: var(--md-sys-color-surface-variant);
-            color: var(--md-sys-color-on-surface-variant);
-            border: none;
-            border-radius: 50%;
-            width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; /* Размер иконки */
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: transform 0.2s, background-color 0.3s;
-        }
-        .theme-toggle-btn:active { transform: scale(0.9); }
+       .theme-switch {
+           position: relative;
+           display: inline-block;
+           width: 40px;
+           height: 24px;
+           flex-shrink: 0;
+       }
+       .theme-switch input {
+           opacity: 0;
+           width: 0;
+           height: 0;
+           position: absolute;
+       }
+       .theme-switch-track {
+           position: absolute;
+           inset: 0;
+           background-color: var(--md-sys-color-surface-variant);
+           border: 2px solid var(--md-sys-color-outline);
+           border-radius: 100px;
+           transition: background-color 0.2s ease, border-color 0.2s ease;
+           cursor: pointer;
+       }
+       .theme-switch-thumb {
+           position: absolute;
+           top: 2px;
+           left: 2px;
+           width: 16px;
+           height: 16px;
+           background-color: var(--md-sys-color-outline);
+           border-radius: 50%;
+           transition: transform 0.2s ease, background-color 0.2s ease;
+       }
+       .theme-switch input:checked + .theme-switch-track {
+           background-color: var(--md-sys-color-primary);
+           border-color: var(--md-sys-color-primary);
+       }
+       .theme-switch input:checked + .theme-switch-track .theme-switch-thumb {
+           transform: translateX(16px);
+           background-color: var(--md-sys-color-on-primary);
+       }
 
-        /* --- РЕДАКТОР ТЕМЫ (попап при клике на кнопку) --- */
-        .theme-editor-wrap {
-            position: relative;
-        }
-        .theme-editor-panel {
-            position: absolute;
-            top: calc(100% + 10px);
-            right: 0;
-            width: 260px;
-            background-color: var(--md-sys-color-surface);
-            color: var(--md-sys-color-on-background);
-            border-radius: 20px;
-            padding: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-            opacity: 0;
-            transform: translateY(-8px) scale(0.96);
-            transform-origin: top right;
-            pointer-events: none;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            z-index: 50;
-        }
-        .theme-editor-panel.open {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-        }
-        .theme-editor-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 6px 0;
-        }
-        .theme-editor-row-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .theme-editor-row-label .material-symbols-outlined {
-            font-size: 20px;
-            color: var(--md-sys-color-on-surface-variant);
-        }
-        .theme-editor-divider {
-            height: 1px;
-            background-color: var(--md-sys-color-surface-variant);
-            margin: 10px 0;
-        }
-        .theme-editor-section-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--md-sys-color-on-surface-variant);
-            margin-bottom: 8px;
-        }
-        .theme-preset-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .theme-preset {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            cursor: pointer;
-            padding: 0;
-            transition: transform 0.15s ease, border-color 0.15s ease;
-        }
-        .theme-preset:hover { transform: scale(1.1); }
-        .theme-preset.selected {
-            border-color: var(--md-sys-color-on-background);
-        }
+       .theme-reset-btn {
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           gap: 6px;
+           width: 100%;
+           margin-top: 14px;
+           padding: 10px;
+           border-radius: 100px;
+           border: 1px solid var(--md-sys-color-outline);
+           background: transparent;
+           color: var(--md-sys-color-on-surface-variant);
+           font-family: 'Roboto', sans-serif;
+           font-size: 13px;
+           font-weight: 500;
+           cursor: pointer;
+           transition: background-color 0.2s ease;
+       }
+       .theme-reset-btn:hover { background-color: var(--md-sys-color-surface-variant); }
+       .theme-reset-btn .material-symbols-outlined { font-size: 18px; }
 
-        /* Приводим нативный input[type=color] к тому же кругляшку, что и пресеты */
-        .theme-color-input {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 32px;
-            height: 32px;
-            border: none;
-            border-radius: 50%;
-            padding: 0;
-            cursor: pointer;
-            background: none;
-        }
-        .theme-color-input::-webkit-color-swatch-wrapper { padding: 0; border-radius: 50%; }
-        .theme-color-input::-webkit-color-swatch { border: 2px solid var(--md-sys-color-outline); border-radius: 50%; }
-        .theme-color-input::-moz-color-swatch { border: 2px solid var(--md-sys-color-outline); border-radius: 50%; }
+       /* --- ОСНОВНОЙ КОНТЕНТ --- */
+       main { max-width: 900px; margin: 0 auto; padding: 16px; }
 
-        /* Переключатель тёмной темы — простой M3-подобный switch */
-        .theme-switch {
-            position: relative;
-            display: inline-block;
-            width: 40px;
-            height: 24px;
-            flex-shrink: 0;
-        }
-        .theme-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            position: absolute;
-        }
-        .theme-switch-track {
-            position: absolute;
-            inset: 0;
-            background-color: var(--md-sys-color-surface-variant);
-            border: 2px solid var(--md-sys-color-outline);
-            border-radius: 100px;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
-            cursor: pointer;
-        }
-        .theme-switch-thumb {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 16px;
-            height: 16px;
-            background-color: var(--md-sys-color-outline);
-            border-radius: 50%;
-            transition: transform 0.2s ease, background-color 0.2s ease;
-        }
-        .theme-switch input:checked + .theme-switch-track {
-            background-color: var(--md-sys-color-primary);
-            border-color: var(--md-sys-color-primary);
-        }
-        .theme-switch input:checked + .theme-switch-track .theme-switch-thumb {
-            transform: translateX(16px);
-            background-color: var(--md-sys-color-on-primary);
-        }
+       .page-section {
+           display: none;
+           animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+       }
+       .page-section.active { display: block; }
 
-        .theme-reset-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            width: 100%;
-            margin-top: 14px;
-            padding: 10px;
-            border-radius: 100px;
-            border: 1px solid var(--md-sys-color-outline);
-            background: transparent;
-            color: var(--md-sys-color-on-surface-variant);
-            font-family: 'Roboto', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-        .theme-reset-btn:hover { background-color: var(--md-sys-color-surface-variant); }
-        .theme-reset-btn .material-symbols-outlined { font-size: 18px; }
+       @keyframes fadeIn {
+           from { opacity: 0; transform: translateY(15px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
 
-        /* --- ОСНОВНОЙ КОНТЕНТ --- */
-        main { max-width: 900px; margin: 0 auto; padding: 16px; }
+       .hero { background-color: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); padding: 40px 24px; border-radius: 28px; margin-bottom: 24px; text-align: center; transition: all 0.3s;}
+       .hero h1 { font-size: 32px; margin: 0 0 12px 0; font-weight: 400; }
+       .hero p { font-size: 18px; margin: 0; opacity: 0.8; }
+       .card { background-color: var(--md-sys-color-surface); border-radius: 24px; padding: 24px; margin-bottom: 16px; transition: background-color 0.3s; }
+       .card h2 { font-size: 22px; font-weight: 400; margin-top: 0; color: var(--md-sys-color-primary); }
+       .page-title { font-size: 32px; margin-bottom: 24px; font-weight: 400; color: var(--md-sys-color-primary); }
+       .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+       @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
 
-        .page-section {
-            display: none;
-            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .page-section.active { display: block; }
+       .btn {
+           font-family: 'Roboto', sans-serif;
+           display: inline-block;
+           background-color: var(--md-sys-color-primary);
+           color: var(--md-sys-color-on-primary);
+           padding: 12px 24px;
+           border-radius: 100px;
+           text-decoration: none;
+           margin-top: 12px;
+           font-weight: 500;
+           text-align: center;
+           border: none;
+           cursor: pointer;
+           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+       }
+       .btn:hover { transform: scale(1.03); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+       .btn:active { transform: scale(0.95); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+       .btn-outline {
+           background-color: transparent;
+           color: var(--md-sys-color-primary);
+           border: 1px solid var(--md-sys-color-outline);
+       }
 
-        .hero { background-color: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); padding: 40px 24px; border-radius: 28px; margin-bottom: 24px; text-align: center; transition: all 0.3s;}
-        .hero h1 { font-size: 32px; margin: 0 0 12px 0; font-weight: 400; }
-        .hero p { font-size: 18px; margin: 0; opacity: 0.8; }
-        .card { background-color: var(--md-sys-color-surface); border-radius: 24px; padding: 24px; margin-bottom: 16px; transition: background-color 0.3s; }
-        .card h2 { font-size: 22px; font-weight: 400; margin-top: 0; color: var(--md-sys-color-primary); }
-        .page-title { font-size: 32px; margin-bottom: 24px; font-weight: 400; color: var(--md-sys-color-primary); }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+       /* --- СОСТАВНАЯ КНОПКА "ГАЙД" --- */
+       .guide-btn-group {
+           display: inline-flex;
+           align-items: stretch;
+           gap: 3px;
+           margin-top: 12px;
+       }
+       .guide-btn {
+           font-family: 'Roboto', sans-serif;
+           display: inline-flex;
+           align-items: center;
+           justify-content: center;
+           gap: 6px;
+           background-color: var(--md-sys-color-primary);
+           color: var(--md-sys-color-on-primary);
+           border: none;
+           text-decoration: none;
+           font-weight: 500;
+           font-size: 14px;
+           min-height: 44px;
+           cursor: pointer;
+           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+           transition: filter 0.2s ease, background-color 0.2s ease,
+                       transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                       border-radius 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                       box-shadow 0.2s ease;
+       }
+       .guide-btn:hover {
+           filter: brightness(1.12);
+           transform: scale(1.04);
+           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+       }
+       .guide-btn:active {
+           filter: brightness(0.9);
+           transform: scale(0.94);
+           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+           border-radius: 100px;
+       }
+       .guide-btn .material-symbols-outlined {
+           font-size: 20px;
+           line-height: 1;
+           transition: transform 0.18s ease, opacity 0.18s ease;
+       }
+       .guide-btn-icon {
+           padding: 0 16px;
+           border-radius: 100px 20px 20px 100px;
+       }
+       .guide-btn-icon.open {
+           border-radius: 100px;
+       }
+       .guide-btn-video {
+           padding: 0 20px 0 16px;
+           border-radius: 20px 100px 100px 20px;
+       }
 
-        .btn {
-            font-family: 'Roboto', sans-serif;
-            display: inline-block;
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            padding: 12px 24px;
-            border-radius: 100px;
-            text-decoration: none;
-            margin-top: 12px;
-            font-weight: 500;
-            text-align: center;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn:hover { transform: scale(1.03); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .btn:active { transform: scale(0.95); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+       .tool-info { margin-bottom: 8px; font-size: 15px; }
+       .tool-info b { color: var(--md-sys-color-outline); text-transform: uppercase; font-size: 12px; }
 
-        .btn-outline {
-            background-color: transparent;
-            color: var(--md-sys-color-primary);
-            border: 1px solid var(--md-sys-color-outline);
-        }
+       .speedtest-container { width: 100%; height: 500px; border-radius: 16px; overflow: hidden; background: #fff; margin-top: 16px;}
+       iframe { width: 100%; height: 100%; border: none; }
+       ul, ol { padding-left: 20px; color: var(--md-sys-color-on-surface-variant); }
 
-        /* --- СОСТАВНАЯ КНОПКА "ГАЙД" (текстовый + видео гайд в одной группе) --- */
-        .guide-btn-group {
-            display: inline-flex;
-            align-items: stretch;
-            /* Расстояние МЕЖДУ сегментами — поменяй это значение, чтобы
-               сделать зазор больше/меньше (0px — сегменты снова слипнутся). */
-            gap: 3px;
-            margin-top: 12px;
-        }
-        .guide-btn {
-            font-family: 'Roboto', sans-serif;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            border: none;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            min-height: 44px;
-            cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            /* border-radius и transform тоже анимируются — это и даёт
-               "перетекание" формы при наведении/нажатии, а не резкий скачок. */
-            transition: filter 0.2s ease, background-color 0.2s ease,
-                        transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-                        border-radius 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                        box-shadow 0.2s ease;
-        }
-        .guide-btn:hover {
-            filter: brightness(1.12);
-            transform: scale(1.04);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
-        }
-        .guide-btn:active {
-            filter: brightness(0.9);
-            transform: scale(0.94);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
-            /* При нажатии сегмент "распрямляется" в полную капсулу —
-               перебивает скругление .guide-btn-icon/.guide-btn-video ниже,
-               т.к. у ":active" выше специфичность (два класса против одного). */
-            border-radius: 100px;
-        }
-        .guide-btn .material-symbols-outlined {
-            font-size: 20px;
-            line-height: 1;
-            transition: transform 0.18s ease, opacity 0.18s ease;
-        }
-        /* Левый сегмент — только иконка (обычный, текстовый гайд).
-           border-radius идёт по углам: верх-лево, верх-право, низ-право, низ-лево.
-           Внешние (левые) углы — большие, почти капсула (100px).
-           Внутренние (правые, обращённые к соседней кнопке) — маленькие,
-           это и даёт лёгкое, а не полное скругление на стыке. */
-        .guide-btn-icon {
-            padding: 0 16px;
-            border-radius: 100px 20px 20px 100px;
-        }
-        /* Пока текстовый гайд открыт (класс добавляется в JS в toggleGuide/
-           toggleTorGuide), левая кнопка превращается в полную капсулу —
-           так видно, что она сейчас "раскрыта", даже без наведения. */
-        .guide-btn-icon.open {
-            border-radius: 100px;
-        }
-        /* Правый сегмент — иконка + текст "Гайд" (открывает видео гайд).
-           Здесь наоборот: внутренние (левые) углы маленькие, внешние (правые) — большие. */
-        .guide-btn-video {
-            padding: 0 20px 0 16px;
-            border-radius: 20px 100px 100px 20px;
-        }
+       .custom-speedtest { padding: 8px 0; }
+       .speed-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+       .result-box { min-width: 0; background-color: var(--md-sys-color-surface-variant); padding: 16px 8px; border-radius: 16px; text-align: center; overflow: hidden; }
+       .result-label {
+           font-size: 12px;
+           color: var(--md-sys-color-on-surface-variant);
+           margin-bottom: 6px;
+           font-weight: 500;
+           letter-spacing: 0.4px;
+           line-height: 1.3;
+           overflow-wrap: break-word;
+           word-break: break-word;
+       }
+       .result-value { font-size: clamp(18px, 6vw, 28px); font-weight: 700; color: var(--md-sys-color-primary); }
+       .result-value span { font-size: 12px; font-weight: 400; opacity: 0.8; }
 
-        .tool-info { margin-bottom: 8px; font-size: 15px; }
-        .tool-info b { color: var(--md-sys-color-outline); text-transform: uppercase; font-size: 12px; }
+       .extra-links {
+           display: flex;
+           gap: 8px;
+           flex-wrap: wrap;
+           max-height: 0;
+           opacity: 0;
+           overflow: hidden;
+           margin-top: 0;
+           padding-bottom: 0;
+           border-bottom: 1px solid transparent;
+           transition: all 0.4s ease-in-out;
+           transform: translateY(-5px);
+       }
+       .extra-links.visible {
+           max-height: 150px;
+           opacity: 1;
+           margin-top: 16px;
+           padding-bottom: 8px;
+           border-bottom: 1px solid var(--md-sys-color-surface-variant);
+           transform: translateY(0);
+       }
 
-        .speedtest-container { width: 100%; height: 500px; border-radius: 16px; overflow: hidden; background: #fff; margin-top: 16px;}
-        iframe { width: 100%; height: 100%; border: none; }
-        ul, ol { padding-left: 20px; color: var(--md-sys-color-on-surface-variant); }
-
-        .custom-speedtest { padding: 8px 0; }
-        /* Раньше .result-box был flex-элементом с явным min-width: 100px.
-           Явный min-width отключает автоматический "минимум по контенту" у
-           flex-элемента, поэтому на узком экране браузер сжимал блок сильнее,
-           чем требовала надпись "СКАЧИВАНИЕ" — а у .result-label не было ни
-           overflow, ни переноса, так что текст просто вылезал за скругление
-           поверх соседнего блока. Плюс uppercase + letter-spacing: 1px — это
-           стилистика Material 2 (лейбл-оверлайн), а не Material You, и она
-           только уширяла кириллический текст. Grid с равными колонками решает
-           проблему "неровных" по ширине блоков, а сама надпись теперь умеет
-           переноситься, если вдруг не помещается. */
-        .speed-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
-        .result-box { min-width: 0; background-color: var(--md-sys-color-surface-variant); padding: 16px 8px; border-radius: 16px; text-align: center; overflow: hidden; }
-        .result-label {
-            font-size: 12px;
-            color: var(--md-sys-color-on-surface-variant);
-            margin-bottom: 6px;
-            font-weight: 500;
-            letter-spacing: 0.4px;
-            line-height: 1.3;
-            overflow-wrap: break-word;
-            word-break: break-word;
-        }
-        .result-value { font-size: clamp(18px, 6vw, 28px); font-weight: 700; color: var(--md-sys-color-primary); }
-        .result-value span { font-size: 12px; font-weight: 400; opacity: 0.8; }
-
-        .extra-links {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            margin-top: 0;
-            padding-bottom: 0;
-            border-bottom: 1px solid transparent;
-            transition: all 0.4s ease-in-out;
-            transform: translateY(-5px);
-        }
-        .extra-links.visible {
-            max-height: 150px;
-            opacity: 1;
-            margin-top: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--md-sys-color-surface-variant);
-            transform: translateY(0);
-        }
-
-        .guide-content {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            margin-top: 0;
-            padding: 0 16px;
-            background-color: var(--md-sys-color-surface-variant);
-            border-radius: 16px;
-            font-family: 'Roboto', sans-serif;
-            font-size: 15px;
-            line-height: 1.6;
-            color: var(--md-sys-color-on-surface-variant);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateY(-10px);
-        }
-        .guide-content.visible {
-            max-height: 1000px;
-            opacity: 1;
-            margin-top: 12px;
-            padding: 16px;
-            transform: translateY(0);
-               }
-    </style>
+       .guide-content {
+           max-height: 0;
+           opacity: 0;
+           overflow: hidden;
+           margin-top: 0;
+           padding: 0 16px;
+           background-color: var(--md-sys-color-surface-variant);
+           border-radius: 16px;
+           font-family: 'Roboto', sans-serif;
+           font-size: 15px;
+           line-height: 1.6;
+           color: var(--md-sys-color-on-surface-variant);
+           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+           transform: translateY(-10px);
+       }
+       .guide-content.visible {
+           max-height: 1000px;
+           opacity: 1;
+           margin-top: 12px;
+           padding: 16px;
+           transform: translateY(0);
+       }
+   </style>
 </head>
 <body>
-    <div class="m3-shape shape-blob"></div>
-    <div class="m3-shape shape-squircle"></div>
-    <div class="m3-shape shape-poly"></div>
-    <div class="m3-shape shape-circle"></div>
-    <div class="m3-shape shape-eladanca"></div>
-
-    <div id="loader" class="loader-overlay">
-            <svg class="spinner" viewBox="0 0 50 50">
-                <circle class="arc-bg" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
-                <circle class="arc-active" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
-            </svg>
-        </div>
-
-
-    <header>
-        <nav class="nav-container">
-            <div class="nav-item active" data-target="home">
-                <span class="nav-item-icon material-symbols-outlined">home</span>
-                <span class="nav-item-check material-symbols-outlined">check</span>
-                <span class="nav-item-label">Главная</span>
-            </div>
-            <div class="nav-item" data-target="vpn">
-                <span class="nav-item-icon material-symbols-outlined">vpn_key</span>
-                <span class="nav-item-check material-symbols-outlined">check</span>
-                <span class="nav-item-label">ВПН</span>
-            </div>
-            <div class="nav-item" data-target="bypass">
-                <span class="nav-item-icon material-symbols-outlined">alt_route</span>
-                <span class="nav-item-check material-symbols-outlined">check</span>
-                <span class="nav-item-label">Обход</span>
-            </div>
-            <div class="nav-item" data-target="whitelist">
-                <span class="nav-item-icon material-symbols-outlined">checklist</span>
-                <span class="nav-item-check material-symbols-outlined">check</span>
-                <span class="nav-item-label">Белые списки</span>
-            </div>
-            <div class="nav-item" data-target="speed">
-                <span class="nav-item-icon material-symbols-outlined">speed</span>
-                <span class="nav-item-check material-symbols-outlined">check</span>
-                <span class="nav-item-label">Скорость</span>
-            </div>
-        </nav>
-        <!-- Кнопка теперь открывает редактор темы, а не переключает её напрямую -->
-        <div class="theme-editor-wrap">
-            <button class="theme-toggle-btn" id="theme-btn" aria-label="Настройки темы">palette</button>
-
-            <div class="theme-editor-panel" id="theme-editor-panel">
-                <div class="theme-editor-row">
-                    <span class="theme-editor-row-label">
-                        <span class="material-symbols-outlined">dark_mode</span>
-                        Тёмная тема
-                    </span>
-                    <label class="theme-switch">
-                        <input type="checkbox" id="dark-mode-switch">
-                        <span class="theme-switch-track"><span class="theme-switch-thumb"></span></span>
-                    </label>
-                </div>
-
-                <div class="theme-editor-divider"></div>
-
-                <div class="theme-editor-section-label">Готовые темы</div>
-                <div class="theme-preset-row">
-                    <button type="button" class="theme-preset" data-hue="213" style="background: hsl(213, 90%, 38%);" aria-label="Синяя тема"></button>
-                    <button type="button" class="theme-preset" data-hue="270" style="background: hsl(270, 60%, 45%);" aria-label="Фиолетовая тема"></button>
-                    <button type="button" class="theme-preset" data-hue="140" style="background: hsl(140, 60%, 32%);" aria-label="Зелёная тема"></button>
-                    <button type="button" class="theme-preset" data-hue="30" style="background: hsl(30, 90%, 45%);" aria-label="Оранжевая тема"></button>
-                    <button type="button" class="theme-preset" data-hue="340" style="background: hsl(340, 70%, 48%);" aria-label="Розовая тема"></button>
-                    <button type="button" class="theme-preset" data-hue="180" style="background: hsl(180, 60%, 32%);" aria-label="Бирюзовая тема"></button>
-                    <button type="button" class="theme-preset" data-hue="5" style="background: hsl(5, 70%, 45%);" aria-label="Красная тема"></button>
-                </div>
-
-                <div class="theme-editor-divider"></div>
-
-                <div class="theme-editor-row">
-                    <span class="theme-editor-row-label">
-                        <span class="material-symbols-outlined">colorize</span>
-                        Свой цвет
-                    </span>
-                    <input type="color" id="custom-color-input" class="theme-color-input" value="#005ac1" aria-label="Выбрать свой цвет">
-                </div>
-
-                <button type="button" class="theme-reset-btn" id="theme-reset-btn">
-                    <span class="material-symbols-outlined">restart_alt</span>
-                    Сбросить
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <main>
-
-        <div id="toast" class="toast-notification">Ключ скопирован!</div>
-
-        <section id="home" class="page-section active">
-            <div class="hero">
-                <h1>Интернет без границ</h1>
-                <p>Бесплатные решения для обхода любых блокировок</p>
-            </div>
-
-            <div class="grid">
-                <div class="card">
-                    <h2>Поддержка ОС</h2>
-                    <div class="tool-info"><b>Android:</b> Большинство версий</div>
-                    <div class="tool-info"><b>Windows:</b> Основные сборки</div>
-                    <p style="font-size: 14px; color: var(--md-sys-color-outline);">Все утилиты подбираются для максимальной совместимости и простоты.</p>
-                </div>
-                <div class="card">
-                    <h2>О проекте</h2>
-                    <p style="font-size: 14px;">Я собираю лучшие рабочие методы и делюсь ими с вами. Все сервисы проверены лично.</p>
-                    <a href="https://t.me/AntiZapret2" target="_blank" class="btn">Мой Telegram Канал</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Ваше местоположение</h2>
-                <div class="tool-info"><b>IP адрес:</b> <span id="user-ip">Загрузка...</span></div>
-                <div class="tool-info"><b>Провайдер:</b> <span id="user-isp">Загрузка...</span></div>
-                <div class="tool-info"><b>Локация:</b> <span id="user-country">Загрузка...</span></div>
-                <div id="map"></div>
-            </div>
-        </section>
-
-        <section id="vpn" class="page-section">
-            <h1 class="page-title">Надежные ВПН</h1>
-
-            <div class="card">
-                <h2>Tor Bridges <span class="bridges-hint">мосты</span></h2>
-                <p>Если стандартный internet сильно заглушен, Tor с мостами поможет восстановить доступ к сети. Доступен на любые платформы.</p>
-
-                <div class="tool-info"><b>Android</b></div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-                    <div class="guide-btn-group">
-                        <button class="guide-btn guide-btn-icon" onclick="toggleTorGuide(this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
-                        <a href="https://www.youtube.com/watch?v=2MDuuydMWbY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
-                    </div>
-                    <a href="https://torproject.org" target="_blank" class="btn btn-outline">Официальный сайт</a>
-                    <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/TOR-BRIDGES/TOR_BRIDGES_TOP100.txt" target="_blank" class="btn btn-outline">Конфиги</a>
-                </div>
-
-                <div id="tor-android-links" class="extra-links">
-                    <a href="https://play.google.com/store/apps/details?id=org.torproject.torbrowser" target="_blank" class="btn btn-outline" style="border-color: #4caf50; color: #4caf50;">Google Play</a>
-                    <a href="https://f-droid.org/packages/org.torproject.torbrowser/" target="_blank" class="btn btn-outline" style="border-color: #ff9800; color: #ff9800;">F-Droid</a>
-                </div>
-
-                <div id="guide-tor-android" class="guide-content">
-                    1. Скопируйте список мостов (конфигов) с сайта.<br>
-                    2. Установите приложение и выберите опцию «Подключиться напрямую к Tor».<br>
-                    3. Зайдите в раздел настройки мостов, выберите «Добавить новые мосты» и вставьте скопированные данные.<br>
-                    4. Если кнопка сохранения не нажимается, поищите мосты с восклицательным знаком.<br>
-                    5. Активируйте использование мостов. В настройках приложений рекомендуем временно отключить российские сервисы. Нажмите «Подключить» и дождитесь завершения.
-                </div>
-
-                <div class="tool-info"><b>Windows</b></div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <div class="guide-btn-group">
-                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tor-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
-                        <a href="https://youtu.be/k-Y8NniEvP4" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
-                    </div>
-                    <a href="https://dragonfruit.network/onionfruit" target="_blank" class="btn btn-outline">Официальный сайт</a>
-                    <a href="https://github.com/igareck/vpn-configs-for-russia" target="_blank" class="btn btn-outline">GitHub</a>
-                    <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/TOR-BRIDGES/TOR_BRIDGES_TOP100.txt" target="_blank" class="btn btn-outline">Конфиги</a>
-                </div>
-                <div id="guide-tor-win" class="guide-content">
-                    1. Скачайте onionFruit через релизы в гитхаб или через офиц. сайт.<br>
-                    2. Копируйте конфиг для onionFruit.<br>
-                    3. Нажмите настройки.<br>
-                    4. Нажмите мосты.<br>
-                    5. Измените disabled на plain, ну или которая вам нужна.<br>
-                    6. Вставьте мосты и нажмите кнопку добавить.<br>
-                    7. Закройте вкладку.<br>
-                    8. Нажмите на переключатель и ждите.
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Amnezia VPN / WG</h2>
-                <p>Отличный вариант для изменения вашего местоположения. Использует модифицированый протокол WireGuard.</p>
-
-                <div class="tool-info"><b>Android</b></div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-                    <div class="guide-btn-group">
-                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-amn-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
-                        <a href="https://www.youtube.com/watch?v=3ueG-ChggqE" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
-                    </div>
-                    <a href="https://amnezia.org/ru/downloads" target="_blank" class="btn btn-outline">Официальный сайт</a>
-                    <a href="https://warp-mirrors.vercel.app/" target="_blank" class="btn btn-outline">Сайт для конфига</a>
-                </div>
-                <div id="guide-amn-android" class="guide-content">
-                    1. Скачайте APK-файл из релизов на GitHub (выбирайте версию, подходящую под ваше устройство).<br>
-                    2. Перейдите на сайт генерации конфигов, выберите рабочее зеркало и нажмите «Сгенерировать конфиг».<br>
-                    3. Пройдите капчу и скачайте файл в формате .conf.<br>
-                    4. В приложении Amnezia VPN нажмите «Приступим» -> «Файл с настройками подключения».<br>
-                    5. Выберите скачанный файл (warp...conf) и нажмите «Подключить». Разрешите VPN-запрос в системе.
-                </div>
-
-                <div class="tool-info"><b>Windows</b></div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <div class="guide-btn-group">
-                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-amn-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
-                        <a href="https://www.youtube.com/watch?v=OJZnxPN7_PQ" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
-                    </div>
-                    <a href="https://amnezia.org/ru/downloads" target="_blank" class="btn btn-outline">Официальный сайт</a>
-                    <a href="https://warp-mirrors.vercel.app/" target="_blank" class="btn btn-outline">Сайт для конфига</a>
-                </div>
-                <div id="guide-amn-win" class="guide-content">
-                    1. Перейдите в релизы на GitHub разработчиков и скачайте файл с расширением .exe.<br>
-                    2. Откройте сайт для создания конфигов, выберите рабочее зеркало (например, основное) и нажмите «Сгенерировать зеркало».<br>
-                    3. Пройдите капчу и нажмите кнопку «Скачать конфиг».<br>
-                    4. В приложении Amnezia VPN нажмите «Приступим» -> «Файл с настройками подключения».<br>
-                    5. Через открывшийся проводник найдите и выберите скачанный файл (warp...conf), чтобы автоматически импортировать настройки , всё заработало.
-                </div>
-            </div>
-            <div class="card">
-                <h2>Vless</h2>
-                <p>Отличный вариант для обхода блокировок. Хорошо маскирует ваш трафик. Использует протокол Vless.</p>
-                <div class="keys-group">
-                    <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Мои ключи(на 1 ключе всего 20 мест):</p>
-
-                    <div class="copy-container">
-                        <span id="vless-key-1" class="secret-text">https://shrimp.fish/sub/KT-vzBZAsUkz3PXj</span>
-
-                        <button class="btn copy-btn" onclick="copyKey('vless-key-1', this)">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            <span class="tooltip-text">Скопировать</span>
-                        </button>
-                    </div>
-
-                    <div class="copy-container">
-                        <span id="vless-key-2" class="secret-text">https://connect.stealthsurf.net/to/c65e78e39e9d796da25a3ced4339231a</span>
-
-                        <button class="btn copy-btn" onclick="copyKey('vless-key-2', this)">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            <span class="tooltip-text">Скопировать</span>
-                        </button>
-                    </div>
-
-                    <div class="tool-info"><b>Android</b></div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <div class="guide-btn-group">
-                            <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-Vless-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
-                            <a href="#" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
-                        </div>
-                        <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
-                    </div>
-                    <div id="guide-Vless-android" class="guide-content">
-                        1. Скачайте Incy с оф. сайта, Google Play или Github (.apk).<br>
-                        2. Скопируйте ключ с моего сайта и вставьте в приложение.<br>
-                        3. Включите, и всё работает.
-                    </div>
-
-                    <div class="tool-info"><b>Windows</b></div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <div class="guide-btn-group">
-                            <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-Vless-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
-                            <a href="https://youtu.be/2164aQjPpVs" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
-                        </div>
-                        <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
-                    </div>
-                    <div id="guide-Vless-win" class="guide-content">
-                        1. Скачайте Incy.exe из релизов в Github.<br>
-                        2. Скопируйте ключ с моего сайта и вставьте в приложение.<br>
-                        3. Включите VPN, вам предложат запустить от имени администратора.<br>
-                        4. Нажмите "перезапустить". Когда Incy снова включится, включите VPN снова, и всё.
-                    </div>
-                </div>
-
-                <div class="m3-bg-shape shape-1"></div>
-                <div class="m3-bg-shape shape-2"></div>
-            </div>
-        </section>
-
-        <section id="bypass" class="page-section">
-            <h1 class="page-title">Утилиты для обхода</h1>
-
-            <div class="card">
-                <h2>Zapret Discord YouTube</h2>
-                <p>Утилита для модификации трафика на лету для Windows. Отлично подходит для обхода блокировок от РКН.</p>
-                <div class="tool-info"><b>Windows</b></div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <div class="guide-btn-group">
-                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-zapret', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
-                        <a href="https://youtu.be/zJ0iayCzIhY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
-                    </div>
-                    <a href="https://github.com/flowseal/zapret-discord-youtube" target="_blank" class="btn btn-outline">GitHub</a>
-                </div>
-                <div id="guide-zapret" class="guide-content">
-                    1. Скачайте архив (.rar) из релизов разработчика и распакуйте его.<br>
-                    2. Найдите в папке файл «general (ALT11).bat» and запустите его (желательно от имени администратора).<br>
-                    3. Окно консоли должно оставаться открытым. Теперь Discord и YouTube будут работать стабильно.
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>ByeByeDPI</h2>
-                <p>Отличное приложение для обхода систем DPI на мобильных устройствах. Помогает убрать замедление и восстановить доступ к ресурсам.</p>
-
-                <div class="tool-info"><b>Android</b></div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <div class="guide-btn-group">
-                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-byebyedpi', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
-                        <a href="*" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
-                    </div>
-                    <a href="https://github.com/romanvht/ByeByeDPI" target="_blank" class="btn btn-outline">GitHub</a>
-                </div>
-
-                <div id="guide-byebyedpi" class="guide-content">
-                    1. Перейдите на GitHub и скачайте актуальный "universal-release.apk" файл из раздела Releases.<br>
-                    2. Установите приложение на ваш телефон.<br>
-                    3. Запустите ByeByeDPI и нажмите кнопку подключения на главном экране.<br>
-                    4. При первом запуске система попросит разрешение на создание локального VPN-подключения — согласитесь.<br>
-                    5. Готово! Приложение работает в фоне и модифицирует трафик для обхода блокировок.
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>TG WS Proxy (Telegram)</h2>
-                <p>Один из лучших способов обхода блокировки Telegram, использует MTProto.</p>
-
-                <div class="tool-info"><b>Android</b></div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-                    <div class="guide-btn-group">
-                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tg-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
-                        <a href="https://www.youtube.com/watch?v=RhZ330eeCTc" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
-                    </div>
-                    <a href="https://github.com/amurcanov/tg-ws-proxy-android" target="_blank" class="btn btn-outline">GitHub</a>
-                </div>
-                <div id="guide-tg-android" class="guide-content">
-                    1. Установите версию 1.3.0 (.apk) с GitHub. Обязательно разрешите приложению работу в фоне.<br>
-                    2. В настройках оставьте стандартный порт, установите «Пул WS» на значение 4 и включите автозапуск.<br>
-                    3. Нажмите на значок Telegram в приложении и выберите «Применить в Telegram».<br>
-                    4. В открывшемся мессенджере нажмите «Подключить прокси».<br><br>
-                    <i>Примечание: иногда через этот метод может не работать отправка тяжелых файлов.</i>
-                </div>
-
-                <div class="tool-info"><b>Windows</b></div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <div class="guide-btn-group">
-                        <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tg-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
-                        <a href="https://www.youtube.com/watch?v=eWr-mK9wiNY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
-                    </div>
-                    <a href="https://github.com/Flowseal/tg-ws-proxy" target="_blank" class="btn btn-outline">GitHub</a>
-                </div>
-                <div id="guide-tg-win" class="guide-content">
-                    1. Скачайте TG WS Proxy через релизы на GitHub, скачивайте с окончанием .exe.<br>
-                    2. Заходите в трее ищите TG WS Proxy, нажимайте по нему правой кнопкой мыши, настройки, листайте в низ, нажимайте на автозапуск, сохранить.<br>
-                    3. Заходите опять в трее, нажимайте правой кнопкой мыши по TG WS Proxy и выберайте "Открыть в Telegram" или "Скопировать ссылку".<br>
-                    4. Вас перекидывает в Telegram, нажимайте "Подключить прокси" и все хорошо работает.
-                </div>
-            </div>
-        </section>
-
-        <section id="whitelist" class="page-section">
-            <h1 class="page-title">Белые Списки</h1>
-
-            <div class="card">
-                <h2>Что такое белые списки?</h2>
-                <p>Официальный перечень одобренных отечественных сайтов и мобильных приложений, доступ к которым сохраняется даже при <strong>частичных отключениях или ограничениях мобильного интернета</strong>.</p>
-            </div>
-
-            <div class="card">
-                <h2>Как установить обход БС?</h2>
-                <ol>
-                    <li>Скачайте и установите совместимый клиент, например Incy.</li>
-                    <li>Скопируйте все ключи с гитхаба.</li>
-                    <li>Вставте все ключи в приложение и все должно работать.</li>
-                </ol>
-                <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/Vless-Reality-White-Lists-Rus-Mobile.txt" target="_blank" class="btn">Скачать файл обхода БС</a>
-
-                <div class="key-group">
-                    <p style="margin-bottom: 8px; font-size: 14px; color: #8E9199;">Мой ключ(макс 20 пользователей):</p>
-
-                    <div class="copy-container">
-                        <span id="BS-key-1" class="secret-text">https://shrimp.fish/sub/vu0eLnwz6Ytx9VR0</span>
-
-                        <button class="btn copy-btn" onclick="copyKey('BS-key-1', this)">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            <span class="tooltip-text">Скопировать</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="speed" class="page-section">
-            <h1 class="page-title">Измерение скорости</h1>
-            <div class="card">
-                <p style="margin-top: 0; color: var(--md-sys-color-on-surface-variant);">Проверьте скорость своего соединения.</p>
-
-                <div class="custom-speedtest">
-                    <div class="speed-results">
-                        <div class="result-box">
-                            <div class="result-label">Пинг</div>
-                            <div class="result-value" id="res-ping">-- <span>мс</span></div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Скачивание</div>
-                            <div class="result-value" id="res-down">-- <span>Мбит/с</span></div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Загрузка</div>
-                            <div class="result-value" id="res-up">-- <span>Мбит/с</span></div>
-                        </div>
-                    </div>
-                    <div class="speedtest-btn-wrap">
-                        <button class="btn" id="start-speedtest-btn" style="width: 100%; font-size: 16px; height: 52px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">Начать тест скорости</button>
-                        <div class="speedtest-tooltip" id="speedtest-tooltip">На данный момент у меня недостаточно серверов для лучшего решения для вас, так что пользуетесь тем, что есть.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Другие сайты с измерением скорости: </h2>
-                    <a href="https://2ip.io/speed" target="_blank" class="btn">2ip</a>
-                    <a href="https://librespeed.org" target="_blank" class="btn btn-outline">LibreSpeed</a>
-                    <a href="https://www.speedtest.net" target="_blank" class="btn btn-outline">Speedtest by Ookla</a>
-            </div>
-        </section>
-    </main>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <script>
-        /* ЛОГИКА ЭКРАНА ЗАГРУЗКИ */
-        window.addEventListener('load', () => {
-            // Задержка внутри 1–3с, чтобы экран загрузки не мигал слишком быстро,
-            // плюс сам фейд теперь длиннее (0.6с в CSS) — исчезновение выглядит плавным.
-            setTimeout(() => {
-                const loader = document.getElementById('loader');
-                if(loader) loader.classList.add('hidden');
-            }, 1800);
-        });
-
-        // Переключает иконку внутри кнопки-гайда: Keyboard Arrow Down <-> close (открыто),
-        // с небольшой анимацией — иконка сначала сжимается/поворачивается и исчезает,
-        // затем на её месте появляется новая.
-        function setGuideBtnIcon(btn, isOpen) {
-            if(!btn) return;
-            const icon = btn.querySelector('.material-symbols-outlined');
-            if(!icon) return;
-            icon.style.transform = 'scale(0.4) rotate(-90deg)';
-            icon.style.opacity = '0';
-            setTimeout(() => {
-                icon.textContent = isOpen ? 'close' : 'Keyboard_Arrow_Down';
-                icon.style.transform = 'scale(1) rotate(0deg)';
-                icon.style.opacity = '1';
-            }, 140);
-        }
-
-        // Переключение обычных гайдов
-        function toggleGuide(id, btn) {
-            const guide = document.getElementById(id);
-            if(guide) guide.classList.toggle('visible');
-            const isOpen = guide && guide.classList.contains('visible');
-            // Пока гайд открыт — левая (иконочная) кнопка остаётся полностью
-            // скруглённой капсулой, а не только на время наведения/нажатия.
-            if(btn) btn.classList.toggle('open', isOpen);
-            setGuideBtnIcon(btn, isOpen);
-        }
-
-        // Специальное переключение для Tor Android (ссылки + текст)
-        function toggleTorGuide(btn) {
-            const links = document.getElementById('tor-android-links');
-            const guide = document.getElementById('guide-tor-android');
-            if(links) links.classList.toggle('visible');
-            if(guide) guide.classList.toggle('visible');
-            const isOpen = guide && guide.classList.contains('visible');
-            if(btn) btn.classList.toggle('open', isOpen);
-            setGuideBtnIcon(btn, isOpen);
-        }
-
-
-        /* ЛОГИКА ТЕМЫ: ТЁМНЫЙ/СВЕТЛЫЙ РЕЖИМ + ДИНАМИЧЕСКИЙ АКЦЕНТНЫЙ ЦВЕТ
-           Кнопка теперь не переключает тему сама, а открывает панель-редактор:
-           внутри — переключатель светлой/тёмной темы, набор готовых цветов, свой
-           цвет и сброс. Активный акцентный цвет задаётся одним "оттенком" (hue),
-           из которого на лету пересчитываются все 10 цветовых токенов сайта. */
-        const THEME_STORAGE_KEY = 'site-theme-settings';
-        const THEME_TOKENS = [
-            '--md-sys-color-background', '--md-sys-color-on-background',
-            '--md-sys-color-surface', '--md-sys-color-surface-variant', '--md-sys-color-on-surface-variant',
-            '--md-sys-color-primary', '--md-sys-color-on-primary',
-            '--md-sys-color-primary-container', '--md-sys-color-on-primary-container',
-            '--md-sys-color-outline'
-        ];
-
-        function loadThemeSettings() {
-            try {
-                const raw = localStorage.getItem(THEME_STORAGE_KEY);
-                return raw ? JSON.parse(raw) : {};
-            } catch (e) { return {}; }
-        }
-        function saveThemeSettings(settings) {
-            try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(settings)); } catch (e) {}
-        }
-
-        // Оттенок (0-360) из HEX — нужен, чтобы понять, какой hue выбрали через
-        // нативный input[type=color].
-        function hexToHue(hex) {
-            const r = parseInt(hex.slice(1, 3), 16) / 255;
-            const g = parseInt(hex.slice(3, 5), 16) / 255;
-            const b = parseInt(hex.slice(5, 7), 16) / 255;
-            const max = Math.max(r, g, b), min = Math.min(r, g, b);
-            const d = max - min;
-            let h = 0;
-            if (d !== 0) {
-                if (max === r) h = ((g - b) / d) % 6;
-                else if (max === g) h = (b - r) / d + 2;
-                else h = (r - g) / d + 4;
-                h = Math.round(h * 60);
-                if (h < 0) h += 360;
-            }
-            return h;
-        }
-
-        // Обратно: HSL -> HEX, чтобы показать текущий акцент в input[type=color].
-        function hslToHex(h, s, l) {
-            s /= 100; l /= 100;
-            const k = n => (n + h / 30) % 12;
-            const a = s * Math.min(l, 1 - l);
-            const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-            const toHex = x => Math.round(255 * x).toString(16).padStart(2, '0');
-            return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
-        }
-        function hueToHex(hue) {
-            return hslToHex(hue, 90, 38);
-        }
-
-        // Приблизительная генерация M3-подобной палитры из одного оттенка. Это не
-        // полноценный алгоритм HCT из material-color-utilities, а лёгкое
-        // HSL-приближение — но токенов всего 10, и подобранные S/L неплохо держат
-        // контраст текста на фоне в обоих режимах.
-        function buildPalette(hue, isDark) {
-            return isDark ? {
-                '--md-sys-color-background': `hsl(${hue}, 12%, 10%)`,
-                '--md-sys-color-on-background': `hsl(${hue}, 8%, 90%)`,
-                '--md-sys-color-surface': `hsl(${hue}, 10%, 13%)`,
-                '--md-sys-color-surface-variant': `hsl(${hue}, 10%, 28%)`,
-                '--md-sys-color-on-surface-variant': `hsl(${hue}, 12%, 79%)`,
-                '--md-sys-color-primary': `hsl(${hue}, 80%, 83%)`,
-                '--md-sys-color-on-primary': `hsl(${hue}, 60%, 18%)`,
-                '--md-sys-color-primary-container': `hsl(${hue}, 55%, 27%)`,
-                '--md-sys-color-on-primary-container': `hsl(${hue}, 80%, 90%)`,
-                '--md-sys-color-outline': `hsl(${hue}, 6%, 58%)`,
-            } : {
-                '--md-sys-color-background': `hsl(${hue}, 30%, 99%)`,
-                '--md-sys-color-on-background': `hsl(${hue}, 10%, 11%)`,
-                '--md-sys-color-surface': `hsl(${hue}, 24%, 96%)`,
-                '--md-sys-color-surface-variant': `hsl(${hue}, 20%, 90%)`,
-                '--md-sys-color-on-surface-variant': `hsl(${hue}, 8%, 29%)`,
-                '--md-sys-color-primary': `hsl(${hue}, 90%, 38%)`,
-                '--md-sys-color-on-primary': '#ffffff',
-                '--md-sys-color-primary-container': `hsl(${hue}, 95%, 92%)`,
-                '--md-sys-color-on-primary-container': `hsl(${hue}, 85%, 15%)`,
-                '--md-sys-color-outline': `hsl(${hue}, 6%, 48%)`,
-            };
-        }
-
-        // hue === null значит "заводская палитра" — просто снимаем инлайн-переопределения
-        // и в силу вступают обычные значения из :root / body.dark-theme в style.css.
-        // ВАЖНО: переопределяем именно на <body>, а не на <html> — иначе в тёмной
-        // теме правило body.dark-theme{...} (объявлено прямо на самом body) всё
-        // равно победило бы унаследованное с html значение, и кастомный цвет просто
-        // не был бы виден при переключении на тёмную тему.
-        function applyHue(hue, isDark) {
-            const rootStyle = document.body.style;
-            if (hue === null || hue === undefined) {
-                THEME_TOKENS.forEach(t => rootStyle.removeProperty(t));
-                return;
-            }
-            const palette = buildPalette(hue, isDark);
-            THEME_TOKENS.forEach(t => rootStyle.setProperty(t, palette[t]));
-        }
-
-        function syncMapTiles(isDark) {
-            if (map && window.currentTiles) {
-                const newTilesUrl = isDark
-                    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-                window.currentTiles.setUrl(newTilesUrl);
-            }
-        }
-
-        // 1. Считываем сохранённые настройки и сразу применяем их — ещё до того, как
-        //    настроится сама панель, чтобы страница не "мигала" заводской темой.
-        const themeSettings = loadThemeSettings();
-        const legacySavedTheme = localStorage.getItem('site-theme'); // старый ключ, для обратной совместимости
-        let isDarkMode = typeof themeSettings.dark === 'boolean' ? themeSettings.dark : (legacySavedTheme === 'dark');
-        let currentHue = typeof themeSettings.hue === 'number' ? themeSettings.hue : null;
-
-        document.body.classList.toggle('dark-theme', isDarkMode);
-        applyHue(currentHue, isDarkMode);
-
-        // 2. Сама панель: открытие/закрытие, переключатель, пресеты, свой цвет, сброс.
-        (function setupThemeEditor() {
-            const btn = document.getElementById('theme-btn');
-            const panel = document.getElementById('theme-editor-panel');
-            const darkSwitch = document.getElementById('dark-mode-switch');
-            const colorInput = document.getElementById('custom-color-input');
-            const resetBtn = document.getElementById('theme-reset-btn');
-            const presetButtons = document.querySelectorAll('.theme-preset');
-            if (!btn) return;
-
-            if (darkSwitch) darkSwitch.checked = isDarkMode;
-            if (colorInput && currentHue !== null) colorInput.value = hueToHex(currentHue);
-
-            function highlightPreset() {
-                presetButtons.forEach(p => {
-                    p.classList.toggle('selected', Number(p.dataset.hue) === currentHue);
-                });
-            }
-            highlightPreset();
-
-            function persist() {
-                saveThemeSettings({ dark: isDarkMode, hue: currentHue });
-                localStorage.setItem('site-theme', isDarkMode ? 'dark' : 'light'); // держим старый ключ синхронным
-            }
-
-            if (panel) {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    panel.classList.toggle('open');
-                });
-                panel.addEventListener('click', (e) => e.stopPropagation());
-                document.addEventListener('click', () => panel.classList.remove('open'));
-            }
-
-            if (darkSwitch) {
-                darkSwitch.addEventListener('change', () => {
-                    isDarkMode = darkSwitch.checked;
-                    document.body.classList.toggle('dark-theme', isDarkMode);
-                    applyHue(currentHue, isDarkMode);
-                    syncMapTiles(isDarkMode);
-                    persist();
-                });
-            }
-
-            presetButtons.forEach(p => {
-                p.addEventListener('click', () => {
-                    currentHue = Number(p.dataset.hue);
-                    applyHue(currentHue, isDarkMode);
-                    if (colorInput) colorInput.value = hueToHex(currentHue);
-                    highlightPreset();
-                    persist();
-                });
-            });
-
-            if (colorInput) {
-                colorInput.addEventListener('input', () => {
-                    currentHue = hexToHue(colorInput.value);
-                    applyHue(currentHue, isDarkMode);
-                    highlightPreset();
-                    persist();
-                });
-            }
-
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    currentHue = null;
-                    applyHue(null, isDarkMode);
-                    if (colorInput) colorInput.value = '#005ac1';
-                    highlightPreset();
-                    persist();
-                });
-            }
-        })();
-
-        /* ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК */
-        const navContainer = document.querySelector('.nav-container');
-        const navItems = document.querySelectorAll('.nav-item[data-target]');
-        const sections = document.querySelectorAll('.page-section');
-        const mainEl = document.querySelector('main');
-        // Порядок вкладок берём прямо из шапки — этим же порядком идём при свайпе
-        const tabOrder = Array.from(navItems).map(item => item.getAttribute('data-target'));
-
-        function activateTab(targetId, options = {}) {
-            const targetItem = document.querySelector(`.nav-item[data-target="${targetId}"]`);
-            const targetSection = document.getElementById(targetId);
-            if (!targetItem || !targetSection) return;
-
-            navItems.forEach(nav => nav.classList.remove('active'));
-            sections.forEach(sec => sec.classList.remove('active'));
-
-            targetItem.classList.add('active');
-            targetSection.classList.add('active');
-
-            // Если вкладку переключили свайпом, а не кликом по шапке — она может
-            // быть не видна в горизонтально прокручиваемой шапке. Докручиваем
-            // шапку так, чтобы активная вкладка отобразилась и "следовала" за выбором.
-            if (options.scrollNavIntoView) {
-                targetItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            }
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            if (targetId === 'home' && typeof map !== 'undefined' && map) {
-                setTimeout(() => map.invalidateSize(), 100);
-            }
-        }
-
-        navItems.forEach(item => {
-            item.addEventListener('click', () => activateTab(item.getAttribute('data-target')));
-        });
-
-        /* --- СВАЙП ВЛЕВО/ВПРАВО ДЛЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК (МОБИЛЬНЫЕ) --- */
-        (function setupSwipeNavigation() {
-            if (!mainEl) return;
-
-            const SWIPE_MIN_DISTANCE = 60; // минимальная длина свайпа по горизонтали, px
-            const SWIPE_MAX_DRIFT = 75;    // допустимый "съезд" по вертикали, px
-            let startX = 0, startY = 0, startTarget = null;
-
-            mainEl.addEventListener('touchstart', (e) => {
-                const touch = e.changedTouches[0];
-                startX = touch.clientX;
-                startY = touch.clientY;
-                startTarget = e.target;
-            }, { passive: true });
-
-            mainEl.addEventListener('touchend', (e) => {
-                // Не мешаем управлению картой (перетаскивание/зум) на главной вкладке
-                if (startTarget && startTarget.closest('#map')) return;
-
-                const touch = e.changedTouches[0];
-                const dx = touch.clientX - startX;
-                const dy = touch.clientY - startY;
-
-                if (Math.abs(dx) < SWIPE_MIN_DISTANCE || Math.abs(dy) > SWIPE_MAX_DRIFT) return;
-
-                const currentId = document.querySelector('.page-section.active')?.id;
-                const currentIndex = tabOrder.indexOf(currentId);
-                if (currentIndex === -1) return;
-
-                let nextIndex = currentIndex;
-                if (dx < 0 && currentIndex < tabOrder.length - 1) nextIndex = currentIndex + 1; // влево — следующая вкладка
-                if (dx > 0 && currentIndex > 0) nextIndex = currentIndex - 1;                    // вправо — предыдущая вкладка
-
-                if (nextIndex !== currentIndex) {
-                    activateTab(tabOrder[nextIndex], { scrollNavIntoView: true });
-                }
-            }, { passive: true });
-        })();
-
-        /* --- ПРОКРУТКА ШАПКИ КОЛЕСОМ МЫШИ (УЗКОЕ ОКНО НА КОМПЬЮТЕРЕ) ---
-           На телефоне вкладки листаются пальцем. На компьютере с обычной мышью
-           (без трекпада) в узком окне часть вкладок может не помещаться, а
-           тащить скрытый скроллбар нечем — переводим вертикальную прокрутку
-           колеса в горизонтальную, пока курсор над шапкой. Трекпад, который и
-           так шлёт горизонтальный deltaX, не трогаем — там нативный жест уже
-           работает. */
-        if (navContainer) {
-            navContainer.addEventListener('wheel', (e) => {
-                if (navContainer.scrollWidth <= navContainer.clientWidth) return;
-                if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-                e.preventDefault();
-                navContainer.scrollLeft += e.deltaY;
-            }, { passive: false });
-        }
-
-        /* --- СТИЛЬНАЯ КАРТА CARTO DB И ОБНОВЛЕНИЕ IP --- */
-        var map;
-        var marker;
-
-        function updateIpInfo(ip = '') {
-            const userIsp = document.getElementById('user-isp');
-            const userCountry = document.getElementById('user-country');
-            const userIp = document.getElementById('user-ip');
-
-            if(userIsp) userIsp.innerText = 'Определяем...';
-            if(userCountry) userCountry.innerText = 'Определяем...';
-
-            const url = ip ? `https://get.geojs.io/v1/ip/geo/${ip}.json` : 'https://get.geojs.io/v1/ip/geo.json';
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if(userIp) userIp.innerText = data.ip || ip || 'Неизвестно';
-                    if(userIsp) userIsp.innerText = data.organization_name || 'Неизвестно';
-
-                    if (userCountry) {
-                        const country = data.country || '';
-                        const city = data.city || '';
-                        userCountry.innerText = (country && city) ? `${country}, ${city}` : (country || city || 'Неизвестно');
-                    }
-
-                    var lat = parseFloat(data.latitude) || 55.75;
-                    var lon = parseFloat(data.longitude) || 37.61;
-
-                    const mapEl = document.getElementById('map');
-                    if(mapEl) {
-                        if (!map) {
-                            // Инициализируем карту
-                            map = L.map('map', { zoomControl: false, attributionControl: false }).setView([lat, lon], 12);
-
-                            // Определяем тему карты
-                            const tilesUrl = document.body.classList.contains('dark-theme')
-                                ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                                : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-
-                            window.currentTiles = L.tileLayer(tilesUrl).addTo(map);
-                            marker = L.marker([lat, lon]).addTo(map);
-                        } else {
-                            map.setView([lat, lon], 12);
-                            marker.setLatLng([lat, lon]);
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    if(userIsp) userIsp.innerText = 'Ошибка данных';
-                });
-        }
-
-        // Стартовый запуск
-        updateIpInfo();
-
-        /* ЛОГИКА КЛИКА И ИЗМЕНЕНИЯ IP (АДАПТИРОВАНО ПОД CSS ИКОНКУ) */
-        const ipSpan = document.getElementById('user-ip');
-        if(ipSpan) {
-            ipSpan.addEventListener('click', () => {
-                // Поскольку иконка карандаша теперь сделана через псевдоэлемент ::after,
-                // она больше не попадает в innerText, так что нам не нужно удалять эмодзи через replace
-                let currentIp = ipSpan.innerText.trim();
-                if (currentIp === 'Загрузка...' || currentIp === 'Определяем...') currentIp = '';
-
-                // Раньше клик сразу превращал строку в поле ввода и ничего не копировал.
-                // Теперь сначала копируем текущий IP в буфер обмена (с тостом), и только
-                // после этого включаем редактирование.
-                const startEditing = () => {
-                    // Замеряем точный размер строки ДО подмены на input — так рамка не
-                    // "прыгнет" в размере, даже если у input чуть другие метрики
-                    // шрифта или box-sizing по умолчанию, отличные от span.
-                    const rect = ipSpan.getBoundingClientRect();
-                    const computed = getComputedStyle(ipSpan);
-
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.value = currentIp;
-                    input.classList.add('ip-edit-input');
-                    input.style.width = `${rect.width}px`;
-                    input.style.height = `${rect.height}px`;
-                    input.style.boxSizing = 'border-box';
-                    input.style.fontSize = computed.fontSize;
-
-                    ipSpan.replaceWith(input);
-                    input.focus();
-                    input.select();
-
-                    const saveIp = () => {
-                        const newIp = input.value.trim();
-                        if (newIp) {
-                            ipSpan.innerText = newIp;
-                            input.replaceWith(ipSpan);
-                            updateIpInfo(newIp);
-                        } else {
-                            input.replaceWith(ipSpan);
-                        }
-                    };
-
-                    input.addEventListener('blur', saveIp);
-                    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveIp(); });
-                };
-
-                if (currentIp && navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(currentIp)
-                        .then(() => showToast('IP скопирован!'))
-                        .catch(() => {})
-                        .finally(startEditing);
-                } else {
-                    startEditing();
-                }
-            });
-        }
-
-        let toastTimeout;
-
-        function showToast(message) {
-            const toast = document.getElementById("toast");
-            if (!toast) return;
-
-            if (message) toast.innerText = message;
-            toast.classList.add("show");
-            clearTimeout(toastTimeout);
-
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove("show");
-            }, 3000);
-        }
-
-        function copyKey(elementId, btn) {
-            const el = document.getElementById(elementId);
-            if(!el) return;
-            const textToCopy = el.innerText;
-
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                showToast('Ключ скопирован!');
-            }).catch(err => {
-                console.error("Ошибка: ", err);
-            });
-        }
-
-        /* --- "мосты" РЯДОМ С TOR BRIDGES: подсветка при наведении ---
-           Наводим — сразу становится хорошо видно (opacity: 1), держим так пару
-           секунд, потом медленно гасим до 0.6 (было статично 0.5). */
-        (function setupBridgesHint() {
-            const hint = document.querySelector('.bridges-hint');
-            if (!hint) return;
-            let settleTimeout = null;
-
-            hint.addEventListener('mouseenter', () => {
-                if (settleTimeout) return; // эффект уже идёт — не перезапускаем заново
-                hint.classList.remove('is-settled');
-                hint.classList.add('is-peeking');
-
-                settleTimeout = setTimeout(() => {
-                    hint.classList.remove('is-peeking');
-                    hint.classList.add('is-settled');
-                    settleTimeout = null;
-                }, 2000);
-            });
-        })();
-
-        /* --- ПОДСКАЗКА НАД КНОПКОЙ ТЕСТА СКОРОСТИ ---
-           Наводишь на кнопку (в любом её состоянии — и активна, и пока идёт тест) и
-           держишь курсор ~2 секунды — всплывает подсказка. Работает и на десктопе
-           (наведение мышью), и на телефоне (тап и удержание — mouseenter там тоже
-           срабатывает). Слушаем hover не на самой кнопке, а на обёртке — задизейбленная
-           кнопка не всегда стабильно отдаёт мышиные события в разных браузерах. */
-        (function setupSpeedtestHint() {
-            const btn = document.getElementById('start-speedtest-btn');
-            const tooltip = document.getElementById('speedtest-tooltip');
-            const wrap = btn ? (btn.closest('.speedtest-btn-wrap') || btn.parentElement) : null;
-            if (!btn || !tooltip || !wrap) return;
-
-            let holdTimeout = null;
-
-            wrap.addEventListener('mouseenter', () => {
-                holdTimeout = setTimeout(() => {
-                    tooltip.classList.add('show');
-                }, 2000);
-            });
-
-            wrap.addEventListener('mouseleave', () => {
-                clearTimeout(holdTimeout);
-                tooltip.classList.remove('show');
-            });
-        })();
-
-        const btnSpeed = document.getElementById('start-speedtest-btn');
-        const resPing = document.getElementById('res-ping');
-        const resDown = document.getElementById('res-down');
-        const resUp = document.getElementById('res-up');
-
-        // Фронтенд лежит на GitHub Pages, а бэкенд (/ping, /download, /upload) —
-        // на отдельном сервере, поэтому тут прямой адрес, а не пустая строка.
-        // ВАЖНО: обязательно https — Pages отдаёт страницу по https, и запрос на
-        // http браузер заблокирует как смешанный контент.
-        const BACKEND_URL = 'https://babyun.fun';
-
-        // Тест ограничен по ВРЕМЕНИ, а не по фиксированному объёму: так на
-        // медленном канале он не будет тянуться минутами, а на быстром — не
-        // закончится раньше, чем скорость успеет разогнаться. Значения ниже —
-        // это "потолок" объёма, который мы готовы передать за один тест.
-        const MAX_DOWNLOAD_BYTES = 300 * 1024 * 1024; // 300 MB
-        const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;   // 100 MB (генерируется в браузере)
-        const TEST_DURATION_MS = 8000;                // максимальная длительность замера
-        const WARMUP_MS = 300;                        // не учитываем самое начало (разгон TCP/TLS)
-
-        function formatSpeed(mbps) {
-            if (mbps >= 1000) {
-                return `${(mbps / 1000).toFixed(2).replace('.', ',')} <span>Гбит/с</span>`;
-            }
-            return `${Math.round(mbps)} <span>Мбит/с</span>`;
-        }
-
-        // --- Скачивание: читаем поток кусками и считаем скорость "на лету" ---
-        async function measureDownload(onProgress) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), TEST_DURATION_MS);
-            const startTime = performance.now();
-            let bytesReceived = 0;
-
-            try {
-                const response = await fetch(`${BACKEND_URL}/download?size=${MAX_DOWNLOAD_BYTES}`, {
-                    cache: 'no-store',
-                    signal: controller.signal
-                });
-
-                if (!response.body || !response.body.getReader) {
-                    // Совсем старые браузеры без потоков — считаем по факту полной загрузки
-                    const buf = await response.arrayBuffer();
-                    bytesReceived = buf.byteLength;
-                } else {
-                    const reader = response.body.getReader();
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
-                        bytesReceived += value.length;
-                        const elapsedMs = performance.now() - startTime;
-                        if (elapsedMs > WARMUP_MS) {
-                            onProgress((bytesReceived * 8) / (elapsedMs / 1000) / 1000000);
-                        }
-                    }
-                }
-            } catch (err) {
-                if (err.name !== 'AbortError') throw err;
-            } finally {
-                clearTimeout(timeoutId);
-            }
-
-            const totalElapsed = (performance.now() - startTime) / 1000;
-            return totalElapsed > 0 ? (bytesReceived * 8) / totalElapsed / 1000000 : 0;
-        }
-
-        // --- Отдача: шлём случайные данные, прогресс отслеживаем через XHR ---
-        function measureUpload(onProgress) {
-            return new Promise((resolve) => {
-                const data = new Uint8Array(MAX_UPLOAD_BYTES);
-                const xhr = new XMLHttpRequest();
-                const startTime = performance.now();
-                let lastLoaded = 0;
-                let finished = false;
-
-                const timeoutId = setTimeout(() => {
-                    if (!finished) xhr.abort();
-                }, TEST_DURATION_MS);
-
-                xhr.upload.addEventListener('progress', (e) => {
-                    if (!e.lengthComputable) return;
-                    lastLoaded = e.loaded;
-                    const elapsedMs = performance.now() - startTime;
-                    if (elapsedMs > WARMUP_MS) {
-                        onProgress((lastLoaded * 8) / (elapsedMs / 1000) / 1000000);
-                    }
-                });
-
-                function finish() {
-                    if (finished) return;
-                    finished = true;
-                    clearTimeout(timeoutId);
-                    const elapsed = (performance.now() - startTime) / 1000;
-                    resolve(elapsed > 0 ? (lastLoaded * 8) / elapsed / 1000000 : 0);
-                }
-
-                xhr.addEventListener('load', finish);
-                xhr.addEventListener('error', finish);
-                xhr.addEventListener('abort', finish);
-
-                xhr.open('POST', `${BACKEND_URL}/upload`);
-                xhr.send(data);
-            });
-        }
-
-        if (btnSpeed) {
-            btnSpeed.addEventListener('click', async () => {
-                btnSpeed.disabled = true;
-
-                btnSpeed.innerHTML = `
-                <svg class="material-spinner" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M41.7,3.3C46.6-1.1,53.4-1.1,58.3,3.3l5,4.5c2.3,2.1,5.4,3.2,8.5,3.2l6.7,0.1c6.5,0.1,11.8,5.4,11.9,11.9l0.1,6.7 c0,3.1,1.1,6.2,3.2,8.5l4.5,5c4.4,4.9,4.4,11.7,0,16.6l-4.5,5c-2.1,2.3-3.2,5.4-3.2,8.5l-0.1,6.7c-0.1,6.5-5.4,11.8-11.9,11.9 l-6.7,0.1c-3.1,0-6.2,1.1-8.5,3.2l-5,4.5c-4.9,4.4-11.7,4.4-16.6,0l-5-4.5c-2.3-2.1-5.4-3.2-8.5-3.2l-6.7-0.1 c-6.5-0.1-11.8-5.4-11.9-11.9l-0.1-6.7c0-3.1-1.1-6.2-3.2-8.5l-4.5-5c-4.4-4.9-4.4-11.7,0-16.6l4.5-5c2.1-2.3,3.2-5.4,3.2-8.5 l0.1-6.7c0.1-6.5,5.4-11.8,11.9-11.9l6.7-0.1c3.1,0,6.2-1.1,8.5-3.2L41.7,3.3z"></path>
-                </svg>`;
-                btnSpeed.style.opacity = '0.7';
-
-                resPing.innerHTML = '-- <span>мс</span>';
-                resDown.innerHTML = '-- <span>Мбит/с</span>';
-                resUp.innerHTML = '-- <span>Мбит/с</span>';
-
-                try {
-                    // 1. Пинг — несколько замеров подряд, показываем медиану
-                    //    (устойчивее к разовым сетевым всплескам, чем один замер)
-                    const pings = [];
-                    for (let i = 0; i < 5; i++) {
-                        const t0 = performance.now();
-                        await fetch(`${BACKEND_URL}/ping`, { cache: 'no-store' });
-                        pings.push(performance.now() - t0);
-                    }
-                    pings.sort((a, b) => a - b);
-                    const medianPing = Math.round(pings[Math.floor(pings.length / 2)]);
-                    resPing.innerHTML = `${medianPing} <span>мс</span>`;
-
-                    // 2. Скачивание — идёт до TEST_DURATION_MS, цифра обновляется вживую
-                    const dlMbps = await measureDownload((mbps) => {
-                        resDown.innerHTML = formatSpeed(mbps);
-                    });
-                    resDown.innerHTML = formatSpeed(dlMbps);
-
-                    // 3. Отдача — аналогично, тоже с живым обновлением
-                    const ulMbps = await measureUpload((mbps) => {
-                        resUp.innerHTML = formatSpeed(mbps);
-                    });
-                    resUp.innerHTML = formatSpeed(ulMbps);
-
-                    btnSpeed.innerText = 'Повторить';
-                } catch (err) {
-                    console.error(err);
-                    btnSpeed.innerText = 'Ошибка соединения!';
-                    alert('Не удалось подключиться к серверу проверки скорости. Проверьте подключение к интернету и попробуйте ещё раз.');
-                } finally {
-                    btnSpeed.disabled = false;
-                    btnSpeed.style.opacity = '1';
-                }
-            });
-        }
-
-    </script>
+   <div class="m3-shape shape-blob"></div>
+   <div class="m3-shape shape-squircle"></div>
+   <div class="m3-shape shape-poly"></div>
+   <div class="m3-shape shape-circle"></div>
+   <div class="m3-shape shape-eladanca"></div>
+
+   <div id="loader" class="loader-overlay">
+       <svg class="spinner" viewBox="0 0 50 50">
+           <circle class="arc-bg" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+           <circle class="arc-active" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+       </svg>
+   </div>
+
+   <header>
+       <nav class="nav-container">
+           <div class="nav-item active" data-target="home">
+               <span class="nav-item-icon material-symbols-outlined">home</span>
+               <span class="nav-item-check material-symbols-outlined">check</span>
+               <span class="nav-item-label">Главная</span>
+           </div>
+           <div class="nav-item" data-target="vpn">
+               <span class="nav-item-icon material-symbols-outlined">vpn_key</span>
+               <span class="nav-item-check material-symbols-outlined">check</span>
+               <span class="nav-item-label">ВПН</span>
+           </div>
+           <div class="nav-item" data-target="bypass">
+               <span class="nav-item-icon material-symbols-outlined">alt_route</span>
+               <span class="nav-item-check material-symbols-outlined">check</span>
+               <span class="nav-item-label">Обход</span>
+           </div>
+           <div class="nav-item" data-target="whitelist">
+               <span class="nav-item-icon material-symbols-outlined">checklist</span>
+               <span class="nav-item-check material-symbols-outlined">check</span>
+               <span class="nav-item-label">Белые списки</span>
+           </div>
+           <div class="nav-item" data-target="speed">
+               <span class="nav-item-icon material-symbols-outlined">speed</span>
+               <span class="nav-item-check material-symbols-outlined">check</span>
+               <span class="nav-item-label">Скорость</span>
+           </div>
+       </nav>
+       <div class="theme-editor-wrap">
+           <button class="theme-toggle-btn" id="theme-btn" aria-label="Настройки темы">palette</button>
+
+           <div class="theme-editor-panel" id="theme-editor-panel">
+               <div class="theme-editor-row">
+                   <span class="theme-editor-row-label">
+                       <span class="material-symbols-outlined">dark_mode</span>
+                       Тёмная тема
+                   </span>
+                   <label class="theme-switch">
+                       <input type="checkbox" id="dark-mode-switch">
+                       <span class="theme-switch-track"><span class="theme-switch-thumb"></span></span>
+                   </label>
+               </div>
+
+               <div class="theme-editor-divider"></div>
+
+               <div class="theme-editor-section-label">Готовые темы</div>
+               <div class="theme-preset-row">
+                   <button type="button" class="theme-preset" data-hue="213" style="background: hsl(213, 90%, 38%);" aria-label="Синяя тема"></button>
+                   <button type="button" class="theme-preset" data-hue="270" style="background: hsl(270, 60%, 45%);" aria-label="Фиолетовая тема"></button>
+                   <button type="button" class="theme-preset" data-hue="140" style="background: hsl(140, 60%, 32%);" aria-label="Зелёная тема"></button>
+                   <button type="button" class="theme-preset" data-hue="30" style="background: hsl(30, 90%, 45%);" aria-label="Оранжевая тема"></button>
+                   <button type="button" class="theme-preset" data-hue="340" style="background: hsl(340, 70%, 48%);" aria-label="Розовая тема"></button>
+                   <button type="button" class="theme-preset" data-hue="180" style="background: hsl(180, 60%, 32%);" aria-label="Бирюзовая тема"></button>
+                   <button type="button" class="theme-preset" data-hue="5" style="background: hsl(5, 70%, 45%);" aria-label="Красная тема"></button>
+               </div>
+
+               <div class="theme-editor-divider"></div>
+
+               <div class="theme-editor-row">
+                   <span class="theme-editor-row-label">
+                       <span class="material-symbols-outlined">colorize</span>
+                       Свой цвет
+                   </span>
+                   <input type="color" id="custom-color-input" class="theme-color-input" value="#005ac1" aria-label="Выбрать свой цвет">
+               </div>
+
+               <button type="button" class="theme-reset-btn" id="theme-reset-btn">
+                   <span class="material-symbols-outlined">restart_alt</span>
+                   Сбросить
+               </button>
+           </div>
+       </div>
+   </header>
+
+   <main>
+       <div id="toast" class="toast-notification">Ключ скопирован!</div>
+
+       <section id="home" class="page-section active">
+           <div class="hero">
+               <h1>Интернет без границ</h1>
+               <p>Бесплатные решения для обхода любых блокировок</p>
+           </div>
+
+           <div class="grid">
+               <div class="card">
+                   <h2>Поддержка ОС</h2>
+                   <div class="tool-info"><b>Android:</b> Большинство версий</div>
+                   <div class="tool-info"><b>Windows:</b> Основные сборки</div>
+                   <p style="font-size: 14px; color: var(--md-sys-color-outline);">Все утилиты подбираются для максимальной совместимости и простоты.</p>
+               </div>
+               <div class="card">
+                   <h2>О проекте</h2>
+                   <p style="font-size: 14px;">Я собираю лучшие рабочие методы и делюсь ими с вами. Все сервисы проверены лично.</p>
+                   <a href="https://t.me/AntiZapret2" target="_blank" class="btn">Мой Telegram Канал</a>
+               </div>
+           </div>
+
+           <div class="card">
+               <h2>Ваше местоположение</h2>
+               <div class="tool-info"><b>IP адрес:</b> <span id="user-ip">Загрузка...</span></div>
+               <div class="tool-info"><b>Провайдер:</b> <span id="user-isp">Загрузка...</span></div>
+               <div class="tool-info"><b>Локация:</b> <span id="user-country">Загрузка...</span></div>
+               <div id="map"></div>
+           </div>
+       </section>
+
+       <section id="vpn" class="page-section">
+           <h1 class="page-title">Надежные ВПН</h1>
+
+           <div class="card">
+               <h2>Tor Bridges <span class="bridges-hint">мосты</span></h2>
+               <p>Если стандартный internet сильно заглушен, Tor с мостами поможет восстановить доступ к сети. Доступен на любые платформы.</p>
+
+               <div class="tool-info"><b>Android</b></div>
+               <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+                   <div class="guide-btn-group">
+                       <button class="guide-btn guide-btn-icon" onclick="toggleTorGuide(this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                       <a href="https://www.youtube.com/watch?v=2MDuuydMWbY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                   </div>
+                   <a href="https://torproject.org" target="_blank" class="btn btn-outline">Официальный сайт</a>
+                   <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/TOR-BRIDGES/TOR_BRIDGES_TOP100.txt" target="_blank" class="btn btn-outline">Конфиги</a>
+               </div>
+
+               <div id="tor-android-links" class="extra-links">
+                   <a href="https://play.google.com/store/apps/details?id=org.torproject.torbrowser" target="_blank" class="btn btn-outline" style="border-color: #4caf50; color: #4caf50;">Google Play</a>
+                   <a href="https://f-droid.org/packages/org.torproject.torbrowser/" target="_blank" class="btn btn-outline" style="border-color: #ff9800; color: #ff9800;">F-Droid</a>
+               </div>
+
+               <div id="guide-tor-android" class="guide-content">
+                   1. Скопируйте список мостов (конфигов) с сайта.<br>
+                   2. Установите приложение и выберите опцию «Подключиться напрямую к Tor».<br>
+                   3. Зайдите в раздел настройки мостов, выберите «Добавить новые мосты» и вставьте скопированные данные.<br>
+                   4. Если кнопка сохранения не нажимается, поищите мосты с восклицательным знаком.<br>
+                   5. Активируйте использование мостов. В настройках приложений рекомендуем временно отключить российские сервисы. Нажмите «Подключить» и дождитесь завершения.
+               </div>
+
+               <div class="tool-info"><b>Windows</b></div>
+               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                   <div class="guide-btn-group">
+                       <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tor-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                       <a href="https://youtu.be/k-Y8NniEvP4" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                   </div>
+                   <a href="https://dragonfruit.network/onionfruit" target="_blank" class="btn btn-outline">Официальный сайт</a>
+                   <a href="https://github.com/igareck/vpn-configs-for-russia" target="_blank" class="btn btn-outline">GitHub</a>
+                   <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/TOR-BRIDGES/TOR_BRIDGES_TOP100.txt" target="_blank" class="btn btn-outline">Конфиги</a>
+               </div>
+               <div id="guide-tor-win" class="guide-content">
+                   1. Скачайте onionFruit через релизы в гитхаб или через офиц. сайт.<br>
+                   2. Копируйте конфиг для onionFruit.<br>
+                   3. Нажмите настройки.<br>
+                   4. Нажмите мосты.<br>
+                   5. Измените disabled на plain, ну или которая вам нужна.<br>
+                   6. Вставьте мосты и нажмите кнопку добавить.<br>
+                   7. Закройте вкладку.<br>
+                   8. Нажмите на переключатель и ждите.
+               </div>
+           </div>
+
+           <div class="card">
+               <h2>Amnezia VPN / WG</h2>
+               <p>Отличный вариант для изменения вашего местоположения. Использует модифицированый протокол WireGuard.</p>
+
+               <div class="tool-info"><b>Android</b></div>
+               <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+                   <div class="guide-btn-group">
+                       <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-amn-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                       <a href="https://www.youtube.com/watch?v=3ueG-ChggqE" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                   </div>
+                   <a href="https://amnezia.org/ru/downloads" target="_blank" class="btn btn-outline">Официальный сайт</a>
+                   <a href="https://warp-mirrors.vercel.app/" target="_blank" class="btn btn-outline">Сайт для конфига</a>
+               </div>
+               <div id="guide-amn-android" class="guide-content">
+                   1. Скачайте APK-файл из релизов на GitHub (выбирайте версию, подходящую под ваше устройство).<br>
+                   2. Перейдите на сайт генерации конфигов, выберите рабочее зеркало и нажмите «Сгенерировать конфиг».<br>
+                   3. Пройдите капчу и скачайте файл в формате .conf.<br>
+                   4. В приложении Amnezia VPN нажмите «Приступим» -> «Файл с настройками подключения».<br>
+                   5. Выберите скачанный файл (warp...conf) и нажмите «Подключить». Разрешите VPN-запрос в системе.
+               </div>
+
+               <div class="tool-info"><b>Windows</b></div>
+               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                   <div class="guide-btn-group">
+                       <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-amn-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                       <a href="https://www.youtube.com/watch?v=OJZnxPN7_PQ" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                   </div>
+                   <a href="https://amnezia.org/ru/downloads" target="_blank" class="btn btn-outline">Официальный сайт</a>
+                   <a href="https://warp-mirrors.vercel.app/" target="_blank" class="btn btn-outline">Сайт для конфига</a>
+               </div>
+               <div id="guide-amn-win" class="guide-content">
+                   1. Перейдите в релизы на GitHub разработчиков и скачайте файл с расширением .exe.<br>
+                   2. Откройте сайт для создания конфигов, выберите рабочее зеркало (например, основное) и нажмите «Сгенерировать зеркало».<br>
+                   3. Пройдите капчу и нажмите кнопку «Скачать конфиг».<br>
+                   4. В приложении Amnezia VPN нажмите «Приступим» -> «Файл с настройками подключения».<br>
+                   5. Через открывшийся проводник найдите и выберите скачанный файл (warp...conf), чтобы автоматически импортировать настройки , всё заработало.
+               </div>
+           </div>
+
+           <div class="card">
+               <h2>Vless</h2>
+               <p>Отличный вариант для обхода блокировок. Хорошо маскирует ваш трафик. Использует протокол Vless.</p>
+               <div class="keys-group">
+                   <p style="margin-bottom: 8px; font-size: 14px; color: var(--md-sys-color-outline);">Мои ключи(на 1 ключе всего 20 мест):</p>
+
+                   <div class="copy-container">
+                       <span id="vless-key-1" class="secret-text">https://shrimp.fish/sub/KT-vzBZAsUkz3PXj</span>
+
+                       <button class="btn copy-btn" onclick="copyKey('vless-key-1', this)">
+                           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                           </svg>
+                           <span class="tooltip-text">Скопировать</span>
+                       </button>
+                   </div>
+
+                   <div class="copy-container">
+                       <span id="vless-key-2" class="secret-text">https://connect.stealthsurf.net/to/c65e78e39e9d796da25a3ced4339231a</span>
+
+                       <button class="btn copy-btn" onclick="copyKey('vless-key-2', this)">
+                           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                           </svg>
+                           <span class="tooltip-text">Скопировать</span>
+                       </button>
+                   </div>
+
+                   <div class="tool-info"><b>Android</b></div>
+                   <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                       <div class="guide-btn-group">
+                           <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-Vless-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                           <a href="#" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                       </div>
+                       <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
+                   </div>
+                   <div id="guide-Vless-android" class="guide-content">
+                       1. Скачайте Incy с оф. сайта, Google Play или Github (.apk).<br>
+                       2. Скопируйте ключ с моего сайта и вставьте в приложение.<br>
+                       3. Включите, и всё работает.
+                   </div>
+
+                   <div class="tool-info"><b>Windows</b></div>
+                   <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                       <div class="guide-btn-group">
+                           <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-Vless-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                           <a href="https://youtu.be/2164aQjPpVs" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                       </div>
+                       <a href="https://incy.cc/" target="_blank" class="btn btn-outline">Оф. сайт Incy</a>
+                   </div>
+                   <div id="guide-Vless-win" class="guide-content">
+                       1. Скачайте Incy.exe из релизов в Github.<br>
+                       2. Скопируйте ключ с моего сайта и вставьте в приложение.<br>
+                       3. Включите VPN, вам предложат запустить от имени администратора.<br>
+                       4. Нажмите "перезапустить". Когда Incy снова включится, включите VPN снова, и всё.
+                   </div>
+               </div>
+           </div>
+       </section>
+
+       <section id="bypass" class="page-section">
+           <h1 class="page-title">Утилиты для обхода</h1>
+
+           <div class="card">
+               <h2>Zapret Discord YouTube</h2>
+               <p>Утилита для модификации трафика на лету для Windows. Отлично подходит для обхода блокировок от РКН.</p>
+               <div class="tool-info"><b>Windows</b></div>
+               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                   <div class="guide-btn-group">
+                       <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-zapret', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                       <a href="https://youtu.be/zJ0iayCzIhY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                   </div>
+                   <a href="https://github.com/flowseal/zapret-discord-youtube" target="_blank" class="btn btn-outline">GitHub</a>
+               </div>
+               <div id="guide-zapret" class="guide-content">
+                   1. Скачайте архив (.rar) из релизов разработчика и распакуйте его.<br>
+                   2. Найдите в папке файл «general (ALT11).bat» and запустите его (желательно от имени администратора).<br>
+                   3. Окно консоли должно оставаться открытым. Теперь Discord и YouTube будут работать стабильно.
+               </div>
+           </div>
+
+           <div class="card">
+               <h2>ByeByeDPI</h2>
+               <p>Отличное приложение для обхода систем DPI на мобильных устройствах. Помогает убрать замедление и восстановить доступ к ресурсам.</p>
+
+               <div class="tool-info"><b>Android</b></div>
+               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                   <div class="guide-btn-group">
+                       <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-byebyedpi', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                       <a href="*" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                   </div>
+                   <a href="https://github.com/romanvht/ByeByeDPI" target="_blank" class="btn btn-outline">GitHub</a>
+               </div>
+
+               <div id="guide-byebyedpi" class="guide-content">
+                   1. Перейдите на GitHub и скачайте актуальный "universal-release.apk" файл из раздела Releases.<br>
+                   2. Установите приложение на ваш телефон.<br>
+                   3. Запустите ByeByeDPI и нажмите кнопку подключения на главном экране.<br>
+                   4. При первом запуске система попросит разрешение на создание локального VPN-подключения — согласитесь.<br>
+                   5. Готово! Приложение работает в фоне и модифицирует трафик для обхода блокировок.
+               </div>
+           </div>
+
+           <div class="card">
+               <h2>TG WS Proxy (Telegram)</h2>
+               <p>Один из лучших способов обхода блокировки Telegram, использует MTProto.</p>
+
+               <div class="tool-info"><b>Android</b></div>
+               <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+                   <div class="guide-btn-group">
+                       <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tg-android', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                       <a href="https://www.youtube.com/watch?v=RhZ330eeCTc" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                   </div>
+                   <a href="https://github.com/amurcanov/tg-ws-proxy-android" target="_blank" class="btn btn-outline">GitHub</a>
+               </div>
+               <div id="guide-tg-android" class="guide-content">
+                   1. Установите версию 1.3.0 (.apk) с GitHub. Обязательно разрешите приложению работу в фоне.<br>
+                   2. В настройках оставьте стандартный порт, установите «Пул WS» на значение 4 и включите автозапуск.<br>
+                   3. Нажмите на значок Telegram в приложении и выберите «Применить в Telegram».<br>
+                   4. В открывшемся мессенджере нажмите «Подключить прокси».<br><br>
+                   <i>Примечание: иногда через этот метод может не работать отправка тяжелых файлов.</i>
+               </div>
+
+               <div class="tool-info"><b>Windows</b></div>
+               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                   <div class="guide-btn-group">
+                       <button class="guide-btn guide-btn-icon" onclick="toggleGuide('guide-tg-win', this)" aria-label="Показать гайд"><span class="material-symbols-outlined">expand_more</span></button>
+                       <a href="https://www.youtube.com/watch?v=eWr-mK9wiNY" target="_blank" class="guide-btn guide-btn-video"><span class="material-symbols-outlined">smart_display</span>Гайд</a>
+                   </div>
+                   <a href="https://github.com/Flowseal/tg-ws-proxy" target="_blank" class="btn btn-outline">GitHub</a>
+               </div>
+               <div id="guide-tg-win" class="guide-content">
+                   1. Скачайте TG WS Proxy через релизы на GitHub, скачивайте с окончанием .exe.<br>
+                   2. Заходите в трее ищите TG WS Proxy, нажимайте по нему правой кнопкой мыши, настройки, листайте в низ, нажимайте на автозапуск, сохранить.<br>
+                   3. Заходите опять в трее, нажимайте правой кнопкой мыши по TG WS Proxy и выберайте "Открыть в Telegram" или "Скопировать ссылку".<br>
+                   4. Вас перекидывает в Telegram, нажимайте "Подключить прокси" и все хорошо работает.
+               </div>
+           </div>
+       </section>
+
+       <section id="whitelist" class="page-section">
+           <h1 class="page-title">Белые Списки</h1>
+
+           <div class="card">
+               <h2>Что такое белые списки?</h2>
+               <p>Официальный перечень одобренных отечественных сайтов и мобильных приложений, доступ к которым сохраняется даже при <strong>частичных отключениях или ограничениях мобильного интернета</strong>.</p>
+           </div>
+
+           <div class="card">
+               <h2>Как установить обход БС?</h2>
+               <ol>
+                   <li>Скачайте и установите совместимый клиент, например Incy.</li>
+                   <li>Скопируйте все ключи с гитхаба.</li>
+                   <li>Вставьте все ключи в приложение и все должно работать.</li>
+               </ol>
+               <a href="https://github.com/igareck/vpn-configs-for-russia/blob/main/Vless-Reality-White-Lists-Rus-Mobile.txt" target="_blank" class="btn">Скачать файл обхода БС</a>
+
+               <div class="key-group">
+                   <p style="margin-bottom: 8px; font-size: 14px; color: var(--md-sys-color-outline);">Мой ключ(макс 20 пользователей):</p>
+
+                   <div class="copy-container">
+                       <span id="BS-key-1" class="secret-text">https://shrimp.fish/sub/vu0eLnwz6Ytx9VR0</span>
+
+                       <button class="btn copy-btn" onclick="copyKey('BS-key-1', this)">
+                           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                           </svg>
+                           <span class="tooltip-text">Скопировать</span>
+                       </button>
+                   </div>
+               </div>
+           </div>
+       </section>
+
+       <section id="speed" class="page-section">
+           <h1 class="page-title">Измерение скорости</h1>
+           <div class="card">
+               <p style="margin-top: 0; color: var(--md-sys-color-on-surface-variant);">Проверьте скорость своего соединения.</p>
+
+               <div class="custom-speedtest">
+                   <div class="speed-results">
+                       <div class="result-box">
+                           <div class="result-label">Пинг</div>
+                           <div class="result-value" id="res-ping">-- <span>мс</span></div>
+                       </div>
+                       <div class="result-box">
+                           <div class="result-label">Скачивание</div>
+                           <div class="result-value" id="res-down">-- <span>Мбит/с</span></div>
+                       </div>
+                       <div class="result-box">
+                           <div class="result-label">Загрузка</div>
+                           <div class="result-value" id="res-up">-- <span>Мбит/с</span></div>
+                       </div>
+                   </div>
+                   <div class="speedtest-btn-wrap">
+                       <button class="btn" id="start-speedtest-btn" style="width: 100%; font-size: 16px; height: 52px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">Начать тест скорости</button>
+                       <div class="speedtest-tooltip" id="speedtest-tooltip">На данный момент у меня недостаточно серверов для лучшего решения для вас, так что пользуетесь тем, что есть.</div>
+                   </div>
+               </div>
+           </div>
+
+           <div class="card">
+               <h2>Другие сайты с измерением скорости: </h2>
+               <a href="https://2ip.io/speed" target="_blank" class="btn">2ip</a>
+               <a href="https://librespeed.org" target="_blank" class="btn btn-outline">LibreSpeed</a>
+               <a href="https://www.speedtest.net" target="_blank" class="btn btn-outline">Speedtest by Ookla</a>
+           </div>
+       </section>
+   </main>
+
+   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+   <script>
+       /* ЛОГИКА ЭКРАНА ЗАГРУЗКИ */
+       window.addEventListener('load', () => {
+           setTimeout(() => {
+               const loader = document.getElementById('loader');
+               if(loader) loader.classList.add('hidden');
+           }, 1800);
+       });
+
+       function setGuideBtnIcon(btn, isOpen) {
+           if(!btn) return;
+           const icon = btn.querySelector('.material-symbols-outlined');
+           if(!icon) return;
+           icon.style.transform = 'scale(0.4) rotate(-90deg)';
+           icon.style.opacity = '0';
+           setTimeout(() => {
+               icon.textContent = isOpen ? 'close' : 'Keyboard_Arrow_Down';
+               icon.style.transform = 'scale(1) rotate(0deg)';
+               icon.style.opacity = '1';
+           }, 140);
+       }
+
+       function toggleGuide(id, btn) {
+           const guide = document.getElementById(id);
+           if(guide) guide.classList.toggle('visible');
+           const isOpen = guide && guide.classList.contains('visible');
+           if(btn) btn.classList.toggle('open', isOpen);
+           setGuideBtnIcon(btn, isOpen);
+       }
+
+       function toggleTorGuide(btn) {
+           const links = document.getElementById('tor-android-links');
+           const guide = document.getElementById('guide-tor-android');
+           if(links) links.classList.toggle('visible');
+           if(guide) guide.classList.toggle('visible');
+           const isOpen = guide && guide.classList.contains('visible');
+           if(btn) btn.classList.toggle('open', isOpen);
+           setGuideBtnIcon(btn, isOpen);
+       }
+
+       /* ЛОГИКА ТЕМЫ */
+       const THEME_STORAGE_KEY = 'site-theme-settings';
+       const THEME_TOKENS = [
+           '--md-sys-color-background', '--md-sys-color-on-background',
+           '--md-sys-color-surface', '--md-sys-color-surface-variant', '--md-sys-color-on-surface-variant',
+           '--md-sys-color-primary', '--md-sys-color-on-primary',
+           '--md-sys-color-primary-container', '--md-sys-color-on-primary-container',
+           '--md-sys-color-outline'
+       ];
+
+       function loadThemeSettings() {
+           try {
+               const raw = localStorage.getItem(THEME_STORAGE_KEY);
+               return raw ? JSON.parse(raw) : {};
+           } catch (e) { return {}; }
+       }
+       function saveThemeSettings(settings) {
+           try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(settings)); } catch (e) {}
+       }
+
+       function hexToHue(hex) {
+           const r = parseInt(hex.slice(1, 3), 16) / 255;
+           const g = parseInt(hex.slice(3, 5), 16) / 255;
+           const b = parseInt(hex.slice(5, 7), 16) / 255;
+           const max = Math.max(r, g, b), min = Math.min(r, g, b);
+           const d = max - min;
+           let h = 0;
+           if (d !== 0) {
+               if (max === r) h = ((g - b) / d) % 6;
+               else if (max === g) h = (b - r) / d + 2;
+               else h = (r - g) / d + 4;
+               h = Math.round(h * 60);
+               if (h < 0) h += 360;
+           }
+           return h;
+       }
+
+       function hslToHex(h, s, l) {
+           s /= 100; l /= 100;
+           const k = n => (n + h / 30) % 12;
+           const a = s * Math.min(l, 1 - l);
+           const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+           const toHex = x => Math.round(255 * x).toString(16).padStart(2, '0');
+           return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+       }
+       function hueToHex(hue) {
+           return hslToHex(hue, 90, 38);
+       }
+
+       function buildPalette(hue, isDark) {
+           return isDark ? {
+               '--md-sys-color-background': `hsl(${hue}, 12%, 10%)`,
+               '--md-sys-color-on-background': `hsl(${hue}, 8%, 90%)`,
+               '--md-sys-color-surface': `hsl(${hue}, 10%, 13%)`,
+               '--md-sys-color-surface-variant': `hsl(${hue}, 10%, 28%)`,
+               '--md-sys-color-on-surface-variant': `hsl(${hue}, 12%, 79%)`,
+               '--md-sys-color-primary': `hsl(${hue}, 80%, 83%)`,
+               '--md-sys-color-on-primary': `hsl(${hue}, 60%, 18%)`,
+               '--md-sys-color-primary-container': `hsl(${hue}, 55%, 27%)`,
+               '--md-sys-color-on-primary-container': `hsl(${hue}, 80%, 90%)`,
+               '--md-sys-color-outline': `hsl(${hue}, 6%, 58%)`,
+           } : {
+               '--md-sys-color-background': `hsl(${hue}, 30%, 99%)`,
+               '--md-sys-color-on-background': `hsl(${hue}, 10%, 11%)`,
+               '--md-sys-color-surface': `hsl(${hue}, 24%, 96%)`,
+               '--md-sys-color-surface-variant': `hsl(${hue}, 20%, 90%)`,
+               '--md-sys-color-on-surface-variant': `hsl(${hue}, 8%, 29%)`,
+               '--md-sys-color-primary': `hsl(${hue}, 90%, 38%)`,
+               '--md-sys-color-on-primary': '#ffffff',
+               '--md-sys-color-primary-container': `hsl(${hue}, 95%, 92%)`,
+               '--md-sys-color-on-primary-container': `hsl(${hue}, 85%, 15%)`,
+               '--md-sys-color-outline': `hsl(${hue}, 6%, 48%)`,
+           };
+       }
+
+       function applyHue(hue, isDark) {
+           const rootStyle = document.body.style;
+           if (hue === null || hue === undefined) {
+               THEME_TOKENS.forEach(t => rootStyle.removeProperty(t));
+               return;
+           }
+           const palette = buildPalette(hue, isDark);
+           THEME_TOKENS.forEach(t => rootStyle.setProperty(t, palette[t]));
+       }
+
+       function syncMapTiles(isDark) {
+           if (map && window.currentTiles) {
+               const newTilesUrl = isDark
+                   ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                   : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+               window.currentTiles.setUrl(newTilesUrl);
+           }
+       }
+
+       const themeSettings = loadThemeSettings();
+       const legacySavedTheme = localStorage.getItem('site-theme');
+       let isDarkMode = typeof themeSettings.dark === 'boolean' ? themeSettings.dark : (legacySavedTheme === 'dark');
+       let currentHue = typeof themeSettings.hue === 'number' ? themeSettings.hue : null;
+
+       document.body.classList.toggle('dark-theme', isDarkMode);
+       applyHue(currentHue, isDarkMode);
+
+       (function setupThemeEditor() {
+           const btn = document.getElementById('theme-btn');
+           const panel = document.getElementById('theme-editor-panel');
+           const darkSwitch = document.getElementById('dark-mode-switch');
+           const colorInput = document.getElementById('custom-color-input');
+           const resetBtn = document.getElementById('theme-reset-btn');
+           const presetButtons = document.querySelectorAll('.theme-preset');
+           if (!btn) return;
+
+           if (darkSwitch) darkSwitch.checked = isDarkMode;
+           if (colorInput && currentHue !== null) colorInput.value = hueToHex(currentHue);
+
+           function highlightPreset() {
+               presetButtons.forEach(p => {
+                   p.classList.toggle('selected', Number(p.dataset.hue) === currentHue);
+               });
+           }
+           highlightPreset();
+
+           function persist() {
+               saveThemeSettings({ dark: isDarkMode, hue: currentHue });
+               localStorage.setItem('site-theme', isDarkMode ? 'dark' : 'light');
+           }
+
+           if (panel) {
+               btn.addEventListener('click', (e) => {
+                   e.stopPropagation();
+                   panel.classList.toggle('open');
+               });
+               panel.addEventListener('click', (e) => e.stopPropagation());
+               document.addEventListener('click', () => panel.classList.remove('open'));
+           }
+
+           if (darkSwitch) {
+               darkSwitch.addEventListener('change', () => {
+                   isDarkMode = darkSwitch.checked;
+                   document.body.classList.toggle('dark-theme', isDarkMode);
+                   applyHue(currentHue, isDarkMode);
+                   syncMapTiles(isDarkMode);
+                   persist();
+               });
+           }
+
+           presetButtons.forEach(p => {
+               p.addEventListener('click', () => {
+                   currentHue = Number(p.dataset.hue);
+                   applyHue(currentHue, isDarkMode);
+                   if (colorInput) colorInput.value = hueToHex(currentHue);
+                   highlightPreset();
+                   persist();
+               });
+           });
+
+           if (colorInput) {
+               colorInput.addEventListener('input', () => {
+                   currentHue = hexToHue(colorInput.value);
+                   applyHue(currentHue, isDarkMode);
+                   highlightPreset();
+                   persist();
+               });
+           }
+
+           if (resetBtn) {
+               resetBtn.addEventListener('click', () => {
+                   currentHue = null;
+                   applyHue(null, isDarkMode);
+                   if (colorInput) colorInput.value = '#005ac1';
+                   highlightPreset();
+                   persist();
+               });
+           }
+       })();
+
+       /* ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК */
+       const navContainer = document.querySelector('.nav-container');
+       const navItems = document.querySelectorAll('.nav-item[data-target]');
+       const sections = document.querySelectorAll('.page-section');
+       const mainEl = document.querySelector('main');
+       const tabOrder = Array.from(navItems).map(item => item.getAttribute('data-target'));
+
+       function activateTab(targetId, options = {}) {
+           const targetItem = document.querySelector(`.nav-item[data-target="${targetId}"]`);
+           const targetSection = document.getElementById(targetId);
+           if (!targetItem || !targetSection) return;
+
+           navItems.forEach(nav => nav.classList.remove('active'));
+           sections.forEach(sec => sec.classList.remove('active'));
+
+           targetItem.classList.add('active');
+           targetSection.classList.add('active');
+
+           if (options.scrollNavIntoView) {
+               targetItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+           }
+
+           window.scrollTo({ top: 0, behavior: 'smooth' });
+
+           if (targetId === 'home' && typeof map !== 'undefined' && map) {
+               setTimeout(() => map.invalidateSize(), 100);
+           }
+       }
+
+       navItems.forEach(item => {
+           item.addEventListener('click', () => activateTab(item.getAttribute('data-target')));
+       });
+
+       /* СВАЙП ВКЛАДОК */
+       (function setupSwipeNavigation() {
+           if (!mainEl) return;
+
+           const SWIPE_MIN_DISTANCE = 60;
+           const SWIPE_MAX_DRIFT = 75;
+           let startX = 0, startY = 0, startTarget = null;
+
+           mainEl.addEventListener('touchstart', (e) => {
+               const touch = e.changedTouches[0];
+               startX = touch.clientX;
+               startY = touch.clientY;
+               startTarget = e.target;
+           }, { passive: true });
+
+           mainEl.addEventListener('touchend', (e) => {
+               if (startTarget && startTarget.closest('#map')) return;
+
+               const touch = e.changedTouches[0];
+               const dx = touch.clientX - startX;
+               const dy = touch.clientY - startY;
+
+               if (Math.abs(dx) < SWIPE_MIN_DISTANCE || Math.abs(dy) > SWIPE_MAX_DRIFT) return;
+
+               const currentId = document.querySelector('.page-section.active')?.id;
+               const currentIndex = tabOrder.indexOf(currentId);
+               if (currentIndex === -1) return;
+
+               let nextIndex = currentIndex;
+               if (dx < 0 && currentIndex < tabOrder.length - 1) nextIndex = currentIndex + 1;
+               if (dx > 0 && currentIndex > 0) nextIndex = currentIndex - 1;
+
+               if (nextIndex !== currentIndex) {
+                   activateTab(tabOrder[nextIndex], { scrollNavIntoView: true });
+               }
+           }, { passive: true });
+       })();
+
+       if (navContainer) {
+           navContainer.addEventListener('wheel', (e) => {
+               if (navContainer.scrollWidth <= navContainer.clientWidth) return;
+               if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+               e.preventDefault();
+               navContainer.scrollLeft += e.deltaY;
+           }, { passive: false });
+       }
+
+       /* КАРТА И IP */
+       var map;
+       var marker;
+
+       function updateIpInfo(ip = '') {
+           const userIsp = document.getElementById('user-isp');
+           const userCountry = document.getElementById('user-country');
+           const userIp = document.getElementById('user-ip');
+
+           if(userIsp) userIsp.innerText = 'Определяем...';
+           if(userCountry) userCountry.innerText = 'Определяем...';
+
+           const url = ip ? `https://get.geojs.io/v1/ip/geo/${ip}.json` : 'https://get.geojs.io/v1/ip/geo.json';
+
+           fetch(url)
+               .then(response => response.json())
+               .then(data => {
+                   if(userIp) userIp.innerText = data.ip || ip || 'Неизвестно';
+                   if(userIsp) userIsp.innerText = data.organization_name || 'Неизвестно';
+
+                   if (userCountry) {
+                       const country = data.country || '';
+                       const city = data.city || '';
+                       userCountry.innerText = (country && city) ? `${country}, ${city}` : (country || city || 'Неизвестно');
+                   }
+
+                   var lat = parseFloat(data.latitude) || 55.75;
+                   var lon = parseFloat(data.longitude) || 37.61;
+
+                   const mapEl = document.getElementById('map');
+                   if(mapEl) {
+                       if (!map) {
+                           map = L.map('map', { zoomControl: false, attributionControl: false }).setView([lat, lon], 12);
+                           const tilesUrl = document.body.classList.contains('dark-theme')
+                               ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                               : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+
+                           window.currentTiles = L.tileLayer(tilesUrl).addTo(map);
+                           marker = L.marker([lat, lon]).addTo(map);
+                       } else {
+                           map.setView([lat, lon], 12);
+                           marker.setLatLng([lat, lon]);
+                       }
+                   }
+               })
+               .catch(error => {
+                   console.error('Ошибка:', error);
+                   if(userIsp) userIsp.innerText = 'Ошибка данных';
+               });
+       }
+
+       updateIpInfo();
+
+       const ipSpan = document.getElementById('user-ip');
+       if(ipSpan) {
+           ipSpan.addEventListener('click', () => {
+               let currentIp = ipSpan.innerText.trim();
+               if (currentIp === 'Загрузка...' || currentIp === 'Определяем...') currentIp = '';
+
+               const startEditing = () => {
+                   const rect = ipSpan.getBoundingClientRect();
+                   const computed = getComputedStyle(ipSpan);
+
+                   const input = document.createElement('input');
+                   input.type = 'text';
+                   input.value = currentIp;
+                   input.classList.add('ip-edit-input');
+                   input.style.width = `${rect.width}px`;
+                   input.style.height = `${rect.height}px`;
+                   input.style.boxSizing = 'border-box';
+                   input.style.fontSize = computed.fontSize;
+
+                   ipSpan.replaceWith(input);
+                   input.focus();
+                   input.select();
+
+                   const saveIp = () => {
+                       const newIp = input.value.trim();
+                       if (newIp) {
+                           ipSpan.innerText = newIp;
+                           input.replaceWith(ipSpan);
+                           updateIpInfo(newIp);
+                       } else {
+                           input.replaceWith(ipSpan);
+                       }
+                   };
+
+                   input.addEventListener('blur', saveIp);
+                   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveIp(); });
+               };
+
+               if (currentIp && navigator.clipboard && navigator.clipboard.writeText) {
+                   navigator.clipboard.writeText(currentIp)
+                       .then(() => showToast('IP скопирован!'))
+                       .catch(() => {})
+                       .finally(startEditing);
+               } else {
+                   startEditing();
+               }
+           });
+       }
+
+       let toastTimeout;
+
+       function showToast(message) {
+           const toast = document.getElementById("toast");
+           if (!toast) return;
+
+           if (message) toast.innerText = message;
+           toast.classList.add("show");
+           clearTimeout(toastTimeout);
+
+           toastTimeout = setTimeout(() => {
+               toast.classList.remove("show");
+           }, 3000);
+       }
+
+       function copyKey(elementId, btn) {
+           const el = document.getElementById(elementId);
+           if(!el) return;
+           const textToCopy = el.innerText;
+
+           navigator.clipboard.writeText(textToCopy).then(() => {
+               showToast('Ключ скопирован!');
+           }).catch(err => {
+               console.error("Ошибка: ", err);
+           });
+       }
+
+       (function setupBridgesHint() {
+           const hint = document.querySelector('.bridges-hint');
+           if (!hint) return;
+           let settleTimeout = null;
+
+           hint.addEventListener('mouseenter', () => {
+               if (settleTimeout) return;
+               hint.classList.remove('is-settled');
+               hint.classList.add('is-peeking');
+
+               settleTimeout = setTimeout(() => {
+                   hint.classList.remove('is-peeking');
+                   hint.classList.add('is-settled');
+                   settleTimeout = null;
+               }, 2000);
+           });
+       })();
+
+       (function setupSpeedtestHint() {
+           const btn = document.getElementById('start-speedtest-btn');
+           const tooltip = document.getElementById('speedtest-tooltip');
+           const wrap = btn ? (btn.closest('.speedtest-btn-wrap') || btn.parentElement) : null;
+           if (!btn || !tooltip || !wrap) return;
+
+           let holdTimeout = null;
+
+           wrap.addEventListener('mouseenter', () => {
+               holdTimeout = setTimeout(() => {
+                   tooltip.classList.add('show');
+               }, 2000);
+           });
+
+           wrap.addEventListener('mouseleave', () => {
+               clearTimeout(holdTimeout);
+               tooltip.classList.remove('show');
+           });
+       })();
+
+       const btnSpeed = document.getElementById('start-speedtest-btn');
+       const resPing = document.getElementById('res-ping');
+       const resDown = document.getElementById('res-down');
+       const resUp = document.getElementById('res-up');
+
+       const BACKEND_URL = 'https://babyun.fun';
+       const MAX_DOWNLOAD_BYTES = 300 * 1024 * 1024;
+       const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
+       const TEST_DURATION_MS = 8000;
+       const WARMUP_MS = 300;
+
+       function formatSpeed(mbps) {
+           if (mbps >= 1000) {
+               return `${(mbps / 1000).toFixed(2).replace('.', ',')} <span>Гбит/с</span>`;
+           }
+           return `${Math.round(mbps)} <span>Мбит/с</span>`;
+       }
+
+       async function measureDownload(onProgress) {
+           const controller = new AbortController();
+           const timeoutId = setTimeout(() => controller.abort(), TEST_DURATION_MS);
+           const startTime = performance.now();
+           let bytesReceived = 0;
+
+           try {
+               const response = await fetch(`${BACKEND_URL}/download?size=${MAX_DOWNLOAD_BYTES}`, {
+                   cache: 'no-store',
+                   signal: controller.signal
+               });
+
+               if (!response.body || !response.body.getReader) {
+                   const buf = await response.arrayBuffer();
+                   bytesReceived = buf.byteLength;
+               } else {
+                   const reader = response.body.getReader();
+                   while (true) {
+                       const { done, value } = await reader.read();
+                       if (done) break;
+                       bytesReceived += value.length;
+                       const elapsedMs = performance.now() - startTime;
+                       if (elapsedMs > WARMUP_MS) {
+                           onProgress((bytesReceived * 8) / (elapsedMs / 1000) / 1000000);
+                       }
+                   }
+               }
+           } catch (err) {
+               if (err.name !== 'AbortError') throw err;
+           } finally {
+               clearTimeout(timeoutId);
+           }
+
+           const totalElapsed = (performance.now() - startTime) / 1000;
+           return totalElapsed > 0 ? (bytesReceived * 8) / totalElapsed / 1000000 : 0;
+       }
+
+       function measureUpload(onProgress) {
+           return new Promise((resolve) => {
+               const data = new Uint8Array(MAX_UPLOAD_BYTES);
+               const xhr = new XMLHttpRequest();
+               const startTime = performance.now();
+               let lastLoaded = 0;
+               let finished = false;
+
+               const timeoutId = setTimeout(() => {
+                   if (!finished) xhr.abort();
+               }, TEST_DURATION_MS);
+
+               xhr.upload.addEventListener('progress', (e) => {
+                   if (!e.lengthComputable) return;
+                   lastLoaded = e.loaded;
+                   const elapsedMs = performance.now() - startTime;
+                   if (elapsedMs > WARMUP_MS) {
+                       onProgress((lastLoaded * 8) / (elapsedMs / 1000) / 1000000);
+                   }
+               });
+
+               function finish() {
+                   if (finished) return;
+                   finished = true;
+                   clearTimeout(timeoutId);
+                   const elapsed = (performance.now() - startTime) / 1000;
+                   resolve(elapsed > 0 ? (lastLoaded * 8) / elapsed / 1000000 : 0);
+               }
+
+               xhr.addEventListener('load', finish);
+               xhr.addEventListener('error', finish);
+               xhr.addEventListener('abort', finish);
+
+               xhr.open('POST', `${BACKEND_URL}/upload`);
+               xhr.send(data);
+           });
+       }
+
+       if (btnSpeed) {
+           btnSpeed.addEventListener('click', async () => {
+               btnSpeed.disabled = true;
+
+               btnSpeed.innerHTML = `
+               <svg class="material-spinner" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                   <path d="M41.7,3.3C46.6-1.1,53.4-1.1,58.3,3.3l5,4.5c2.3,2.1,5.4,3.2,8.5,3.2l6.7,0.1c6.5,0.1,11.8,5.4,11.9,11.9l0.1,6.7 c0,3.1,1.1,6.2,3.2,8.5l4.5,5c4.4,4.9,4.4,11.7,0,16.6l-4.5,5c-2.1,2.3-3.2,5.4-3.2,8.5l-0.1,6.7c-0.1,6.5-5.4,11.8-11.9,11.9 l-6.7,0.1c-3.1,0-6.2,1.1-8.5,3.2l-5,4.5c-4.9,4.4-11.7,4.4-16.6,0l-5-4.5c-2.3-2.1-5.4-3.2-8.5-3.2l-6.7-0.1 c-6.5-0.1-11.8-5.4-11.9-11.9l-0.1-6.7c0-3.1-1.1-6.2-3.2-8.5l-4.5-5c-4.4-4.9-4.4-11.7,0-16.6l4.5-5c2.1-2.3,3.2-5.4,3.2-8.5 l0.1-6.7c0.1-6.5,5.4-11.8,11.9-11.9l6.7-0.1c3.1,0,6.2-1.1,8.5-3.2L41.7,3.3z"></path>
+               </svg>`;
+               btnSpeed.style.opacity = '0.7';
+
+               resPing.innerHTML = '-- <span>мс</span>';
+               resDown.innerHTML = '-- <span>Мбит/с</span>';
+               resUp.innerHTML = '-- <span>Мбит/с</span>';
+
+               try {
+                   const pings = [];
+                   for (let i = 0; i < 5; i++) {
+                       const t0 = performance.now();
+                       await fetch(`${BACKEND_URL}/ping`, { cache: 'no-store' });
+                       pings.push(performance.now() - t0);
+                   }
+                   pings.sort((a, b) => a - b);
+                   const medianPing = Math.round(pings[Math.floor(pings.length / 2)]);
+                   resPing.innerHTML = `${medianPing} <span>мс</span>`;
+
+                   const dlMbps = await measureDownload((mbps) => {
+                       resDown.innerHTML = formatSpeed(mbps);
+                   });
+                   resDown.innerHTML = formatSpeed(dlMbps);
+
+                   const ulMbps = await measureUpload((mbps) => {
+                       resUp.innerHTML = formatSpeed(mbps);
+                   });
+                   resUp.innerHTML = formatSpeed(ulMbps);
+
+                   btnSpeed.innerText = 'Повторить';
+               } catch (err) {
+                   console.error(err);
+                   btnSpeed.innerText = 'Ошибка соединения!';
+                   alert('Не удалось подключиться к серверу проверки скорости. Проверьте подключение к интернету и попробуйте ещё раз.');
+               } finally {
+                   btnSpeed.disabled = false;
+                   btnSpeed.style.opacity = '1';
+               }
+           });
+       }
+   </script>
 </body>
 </html>
